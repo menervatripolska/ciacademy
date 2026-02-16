@@ -16,12 +16,12 @@ import {
 // CDN URLs
 const IMAGES = {
   heroAcademy: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663277282118/nztUJviYHysCLjpd.png",
-  heroBoy: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663277282118/HEnFzOIFXQDuzgjW.png",
-  heroGirl: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663277282118/eXtqrsVUHJoeQuFa.png",
+  heroBoy: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663277282118/mcnaQpHSLpBDnqTc.png",
+  heroGirl: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663277282118/ytWuiWcrrzSwqcLB.png",
   tools: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663277282118/nrfbErrJdKNURVbn.png",
   modulesBg: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663277282118/YITCvQoFYReYOrrD.png",
   aiCurator: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663277282118/nxNLTJnbxUbcyaRS.png",
-  origAcademy: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663277282118/FdkrLSCZaTgAsrnm.png",
+  neonHogwarts: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663277282118/OpPcZquiokZacskq.png",
   origBoy: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663277282118/CqQUhWACrRelfaaV.png",
   origGirl: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663277282118/IWQQdxNNCrDMHqaE.png",
 };
@@ -89,7 +89,7 @@ function HeroSection() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border-green bg-[#00d4aa]/5 mb-6">
               <Sparkles className="w-4 h-4 text-[#00d4aa]" />
-              <span className="text-sm font-medium text-[#00d4aa]" style={{ fontFamily: "var(--font-body)" }}>Crypto Intelligence Academy</span>
+              <span className="text-sm font-medium text-[#00d4aa]" style={{ fontFamily: "var(--font-body)" }}>Crypto Intelligence</span>
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] mb-6 tracking-tight">
@@ -128,27 +128,27 @@ function HeroSection() {
             </div>
           </motion.div>
 
-          {/* Right: Characters */}
+          {/* Right: Characters — cutout PNGs with flying animation */}
           <motion.div
-            initial={{ opacity: 0, x: 80 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.9, delay: 0.3, ease: "easeOut" }}
-            className="relative hidden lg:flex justify-center items-end h-[560px]"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.1, delay: 0.3, ease: "easeOut" }}
+            className="relative hidden lg:flex justify-center items-center h-[600px]"
           >
-            <div className="absolute right-0 bottom-0">
+            {/* Boy — flying right side */}
+            <div className="absolute right-[-20px] top-[30px] animate-fly-right">
               <img
                 src={IMAGES.heroBoy}
                 alt="Криптан"
-                className="h-[500px] object-contain drop-shadow-[0_0_40px_rgba(0,212,170,0.3)] animate-float"
-                style={{ animationDuration: "7s" }}
+                className="h-[420px] object-contain"
               />
             </div>
-            <div className="absolute left-0 bottom-0">
+            {/* Girl — flying left side */}
+            <div className="absolute left-[-10px] top-[60px] animate-fly-left">
               <img
                 src={IMAGES.heroGirl}
                 alt="Криптан"
-                className="h-[460px] object-contain drop-shadow-[0_0_40px_rgba(153,69,255,0.3)] animate-float"
-                style={{ animationDuration: "8s", animationDelay: "1s" }}
+                className="h-[400px] object-contain"
               />
             </div>
           </motion.div>
@@ -219,12 +219,12 @@ function PhilosophySection() {
 
       <div className="container relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left: Academy image */}
+          {/* Left: Neon Hogwarts image */}
           <AnimatedSection>
             <div className="relative">
               <img
-                src={IMAGES.origAcademy}
-                alt="Kryptan Academy"
+                src={IMAGES.neonHogwarts}
+                alt="Crypto Intelligence Academy"
                 className="rounded-2xl w-full neon-box-green"
               />
               <div className="absolute -bottom-4 -right-4 px-5 py-3 rounded-xl bg-[#0f1328] neon-border-green">
@@ -475,12 +475,15 @@ function CultureSection() {
 
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <AnimatedSection delay={0.1}>
-            <div className="relative flex justify-center">
-              <img
-                src={IMAGES.heroBoy}
-                alt="Криптан"
-                className="rounded-2xl w-full max-w-md drop-shadow-[0_0_30px_rgba(0,212,170,0.2)]"
-              />
+            <div className="relative flex justify-center items-center h-[500px]">
+              {/* Girl flying in culture section */}
+              <div className="animate-fly-left">
+                <img
+                  src={IMAGES.heroGirl}
+                  alt="Криптан"
+                  className="h-[400px] object-contain"
+                />
+              </div>
             </div>
           </AnimatedSection>
 
@@ -630,7 +633,7 @@ function FinalCTASection() {
   return (
     <section className="relative py-32 overflow-hidden">
       <div className="absolute inset-0">
-        <img src={IMAGES.heroAcademy} alt="" className="w-full h-full object-cover opacity-20" />
+        <img src={IMAGES.neonHogwarts} alt="" className="w-full h-full object-cover opacity-20" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#06091a] via-[#06091a]/70 to-[#06091a]" />
       </div>
       <FloatingParticles />
@@ -695,7 +698,7 @@ function Navbar() {
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#00d4aa] to-[#9945ff] flex items-center justify-center">
             <span className="text-white font-bold text-sm" style={{ fontFamily: "var(--font-display)" }}>CI</span>
           </div>
-          <span className="text-white font-bold text-lg hidden sm:block" style={{ fontFamily: "var(--font-display)" }}>Kryptan Academy</span>
+          <span className="text-white font-bold text-lg hidden sm:block" style={{ fontFamily: "var(--font-display)" }}>Crypto Intelligence</span>
         </div>
 
         <div className="hidden md:flex items-center gap-8">
