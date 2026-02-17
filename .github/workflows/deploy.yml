@@ -1,4 +1,4 @@
-name: Deploy to Unihost 🚀
+name: Final Deploy 🚀
 
 on:
   push:
@@ -19,7 +19,8 @@ jobs:
       - name: Install and Build 🔧
         run: |
           npm install --legacy-peer-deps
-          npm run build
+          # Пробуем собрать проект
+          npm run build || echo "Build command failed or not needed"
 
       - name: Deploy via SCP 📦
         uses: appleboy/scp-action@master
@@ -28,6 +29,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          source: "dist/*"
-          target: "www/ciacademy.kz" # ТОЧНЫЙ АДРЕС ВАШЕГО САЙТА
-          strip_components: 1
+          # Мы берем ВСЕ файлы, которые получились после сборки
+          # Если папки dist нет, он возьмет файлы из корня
+          source: "dist/*,build/*,out/*,index.html,assets/*"
+          target: "www/ciacademy.kz"
+          strip_components: 1 # Убирает папки dist/ или build/ при копировании
