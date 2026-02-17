@@ -1,36 +1,43 @@
-name: Final Deploy 🚀
+name: Master Deploy 🚀
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
 
+      # Устанавливаем pnpm, так как твой проект на нём
+      - name: Install pnpm 📦
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
       - name: Setup Node.js ⚙️
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
 
-      - name: Install and Build 🔧
+      # Устанавливаем зависимости и собираем именно КЛИЕНТСКУЮ часть
+      - name: Install and Build Frontend 🔧
         run: |
-          npm install --legacy-peer-deps
-          # Пробуем собрать проект
-          npm run build || echo "Build command failed or not needed"
+          pnpm install --no-frozen-lockfile
+          pnpm run build
 
-      - name: Deploy via SCP 📦
+      # Отправляем готовую папку dist на сервер
+      - name: Deploy to Unihost 📦
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          # Мы берем ВСЕ файлы, которые получились после сборки
-          # Если папки dist нет, он возьмет файлы из корня
-          source: "dist/*,build/*,out/*,index.html,assets/*"
+          # Ищем папку dist везде (в корне или в client)
+          source: "dist/*,client/dist/*"
           target: "www/ciacademy.kz"
-          strip_components: 1 # Убирает папки dist/ или build/ при копировании
+          strip_components: 2 # Это уберет лишние вложенные папки при копировании
