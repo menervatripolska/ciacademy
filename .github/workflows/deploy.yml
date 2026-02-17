@@ -1,4 +1,4 @@
-name: Deploy 🚀
+name: Deploy to Unihost 🚀
 
 on:
   push:
@@ -8,25 +8,31 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Node
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+      # 1. Забираем код из твоего репозитория
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
 
-    - name: Build
-      run: |
-        npm install --legacy-peer-deps
-        npm run build
+      # 2. Подключаем Node.js для сборки проекта
+      - name: Setup Node.js ⚙️
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-    - name: Copy files
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: 22
-        source: "dist/*"
-        target: "www/ciacademy.kz"
-        strip_components: 1
+      # 3. Устанавливаем зависимости и собираем проект
+      # Флаг --legacy-peer-deps решает тот конфликт версий Vite, который мы видели
+      - name: Install and Build 🔧
+        run: |
+          npm install --legacy-peer-deps
+          npm run build
+
+      # 4. Перекидываем готовый сайт в Казахстан на сервер
+      - name: Deploy via SCP 📦
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: "dist/*"
+          target: "." # Кладём прямо в корень папки data, где и должен жить сайт
+          strip_components: 1
