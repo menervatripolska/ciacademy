@@ -8,24 +8,19 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. Забираем код из твоего репозитория
       - name: Checkout 🛎️
         uses: actions/checkout@v4
 
-      # 2. Подключаем Node.js для сборки проекта
       - name: Setup Node.js ⚙️
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # 3. Устанавливаем зависимости и собираем проект
-      # Флаг --legacy-peer-deps решает тот конфликт версий Vite, который мы видели
       - name: Install and Build 🔧
         run: |
           npm install --legacy-peer-deps
           npm run build
 
-      # 4. Перекидываем готовый сайт в Казахстан на сервер
       - name: Deploy via SCP 📦
         uses: appleboy/scp-action@master
         with:
@@ -34,5 +29,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           source: "dist/*"
-          target: "." # Кладём прямо в корень папки data, где и должен жить сайт
+          target: "www/ciacademy.kz" # ТОЧНЫЙ АДРЕС ВАШЕГО САЙТА
           strip_components: 1
