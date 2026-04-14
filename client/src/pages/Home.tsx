@@ -647,10 +647,10 @@ function FinalCTASection() {
           <p className="text-gray-300 text-xl mb-10 max-w-2xl mx-auto" style={{ fontFamily: "var(--font-body)" }}>
             Присоединяйся к академии, где разумность — это суперсила, а знания — твой щит.
           </p>
-          <button className="cta-button px-12 py-5 rounded-xl text-xl inline-flex items-center gap-3">
+          <a href="/access" className="cta-button px-12 py-5 rounded-xl text-xl inline-flex items-center gap-3">
             <Sparkles className="w-6 h-6" />
             Начать обучение — $19
-          </button>
+          </a>
         </AnimatedSection>
       </div>
     </section>
@@ -707,9 +707,9 @@ function Navbar() {
           <a href="#faq" className="text-gray-400 hover:text-white text-sm transition-colors" style={{ fontFamily: "var(--font-body)" }}>FAQ</a>
         </div>
 
-        <button className="cta-button px-5 py-2 rounded-lg text-sm">
+        <a href="/access" className="cta-button px-5 py-2 rounded-lg text-sm inline-block">
           Начать — $19
-        </button>
+        </a>
       </div>
     </nav>
   );
