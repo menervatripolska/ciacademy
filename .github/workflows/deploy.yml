@@ -1,43 +1,43 @@
-name: Master Deploy 🚀
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v4
-
-      # Устанавливаем pnpm, так как твой проект на нём
-      - name: Install pnpm 📦
-        uses: pnpm/action-setup@v3
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
         with:
-          version: 9
-
-      - name: Setup Node.js ⚙️
-        uses: actions/setup-node@v4
+          version: 10
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
           cache: 'pnpm'
-
-      # Устанавливаем зависимости и собираем именно КЛИЕНТСКУЮ часть
-      - name: Install and Build Frontend 🔧
-        run: |
-          pnpm install --no-frozen-lockfile
-          pnpm run build
-
-      # Отправляем готовую папку dist на сервер
-      - name: Deploy to Unihost 📦
-        uses: appleboy/scp-action@master
+      - run: pnpm install
+      - run: pnpm build
+      - uses: actions/upload-pages-artifact@v3
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          # Ищем папку dist везде (в корне или в client)
-          source: "dist/*,client/dist/*"
-          target: "www/ciacademy.kz"
-          strip_components: 2 # Это уберет лишние вложенные папки при копировании
+          path: dist/public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
