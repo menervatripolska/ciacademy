@@ -297,7 +297,7 @@ function PhilosophySection() {
                 className="rounded-2xl w-full neon-box-green"
               />
               <div className="absolute -bottom-4 -right-4 px-5 py-3 rounded-xl bg-[#0f1328] neon-border-green">
-                <span className="text-[#00d4aa] font-bold text-lg">Хогвартс для криптанов</span>
+                <span className="text-[#00d4aa] font-bold text-lg">Академия Crypto OS</span>
               </div>
             </div>
           </AnimatedSection>
@@ -315,9 +315,9 @@ function PhilosophySection() {
 
               <div className="space-y-4">
                 {[
-                  { label: "Простота", desc: "Поймёт даже ребёнок. Буквально — мы тестируем на 10-летних." },
-                  { label: "Безопасность", desc: "Никаких фьючерсов, плечей и скамов. Только спот и долгосрок." },
-                  { label: "Легальность", desc: "Все инструменты в рамках законодательства Республики Казахстан." },
+                  { label: "Простота", desc: "Сложные идеи — без жаргона. 8 уроков, и ты владеешь словарём индустрии." },
+                  { label: "Безопасность", desc: "Без плеча, без копирования чужих сделок, без обещаний доходности. Только спот и долгосрок." },
+                  { label: "Прозрачность", desc: "Курс — строго образовательный продукт. Не является инвестиционной рекомендацией." },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-[#0f1328]/60 neon-border-green/30">
                     <div className="w-2 h-2 rounded-full bg-[#00d4aa] mt-2.5 shrink-0" />
@@ -404,14 +404,15 @@ function ModulesSection() {
 // ============ TOOLS SECTION ============
 function ToolsSection() {
   const tools = [
-    { icon: <Bot className="w-7 h-7" />, title: "Торговые боты", desc: "Автоматизированный копитрейдинг — роботы работают за тебя 24/7", color: "#00d4aa" },
-    { icon: <BarChart3 className="w-7 h-7" />, title: "Индикаторы", desc: "Профессиональные инструменты теханализа, адаптированные для новичков", color: "#9945ff" },
-    { icon: <CheckSquare className="w-7 h-7" />, title: "Чеклисты", desc: "Пошаговые инструкции для каждого действия — от покупки до ребалансировки", color: "#06b6d4" },
-    { icon: <BookOpen className="w-7 h-7" />, title: "Дневник трейдера", desc: "AI-дневник для отслеживания сделок, эмоций и прогресса", color: "#f59e0b" },
-    { icon: <Eye className="w-7 h-7" />, title: "Вотчлисты", desc: "Персонализированные списки активов с уведомлениями о ключевых уровнях", color: "#00d4aa" },
-    { icon: <Brain className="w-7 h-7" />, title: "AI-Куратор 24/7", desc: "Персональный наставник на базе ИИ — ответит на любой вопрос в любое время", color: "#9945ff" },
-    { icon: <Phone className="w-7 h-7" />, title: "Созвоны с наставниками", desc: "Живые консультации с практикующими инвесторами и трейдерами", color: "#06b6d4" },
-    { icon: <ListChecks className="w-7 h-7" />, title: "Квалификация", desc: "Экзамен и сертификат «Квалифицированный Криптоинвестор» по итогам курса", color: "#f59e0b" },
+    { icon: <BarChart3 className="w-7 h-7" />, title: "Macro Multiplier", desc: "Дашборд инфляции, ставки и ликвидности. Показывает, в какой макросреде мы сейчас и куда она двигается.", color: "#00d4aa" },
+    { icon: <TrendingUp className="w-7 h-7" />, title: "Crypto Multiplier", desc: "10 индикаторов фазы рынка в одном окне: Fear & Greed, BTC-доминация, ETH/BTC, Funding, хэш-риббоны, Pi Cycle, Stock-to-Flow, халвинг, industrial cost.", color: "#9945ff" },
+    { icon: <Users className="w-7 h-7" />, title: "Asset Roles Map", desc: "Карта трёх осей индустрии: BTC как ценность, ETH как инфраструктура, SOL как скорость. Роль каждого актива в портфеле.", color: "#06b6d4" },
+    { icon: <CheckSquare className="w-7 h-7" />, title: "Asset Checklists", desc: "AI-чеклист разбора любого проекта по 10 критериям + 8 red flags. Помогает не покупать из FOMO.", color: "#f59e0b" },
+    { icon: <Eye className="w-7 h-7" />, title: "Watchlist", desc: "Персональный список кандидатов с правилами входа, лимитами позиции и статусами отбора.", color: "#00d4aa" },
+    { icon: <ListChecks className="w-7 h-7" />, title: "Portfolio Map", desc: "100% портфеля, разложенные по функциям: индексный слой, золото, нефть, BTC, ETH, SOL, фавориты, монета недели, автоматика.", color: "#9945ff" },
+    { icon: <Bot className="w-7 h-7" />, title: "DCA-автозакуп", desc: "Инструкция по настройке регулярных покупок. Ты сам настраиваешь расписание — мы не управляем твоими средствами.", color: "#06b6d4" },
+    { icon: <Zap className="w-7 h-7" />, title: "Signal Map", desc: "6 слоёв подтверждения движения: MA, RSI, свечи, уровни, ложные пробои, структура тренда. 7-пункт чеклист разворота.", color: "#f59e0b" },
+    { icon: <Shield className="w-7 h-7" />, title: "Anti-Hamster Filter", desc: "Защита от собственной импульсивности: личный список запретов, триггеры срыва, правила паузы перед сделкой.", color: "#00d4aa" },
   ];
 
   return (
@@ -437,7 +438,7 @@ function ToolsSection() {
                 <span className="gradient-text">арсенал</span>
               </h2>
               <p className="text-gray-400 text-lg mb-8" style={{ fontFamily: "var(--font-body)" }}>
-                Помимо 32 уроков, ты получаешь полный набор инструментов для разумного инвестирования.
+                Каждый урок оставляет у тебя один рабочий инструмент. Всего 9 артефактов — дашборды, чеклисты, карты портфеля и сигналов. Это то, с чем ты работаешь после курса каждый день.
               </p>
             </AnimatedSection>
 
@@ -453,71 +454,6 @@ function ToolsSection() {
               ))}
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ============ AI CURATOR SECTION ============
-function AICuratorSection() {
-  return (
-    <section className="relative py-24 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#06091a] via-[#0c0f2e] to-[#06091a]" />
-
-      <div className="container relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left: Text */}
-          <AnimatedSection>
-            <div>
-              <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-                <span className="text-white">Твой персональный </span>
-                <span className="gradient-text">AI-наставник</span>
-              </h2>
-              <p className="text-gray-300 text-lg mb-6 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
-                Забудь о бесконечном поиске ответов в Google. AI-куратор знает весь курс наизусть и готов помочь 24 часа в сутки, 7 дней в неделю.
-              </p>
-
-              <div className="space-y-4 mb-8">
-                {[
-                  "Ответит на любой вопрос по материалу курса",
-                  "Проверит твои домашние задания",
-                  "Подскажет следующий шаг в инвестиционном плане",
-                  "Объяснит сложные термины простым языком",
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-full bg-[#00d4aa]/10 flex items-center justify-center shrink-0">
-                      <Sparkles className="w-3 h-3 text-[#00d4aa]" />
-                    </div>
-                    <span className="text-gray-300" style={{ fontFamily: "var(--font-body)" }}>{item}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 text-sm text-gray-400" style={{ fontFamily: "var(--font-body)" }}>
-                  <Users className="w-4 h-4 text-[#9945ff]" />
-                  <span>+ Живые созвоны с наставниками</span>
-                </div>
-              </div>
-            </div>
-          </AnimatedSection>
-
-          {/* Right: AI image */}
-          <AnimatedSection delay={0.2}>
-            <div className="relative flex justify-center">
-              <img
-                src={IMAGES.aiCurator}
-                alt="AI Куратор"
-                className="w-80 h-80 rounded-2xl object-cover neon-box-green animate-float"
-                style={{ animationDuration: "8s" }}
-              />
-              <div className="absolute -top-4 -right-4 px-4 py-2 rounded-xl bg-[#0f1328] neon-border-green text-sm">
-                <span className="text-[#00d4aa] font-bold">24/7</span>
-                <span className="text-gray-400 ml-1" style={{ fontFamily: "var(--font-body)" }}>онлайн</span>
-              </div>
-            </div>
-          </AnimatedSection>
         </div>
       </div>
     </section>
@@ -561,7 +497,7 @@ function CultureSection() {
             <div className="space-y-6">
               {[
                 { icon: <GraduationCap className="w-6 h-6" />, title: "Образование, а не сигналы", desc: "Мы учим ловить рыбу, а не даём рыбу. Знания остаются с тобой навсегда." },
-                { icon: <Shield className="w-6 h-6" />, title: "Безопасность превыше всего", desc: "Никаких фьючерсов, плечей и мемкоинов. Только проверенные стратегии." },
+                { icon: <Shield className="w-6 h-6" />, title: "Защита капитала, а не героика", desc: "Никаких плечей, никакого копирования гуру, никаких обещаний доходности. Только спот и дисциплина." },
                 { icon: <Users className="w-6 h-6" />, title: "Сообщество единомышленников", desc: "Тысячи разумных инвесторов, которые поддерживают друг друга на пути." },
                 { icon: <TrendingUp className="w-6 h-6" />, title: "Долгосрочное мышление", desc: "Мы играем в долгую. Стратегия, дисциплина и терпение — наши суперсилы." },
               ].map((item, i) => (
@@ -800,7 +736,6 @@ export default function Home() {
       <div id="tools">
         <ToolsSection />
       </div>
-      <AICuratorSection />
       <CultureSection />
       <PricingSection />
       <div id="faq">
