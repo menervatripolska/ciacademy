@@ -98,11 +98,11 @@ function HeroSection() {
             </h1>
 
             <p className="text-lg sm:text-xl text-gray-300 mb-4 max-w-xl leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
-              32 анимационных урока, которые превратят тебя из новичка в разумного крипто-инвестора. Без воды, без рисков, без фьючерсов.
+              8 уроков Crypto OS — излечение от трейдинга для тех, кто устал сливать, и прививка для тех, кто ещё не начал. Без гуру, без плеча, без обещаний доходности.
             </p>
 
             <p className="text-base text-gray-400 mb-8 max-w-lg" style={{ fontFamily: "var(--font-body)" }}>
-              Хогвартс для криптанов — образовательная вселенная, где сложное становится простым, а разумность становится новым богатством.
+              Операционная система для капитала в крипте. Не школа сигналов и не клуб гуру — система, с которой ты читаешь рынок, как инженер читает схему.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-8">
@@ -119,7 +119,7 @@ function HeroSection() {
             <div className="flex items-center gap-6 text-sm text-gray-400" style={{ fontFamily: "var(--font-body)" }}>
               <div className="flex items-center gap-2">
                 <Shield className="w-4 h-4 text-[#00d4aa]" />
-                <span>Легально в РК</span>
+                <span>Образование · не ИИР</span>
               </div>
               <div className="flex items-center gap-2">
                 <Star className="w-4 h-4 text-[#f59e0b]" />
@@ -162,6 +162,75 @@ function HeroSection() {
         >
           <ChevronDown className="w-6 h-6 text-[#00d4aa]/60" />
         </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ============ AUTHOR SECTION ============
+function AuthorSection() {
+  const stats = [
+    { num: "8", suffix: " лет", label: "на крипторынке" },
+    { num: "2000+", suffix: "", label: "учеников обучено лично" },
+    { num: "8", suffix: "", label: "уроков в курсе Crypto OS" },
+    { num: "9", suffix: "", label: "практических инструментов" },
+  ];
+  return (
+    <section className="relative py-24 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#06091a] via-[#0a0f2a] to-[#06091a]" />
+      <div className="container relative z-10">
+        <AnimatedSection>
+          <div className="grid lg:grid-cols-5 gap-10 items-center">
+            {/* Left: статы */}
+            <div className="lg:col-span-2">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border-purple bg-[#9945ff]/5 mb-6">
+                <Sparkles className="w-4 h-4 text-[#9945ff]" />
+                <span className="text-sm font-medium text-[#9945ff]" style={{ fontFamily: "var(--font-body)" }}>Автор курса</span>
+              </div>
+              <h2 className="text-4xl sm:text-5xl font-bold mb-8 leading-[1.1] tracking-tight">
+                <span className="text-white">Не теория. </span>
+                <span className="gradient-text">Практика 8 лет.</span>
+              </h2>
+              <div className="grid grid-cols-2 gap-4">
+                {stats.map((s, i) => (
+                  <div key={i} className="p-5 rounded-xl bg-[#0f1328]/70 neon-border-green/30 backdrop-blur-sm">
+                    <div className="text-3xl sm:text-4xl font-bold gradient-text mb-1" style={{ fontFamily: "var(--font-display)" }}>
+                      {s.num}<span className="text-lg text-[#00d4aa]">{s.suffix}</span>
+                    </div>
+                    <div className="text-sm text-gray-400" style={{ fontFamily: "var(--font-body)" }}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: манифест */}
+            <div className="lg:col-span-3 space-y-5 text-gray-300 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
+              <p className="text-xl text-white">
+                За 8 лет я видела рынок во всех фазах — от эйфории до капитуляции. За это время обучила <span className="text-[#00d4aa] font-semibold">более 2000 человек лично</span>, не через конвейер и не через «бесплатные вебинары с продажей в конце».
+              </p>
+              <p className="text-base">
+                Crypto OS — это выжимка того, что реально работает, и того, что сливает 99% трейдеров. Курс собран так, чтобы после него ты перестал искать «сигналы от экспертов» и начал видеть систему.
+              </p>
+              <p className="text-base text-gray-400">
+                Если ты уже обжёгся на фьючерсах, копировании гуру или очередном мемкоине — это не очередная школа трейдинга. Это способ перестать.
+              </p>
+              <div className="flex flex-wrap gap-3 pt-2">
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#0f1328]/80 neon-border-green/30 text-sm text-gray-300">
+                  <Shield className="w-4 h-4 text-[#00d4aa]" />
+                  <span>Никакого копирования гуру</span>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#0f1328]/80 neon-border-purple/30 text-sm text-gray-300">
+                  <Brain className="w-4 h-4 text-[#9945ff]" />
+                  <span>Только система, не сигналы</span>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#0f1328]/80 neon-border-green/30 text-sm text-gray-300">
+                  <TrendingUp className="w-4 h-4 text-[#00d4aa]" />
+                  <span>Образование, не инвест-рекомендация</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </AnimatedSection>
       </div>
     </section>
   );
@@ -721,6 +790,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#06091a] text-white overflow-x-hidden">
       <Navbar />
       <HeroSection />
+      <AuthorSection />
       <ProblemSection />
       <PhilosophySection />
       <div id="modules">
