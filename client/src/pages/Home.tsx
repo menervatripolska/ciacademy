@@ -339,13 +339,14 @@ function PhilosophySection() {
 // ============ MODULES SECTION ============
 function ModulesSection() {
   const modules = [
-    { num: "01", title: "Как устроен мир денег", lessons: 4, desc: "От ракушек до цифровых валют. Почему деньги обесцениваются и как это остановить.", color: "#00d4aa" },
-    { num: "02", title: "Технология будущего", lessons: 4, desc: "Блокчейн, Bitcoin, Ethereum — сложные технологии, объяснённые через простые аналогии.", color: "#9945ff" },
-    { num: "03", title: "Первые шаги", lessons: 4, desc: "Создание кошелька, первая покупка, кибербезопасность — пошаговые инструкции.", color: "#06b6d4" },
-    { num: "04", title: "Карта минных полей", lessons: 5, desc: "7 шагов к потере депозита и единственное противоядие — мудрость Баффета и Грэма.", color: "#ff6b6b" },
-    { num: "05", title: "Инструменты инвестора", lessons: 6, desc: "DCA, свечной анализ, RSI, волны Эллиотта — всё, что нужно для принятия решений.", color: "#f59e0b" },
-    { num: "06", title: "Традиционные рынки", lessons: 4, desc: "ETF, индексные фонды, золото, акции — диверсификация за пределами крипты.", color: "#00d4aa" },
-    { num: "07", title: "Создание капитала", lessons: 5, desc: "Сообщество, портфель, AI-дневник, копитрейдинг и квалификация «Криптоинвестор».", color: "#9945ff" },
+    { num: "01", title: "Деньги, инфляция и макроцикл", artifact: "Macro Multiplier", desc: "Как устроены деньги, почему банки расширяют массу кредитом и как ставка ЦБ двигает ликвидность. Разбираешь макро как фундамент всего.", color: "#00d4aa" },
+    { num: "02", title: "Три оси индустрии: BTC, ETH, SOL", artifact: "Asset Roles Map", desc: "Зачем появились крипта и блокчейн. BTC как ценность, ETH как инфраструктура, SOL как скорость. 8 базовых терминов — без воды.", color: "#9945ff" },
+    { num: "03", title: "Фазы рынка и крипто-мультипликатор", artifact: "Crypto Multiplier", desc: "10 индикаторов среды в одном дашборде: Fear & Greed, BTC-доминация, ETH/BTC, Funding, хэш-риббоны, Pi Cycle, Stock-to-Flow, халвинг, industrial cost.", color: "#06b6d4" },
+    { num: "04", title: "Как не стать орангутангом", artifact: "Anti-Hamster Filter", desc: "FOMO, культ гуру, ошибка выжившего, плечо. Почему капитал разрушается не рынком, а психикой. Личный список запретов и триггеров срыва.", color: "#ff6b6b" },
+    { num: "05", title: "Отбор проектов: 13 секторов и red flags", artifact: "Asset Checklists + Watchlist", desc: "Карта крипторынка по секторам (L1, L2, DeFi, RWA, DePIN, AI, инфра…), 8 red flags, AI-чеклист разбора токена, правила формирования watchlist.", color: "#f59e0b" },
+    { num: "06", title: "Распределение капитала: DCA и ребалансировка", artifact: "Portfolio Map + DCA", desc: "100% портфеля, разложенные по функциям: индексный слой, золото, нефть, BTC/ETH/SOL, фавориты, монета недели, автоматика. Ритм DCA и ребаланса.", color: "#00d4aa" },
+    { num: "07", title: "Сигналы рынка и признаки разворота", artifact: "Signal Map", desc: "6 слоёв подтверждения: скользящие средние, RSI, свечи, уровни, ложные пробои, структура тренда. 7-пункт чеклист разворота вверх и вниз.", color: "#9945ff" },
+    { num: "08", title: "Финальная сборка и следующий уровень", artifact: "Готовая Crypto OS", desc: "Интеграция всех слоёв в одну систему. 5 треков продолжения: агенты, DEX, prediction-рынки, опционы, funding. Правило дисциплины вместо плеча.", color: "#06b6d4" },
   ];
 
   return (
@@ -359,11 +360,11 @@ function ModulesSection() {
         <AnimatedSection>
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold mb-4">
-              <span className="text-white">7 модулей. </span>
-              <span className="gradient-text">32 урока.</span>
+              <span className="text-white">8 уроков. </span>
+              <span className="gradient-text">9 инструментов.</span>
             </h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto" style={{ fontFamily: "var(--font-body)" }}>
-              Анимационный сериал, где каждый урок — это 3-5 минут концентрированных знаний. Путешествие от полного нуля до уверенного инвестора.
+              Анимационный курс от денежного фундамента до рабочей системы. Каждый урок даёт один практический артефакт — не теорию, а инструмент в руки. Общий тайминг — ~2.5 часа.
             </p>
           </div>
         </AnimatedSection>
@@ -386,7 +387,7 @@ function ModulesSection() {
                     className="px-3 py-1 rounded-full text-xs font-medium"
                     style={{ background: m.color + "15", color: m.color, fontFamily: "var(--font-body)" }}
                   >
-                    {m.lessons} уроков
+                    {m.artifact}
                   </div>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#00d4aa] transition-colors">{m.title}</h3>
