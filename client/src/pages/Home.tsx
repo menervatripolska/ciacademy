@@ -108,7 +108,7 @@ function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-8">
               <button className="cta-button px-8 py-4 rounded-xl text-lg flex items-center gap-2">
                 <Play className="w-5 h-5" />
-                Начать обучение — $19
+                Начать обучение — $39
               </button>
               <div className="flex items-center gap-2 text-gray-400">
                 <Clock className="w-4 h-4" />
@@ -206,7 +206,7 @@ function AuthorSection() {
             {/* Right: манифест */}
             <div className="lg:col-span-3 space-y-5 text-gray-300 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
               <p className="text-xl text-white">
-                За 8 лет я видела рынок во всех фазах — от эйфории до капитуляции. За это время обучила <span className="text-[#00d4aa] font-semibold">более 2000 человек лично</span>, не через конвейер и не через «бесплатные вебинары с продажей в конце».
+                За 8 лет автор курса прошёл рынок во всех фазах — от эйфории до капитуляции. За это время обучил <span className="text-[#00d4aa] font-semibold">более 2000 человек лично</span>, не через конвейер и не через «бесплатные вебинары с продажей в конце».
               </p>
               <p className="text-base">
                 Crypto OS — это выжимка того, что реально работает, и того, что сливает 99% трейдеров. Курс собран так, чтобы после него ты перестал искать «сигналы от экспертов» и начал видеть систему.
@@ -607,7 +607,7 @@ function PricingSection() {
                   Всё это за
                 </h2>
                 <div className="flex items-baseline justify-center gap-2 mb-4">
-                  <span className="text-7xl sm:text-8xl font-bold gradient-text">$19</span>
+                  <span className="text-7xl sm:text-8xl font-bold gradient-text">$39</span>
                 </div>
                 <p className="text-gray-400 mb-8 text-lg" style={{ fontFamily: "var(--font-body)" }}>
                   Одноразовый платёж. Доступ навсегда.
@@ -718,7 +718,7 @@ function FinalCTASection() {
           </p>
           <a href="/access" className="cta-button px-12 py-5 rounded-xl text-xl inline-flex items-center gap-3">
             <Sparkles className="w-6 h-6" />
-            Начать обучение — $19
+            Начать обучение — $39
           </a>
         </AnimatedSection>
       </div>
@@ -777,7 +777,7 @@ function Navbar() {
         </div>
 
         <a href="/access" className="cta-button px-5 py-2 rounded-lg text-sm inline-block">
-          Начать — $19
+          Начать — $39
         </a>
       </div>
     </nav>
