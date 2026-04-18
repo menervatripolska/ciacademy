@@ -250,11 +250,17 @@ function HeroSection() {
             transition={{ duration: 0.9, ease: "easeOut" }}
           >
             {/* Eyebrow: academy brand */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border-green bg-[#00d4aa]/5 mb-5">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border-green bg-[#00d4aa]/5 mb-4">
               <Sparkles className="w-4 h-4 text-[#00d4aa]" />
               <span className="text-xs sm:text-sm font-medium text-[#00d4aa]" style={{ fontFamily: "var(--font-body)" }}>
                 Crypto Intelligence · Первый поток
               </span>
+            </div>
+
+            {/* Brand title of the course */}
+            <div className="mb-4 text-lg sm:text-xl md:text-2xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
+              <span className="gradient-text">«Я — Криптан»</span>
+              <span className="text-white/90"> — твоя личная Crypto OS</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[68px] font-bold leading-[1.06] mb-5 tracking-tight">
