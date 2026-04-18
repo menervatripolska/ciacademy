@@ -174,16 +174,18 @@ function StreamBar() {
   if (ended) return null;
   return (
     <div
-      className="sticky top-0 z-40 w-full border-b border-white/10"
+      className="sticky top-0 z-[60] w-full border-b border-white/[0.08]"
       style={{
-        background: "linear-gradient(90deg, rgba(153,69,255,0.18), rgba(6,182,212,0.16), rgba(0,212,170,0.20))",
-        backdropFilter: "blur(22px) saturate(160%)",
-        WebkitBackdropFilter: "blur(22px) saturate(160%)",
-        boxShadow: "inset 0 -1px 0 rgba(255,255,255,0.08), 0 8px 24px -12px rgba(0,0,0,0.35)",
+        background: "linear-gradient(90deg, rgba(153,69,255,0.08), rgba(6,182,212,0.06), rgba(0,212,170,0.10))",
+        backdropFilter: "blur(34px) saturate(190%)",
+        WebkitBackdropFilter: "blur(34px) saturate(190%)",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(255,255,255,0.04), 0 12px 28px -16px rgba(0,0,0,0.45)",
       }}
     >
-      {/* Subtle top highlight line — like iOS glass edge */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
+      {/* iOS-like top highlight edge */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none" />
+      {/* Subtle inner sheen */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-white/[0.04] to-transparent" />
       <div className="container py-2 sm:py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4 relative">
         <div className="flex items-center gap-2 sm:gap-3 text-white/95 text-[11px] sm:text-sm font-semibold" style={{ fontFamily: "var(--font-body)", textShadow: "0 1px 2px rgba(0,0,0,0.45)" }}>
           <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-[#ffb347] drop-shadow-[0_0_6px_rgba(245,158,11,0.6)]" />
@@ -257,20 +259,33 @@ function HeroSection() {
               </span>
             </div>
 
-            {/* Brand title of the course */}
-            <div className="mb-4 text-lg sm:text-xl md:text-2xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
+            {/* Brand title of the course — prominent gradient */}
+            <div className="mb-5 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight leading-tight" style={{ fontFamily: "var(--font-display)" }}>
               <span className="gradient-text">«Я — Криптан»</span>
-              <span className="text-white/90"> — твоя личная Crypto OS</span>
+              <span className="text-white/95"> — твоя личная Crypto OS</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[68px] font-bold leading-[1.06] mb-5 tracking-tight">
-              <span className="text-white">Перестать угадывать рынок.</span>
-              <span className="block gradient-text">Начать решать по системе.</span>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-bold leading-[1.15] mb-6 tracking-tight text-white">
+              Восемь уроков, после которых ты один раз настраиваешь систему — <span className="gradient-text">и годами пользуешься</span>.
             </h1>
 
-            <p className="text-base sm:text-lg text-gray-300 mb-7 max-w-xl leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
-              Crypto OS — это 8 уроков и рабочая связка мультипликаторов, watchlist-дашборда, DCA-ботов и AI-ассистента. Один раз настраиваешь — и дальше сам решаешь, когда заходить, без ежедневных созвонов и сравнения скриншотов из телеги.
+            <p className="text-base sm:text-lg text-gray-300 mb-6 max-w-2xl leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
+              Макро- и крипто-мультипликаторы собирают картину рынка автоматически: тебе не нужно каждый день сидеть в каналах и искать данные по инфляции, безработице и прочей макре. Тебе дают готовые данные по крипторынку — технические детали каждого проекта, анализ сантимента, аудит токеномики. Дашборд сам выдаёт кандидатов в watchlist по чек-листу, боты сами покупают по методике DCA, AI-ассистент отвечает на вопросы по курсу 24/7. Ты просто смотришь и решаешь — да или нет.
             </p>
+
+            {/* Accent badges — утверждённые хуки */}
+            <div className="flex flex-col sm:flex-row gap-2.5 mb-7 max-w-xl">
+              <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#00d4aa]/20 to-[#06b6d4]/15 border border-[#00d4aa]/40">
+                <Zap className="w-4 h-4 text-[#00d4aa] shrink-0" />
+                <span className="text-sm sm:text-base font-bold text-white" style={{ fontFamily: "var(--font-display)" }}>Трейдинг без трейдинга</span>
+              </div>
+              <div className="inline-flex items-start gap-2 px-4 py-2.5 rounded-xl bg-[#9945ff]/10 border border-[#9945ff]/30 flex-1">
+                <Shield className="w-4 h-4 text-[#c9a9ff] shrink-0 mt-0.5" />
+                <span className="text-xs sm:text-sm text-gray-200 leading-snug" style={{ fontFamily: "var(--font-body)" }}>
+                  Лекарство для тех, кто уже сливал. Прививка для тех, кто ещё не начал.
+                </span>
+              </div>
+            </div>
 
             {/* Stream meta inline (above CTAs) */}
             <div className="flex flex-wrap items-center gap-3 mb-5 text-[11px] sm:text-xs" style={{ fontFamily: "var(--font-body)" }}>
@@ -553,15 +568,15 @@ function QualifySection() {
 function AuthorSection() {
   const diStats = [
     { num: "8", suffix: " лет", label: "на крипторынке" },
-    { num: "2000+", suffix: "", label: "учеников обучила лично" },
-    { num: "8", suffix: "", label: "уроков в курсе" },
-    { num: "9", suffix: "", label: "рабочих шаблонов" },
+    { num: "Крипто-", suffix: "", label: "анализ · ведущий автор" },
+    { num: "Мульти-", suffix: "", label: "пликаторы: макро × крипто" },
+    { num: "Отбор", suffix: "", label: "активов: watchlist + чек-листы" },
   ];
   const stStats = [
     { num: "25", suffix: " лет", label: "на финансовых рынках" },
-    { num: "PhD", suffix: "", label: "мат. наук, МГУ" },
-    { num: "ВШЭ", suffix: "", label: "красный диплом" },
-    { num: "1-й", suffix: "", label: "поток берёт лично" },
+    { num: "Макро-", suffix: "", label: "анализ · ведущий автор" },
+    { num: "Риск-", suffix: "", label: "модели и вероятности" },
+    { num: "Тех.", suffix: "", label: "анализ · количественные индикаторы" },
   ];
   return (
     <section className="relative py-20 sm:py-24 overflow-hidden">
@@ -574,11 +589,11 @@ function AuthorSection() {
               <span className="text-[11px] sm:text-xs uppercase tracking-wider text-[#c9a9ff] font-semibold" style={{ fontFamily: "var(--font-body)" }}>Авторы курса</span>
             </div>
             <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight">
-              <span className="text-white">Методика, собранная </span>
-              <span className="gradient-text">за 8 + 25 лет практики</span>
+              <span className="text-white">Два автора. </span>
+              <span className="gradient-text">Один курс.</span>
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto mt-4 text-sm sm:text-base" style={{ fontFamily: "var(--font-body)" }}>
-              Практик рынка + академический количественный бэкграунд. Один собрал систему на опыте 2000+ учеников, второй — привёз математический аппарат из МГУ.
+            <p className="text-gray-300 max-w-2xl mx-auto mt-4 text-sm sm:text-base leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
+              Вместе обучили более <span className="text-white font-semibold">2&nbsp;000 человек</span>. Соединили практику крипторынка и академический количественный подход в одну методику — Crypto OS.
             </p>
           </div>
 
@@ -592,7 +607,7 @@ function AuthorSection() {
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-1.5">
                     <span className="px-2.5 py-0.5 rounded-full bg-[#00d4aa]/15 border border-[#00d4aa]/40 text-[10px] uppercase tracking-wider text-[#00d4aa] font-bold" style={{ fontFamily: "var(--font-body)" }}>
-                      Автор методики
+                      Соавтор · криптоанализ
                     </span>
                     <span className="text-[11px] text-gray-400" style={{ fontFamily: "var(--font-body)" }}>8 лет на рынке</span>
                   </div>
@@ -600,7 +615,7 @@ function AuthorSection() {
                     Диана Васильева
                   </h3>
                   <div className="text-xs sm:text-sm text-gray-400 mt-0.5" style={{ fontFamily: "var(--font-body)" }}>
-                    Основатель CI Academy · Алматы
+                    Основатель CI Academy · 8 лет на крипторынке
                   </div>
                 </div>
               </div>
@@ -618,10 +633,10 @@ function AuthorSection() {
 
               <div className="space-y-3 text-gray-300 text-sm sm:text-base leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
                 <p className="text-white">
-                  За 8 лет прошла рынок во всех его фазах и обучила лично более <span className="text-[#00d4aa] font-semibold">2000 человек</span>.
+                  В Crypto OS ведёт <span className="text-[#00d4aa] font-semibold">криптоанализ</span>, макро- и крипто-мультипликаторы и отбор активов.
                 </p>
                 <p className="text-gray-400">
-                  Crypto OS — выжимка того, что реально работает в долгую: макро-фундамент, чтение фаз рынка через мультипликаторы, отбор активов по токеномике, DCA и правила удержания.
+                  За 8 лет прошла рынок во всех его фазах. Отвечает в курсе за слой «что покупать, когда и в какой доле» — watchlist, чек-листы, портфельные правила.
                 </p>
               </div>
             </div>
@@ -635,15 +650,16 @@ function AuthorSection() {
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-1.5">
                     <span className="px-2.5 py-0.5 rounded-full bg-[#9945ff]/15 border border-[#9945ff]/40 text-[10px] uppercase tracking-wider text-[#c9a9ff] font-bold" style={{ fontFamily: "var(--font-body)" }}>
-                      Соавтор · ментор первого потока
+                      Соавтор · макро и риск
                     </span>
                     <span className="text-[11px] text-gray-400" style={{ fontFamily: "var(--font-body)" }}>25 лет на рынке</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight" style={{ fontFamily: "var(--font-display)" }}>
                     Сергей Тутурин
                   </h3>
-                  <div className="text-xs sm:text-sm text-gray-400 mt-0.5" style={{ fontFamily: "var(--font-body)" }}>
-                    Доктор матем. наук МГУ · красный диплом ВШЭ
+                  <div className="text-xs sm:text-sm text-gray-400 mt-0.5 leading-snug" style={{ fontFamily: "var(--font-body)" }}>
+                    Доктор математических наук, Московский государственный университет имени М.В. Ломоносова<br/>
+                    Красный диплом, Высшая школа экономики
                   </div>
                 </div>
               </div>
@@ -661,10 +677,10 @@ function AuthorSection() {
 
               <div className="space-y-3 text-gray-300 text-sm sm:text-base leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
                 <p className="text-white">
-                  Доктор математических наук МГУ, красный диплом Высшей школы экономики. 25 лет на финансовых рынках.
+                  В Crypto OS ведёт <span className="text-[#c9a9ff] font-semibold">макроанализ</span>, технический анализ, вероятности и риск-модели.
                 </p>
                 <p className="text-gray-400">
-                  Принёс в Crypto OS количественный слой: вероятности, риск-модели, строгие чек-листы. В первом потоке лично разбирает домашки и ведёт живые Q&amp;A.
+                  25 лет на финансовых рынках. Отвечает в курсе за слой «как не слить на риске» — количественные индикаторы, правила позиционирования, строгие чек-листы вместо «интуиции».
                 </p>
               </div>
             </div>
