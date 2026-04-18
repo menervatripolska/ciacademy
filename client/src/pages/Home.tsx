@@ -772,7 +772,7 @@ function Navbar() {
           </a>
           <button
             className="md:hidden text-white p-2 rounded-lg bg-white/5 border border-white/10"
-            onClick={() => setMenuOpen(\!menuOpen)}
+            onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Меню"
           >
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
