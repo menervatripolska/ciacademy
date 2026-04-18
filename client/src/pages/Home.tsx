@@ -28,8 +28,8 @@ const STREAM_DEADLINE = "2026-05-02T23:59:00+05:00"; // Asia/Almaty
 const STREAM_SEATS_TOTAL = 100;
 const STREAM_SEATS_LEFT = 73; // обновляй вручную по мере набора
 const INSTRUCTORS = [
-  { initials: "Д.В.", years: 8, tag: "автор методики", creds: "автор методики Crypto OS" },
-  { initials: "С.Т.", years: 25, tag: "соавтор · ментор первого потока", creds: "д.м.н., МГУ · 25 лет на рынке" },
+  { initials: "ДВ", name: "Диана Васильева", years: 8, tag: "автор методики", creds: "автор методики Crypto OS" },
+  { initials: "СТ", name: "Сергей Тутурин", years: 25, tag: "соавтор · ментор первого потока", creds: "д.м.н. МГУ · красный диплом ВШЭ" },
 ];
 
 // CDN URLs (герои летают — не трогаем)
@@ -173,22 +173,32 @@ function StreamBar() {
   const seatsPct = Math.max(5, Math.min(100, (STREAM_SEATS_LEFT / STREAM_SEATS_TOTAL) * 100));
   if (ended) return null;
   return (
-    <div className="sticky top-0 z-40 w-full bg-gradient-to-r from-[#9945ff]/95 via-[#06b6d4]/95 to-[#00d4aa]/95 backdrop-blur border-b border-white/10 shadow-[0_4px_30px_rgba(0,212,170,0.25)]">
-      <div className="container py-2 sm:py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
-        <div className="flex items-center gap-2 sm:gap-3 text-white text-[11px] sm:text-sm font-semibold" style={{ fontFamily: "var(--font-body)" }}>
-          <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+    <div
+      className="sticky top-0 z-40 w-full border-b border-white/10"
+      style={{
+        background: "linear-gradient(90deg, rgba(153,69,255,0.18), rgba(6,182,212,0.16), rgba(0,212,170,0.20))",
+        backdropFilter: "blur(22px) saturate(160%)",
+        WebkitBackdropFilter: "blur(22px) saturate(160%)",
+        boxShadow: "inset 0 -1px 0 rgba(255,255,255,0.08), 0 8px 24px -12px rgba(0,0,0,0.35)",
+      }}
+    >
+      {/* Subtle top highlight line — like iOS glass edge */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
+      <div className="container py-2 sm:py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4 relative">
+        <div className="flex items-center gap-2 sm:gap-3 text-white/95 text-[11px] sm:text-sm font-semibold" style={{ fontFamily: "var(--font-body)", textShadow: "0 1px 2px rgba(0,0,0,0.45)" }}>
+          <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-[#ffb347] drop-shadow-[0_0_6px_rgba(245,158,11,0.6)]" />
           <span className="whitespace-nowrap">Первый поток закрывается через</span>
           <CountdownCompact />
         </div>
-        <div className="flex items-center gap-2 sm:gap-3 text-white text-[11px] sm:text-xs" style={{ fontFamily: "var(--font-body)" }}>
+        <div className="flex items-center gap-2 sm:gap-3 text-white/90 text-[11px] sm:text-xs" style={{ fontFamily: "var(--font-body)", textShadow: "0 1px 2px rgba(0,0,0,0.45)" }}>
           <div className="hidden sm:flex items-center gap-2">
-            <div className="w-24 h-1.5 bg-white/20 rounded-full overflow-hidden">
-              <div className="h-full bg-white rounded-full transition-all" style={{ width: `${seatsPct}%` }} />
+            <div className="w-24 h-1.5 bg-white/15 rounded-full overflow-hidden backdrop-blur-sm">
+              <div className="h-full bg-gradient-to-r from-white to-[#00d4aa] rounded-full transition-all" style={{ width: `${seatsPct}%` }} />
             </div>
-            <span className="font-bold">{STREAM_SEATS_LEFT}/{STREAM_SEATS_TOTAL} мест</span>
+            <span className="font-bold tabular-nums">{STREAM_SEATS_LEFT}/{STREAM_SEATS_TOTAL} мест</span>
           </div>
-          <span className="sm:hidden font-bold">{STREAM_SEATS_LEFT}/{STREAM_SEATS_TOTAL} мест</span>
-          <span className="hidden md:inline opacity-80">→ после {NEXT_PRICE}</span>
+          <span className="sm:hidden font-bold tabular-nums">{STREAM_SEATS_LEFT}/{STREAM_SEATS_TOTAL} мест</span>
+          <span className="hidden md:inline text-white/70">→ после {NEXT_PRICE}</span>
         </div>
       </div>
     </div>
@@ -543,9 +553,9 @@ function AuthorSection() {
   ];
   const stStats = [
     { num: "25", suffix: " лет", label: "на финансовых рынках" },
-    { num: "PhD", suffix: "", label: "доктор мат. наук, МГУ" },
+    { num: "PhD", suffix: "", label: "мат. наук, МГУ" },
+    { num: "ВШЭ", suffix: "", label: "красный диплом" },
     { num: "1-й", suffix: "", label: "поток берёт лично" },
-    { num: "Q&A", suffix: "", label: "живые разборы домашек" },
   ];
   return (
     <section className="relative py-20 sm:py-24 overflow-hidden">
@@ -570,8 +580,8 @@ function AuthorSection() {
             {/* Di */}
             <div className="relative rounded-2xl p-6 sm:p-7 bg-gradient-to-b from-[#00d4aa]/8 to-[#00d4aa]/0 border border-[#00d4aa]/30 backdrop-blur-sm">
               <div className="flex items-start gap-4 mb-5">
-                <div className="w-16 h-16 shrink-0 rounded-xl flex items-center justify-center text-2xl font-bold text-[#00d4aa] bg-[#00d4aa]/15 border border-[#00d4aa]/40" style={{ fontFamily: "var(--font-display)" }}>
-                  Д.В.
+                <div className="w-16 h-16 shrink-0 rounded-xl flex items-center justify-center text-xl font-bold text-[#00d4aa] bg-[#00d4aa]/15 border border-[#00d4aa]/40" style={{ fontFamily: "var(--font-display)" }}>
+                  ДВ
                 </div>
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-1.5">
@@ -581,8 +591,11 @@ function AuthorSection() {
                     <span className="text-[11px] text-gray-400" style={{ fontFamily: "var(--font-body)" }}>8 лет на рынке</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-                    Ди — основатель Crypto OS
+                    Диана Васильева
                   </h3>
+                  <div className="text-xs sm:text-sm text-gray-400 mt-0.5" style={{ fontFamily: "var(--font-body)" }}>
+                    Основатель CI Academy · Алматы
+                  </div>
                 </div>
               </div>
 
@@ -610,8 +623,8 @@ function AuthorSection() {
             {/* С.Т. */}
             <div className="relative rounded-2xl p-6 sm:p-7 bg-gradient-to-b from-[#9945ff]/8 to-[#9945ff]/0 border border-[#9945ff]/30 backdrop-blur-sm">
               <div className="flex items-start gap-4 mb-5">
-                <div className="w-16 h-16 shrink-0 rounded-xl flex items-center justify-center text-2xl font-bold text-[#9945ff] bg-[#9945ff]/15 border border-[#9945ff]/40" style={{ fontFamily: "var(--font-display)" }}>
-                  С.Т.
+                <div className="w-16 h-16 shrink-0 rounded-xl flex items-center justify-center text-xl font-bold text-[#9945ff] bg-[#9945ff]/15 border border-[#9945ff]/40" style={{ fontFamily: "var(--font-display)" }}>
+                  СТ
                 </div>
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-1.5">
@@ -621,8 +634,11 @@ function AuthorSection() {
                     <span className="text-[11px] text-gray-400" style={{ fontFamily: "var(--font-body)" }}>25 лет на рынке</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-                    С.Т. — д.м.н., МГУ
+                    Сергей Тутурин
                   </h3>
+                  <div className="text-xs sm:text-sm text-gray-400 mt-0.5" style={{ fontFamily: "var(--font-body)" }}>
+                    Доктор матем. наук МГУ · красный диплом ВШЭ
+                  </div>
                 </div>
               </div>
 
@@ -639,10 +655,10 @@ function AuthorSection() {
 
               <div className="space-y-3 text-gray-300 text-sm sm:text-base leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
                 <p className="text-white">
-                  Доктор математических наук МГУ, 25 лет на финансовых рынках. Принёс в Crypto OS количественный слой: вероятности, риск-модели, строгие чек-листы.
+                  Доктор математических наук МГУ, красный диплом Высшей школы экономики. 25 лет на финансовых рынках.
                 </p>
                 <p className="text-gray-400">
-                  В первом потоке лично разбирает домашки и ведёт живые Q&amp;A. Имя и фото раскрываются после зачисления.
+                  Принёс в Crypto OS количественный слой: вероятности, риск-модели, строгие чек-листы. В первом потоке лично разбирает домашки и ведёт живые Q&amp;A.
                 </p>
               </div>
             </div>
