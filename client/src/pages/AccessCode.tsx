@@ -2,13 +2,8 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Shield, Zap, BookOpen, Brain } from "lucide-react";
+import { isValidAccessCode, ACCESS_LS_KEY, ACCESS_CODE_LS_KEY } from "@/config/accessCodes";
 
-const VALID_CODES = [
-  "CRYPTO-2026-001",
-  "CRYPTO-2026-002",
-  "CRYPTO-2026-003",
-  "TEST-ACCESS",
-];
 
 export default function AccessCode() {
   const [code, setCode] = useState("");
@@ -23,9 +18,9 @@ export default function AccessCode() {
 
     setTimeout(() => {
       const trimmed = code.trim().toUpperCase();
-      if (VALID_CODES.includes(trimmed)) {
-        localStorage.setItem("cryptoos_access", "granted");
-        localStorage.setItem("cryptoos_code", trimmed);
+      if (isValidAccessCode(trimmed)) {
+        localStorage.setItem(ACCESS_LS_KEY, "granted");
+        localStorage.setItem(ACCESS_CODE_LS_KEY, trimmed);
         setLocation("/dashboard");
       } else {
         setError("Неверный код доступа. Проверьте и попробуйте снова.");

@@ -16,6 +16,7 @@ import {
   Rocket, Repeat, ArrowRight, XCircle,
   Lock, Flame, UserCheck, BadgeCheck, CalendarClock,
 } from "lucide-react";
+import { CryptoGateDialog } from "@/components/CryptoGateDialog";
 
 const COURSE_URL = "https://courstore.kz/";
 const SELECTION_BOT_URL = "https://t.me/cicelectionbot";
@@ -201,6 +202,17 @@ function StreamBar() {
           </div>
           <span className="sm:hidden font-bold tabular-nums">{STREAM_SEATS_LEFT}/{STREAM_SEATS_TOTAL} мест</span>
           <span className="hidden md:inline text-white/70">→ после {NEXT_PRICE}</span>
+          <CryptoGateDialog>
+            <button
+              type="button"
+              className="ml-1 sm:ml-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 text-white text-[11px] sm:text-xs font-semibold transition-colors whitespace-nowrap"
+              style={{ textShadow: "0 1px 2px rgba(0,0,0,0.45)" }}
+              data-testid="button-stream-gate"
+            >
+              <Lock className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              <span>Я криптан</span>
+            </button>
+          </CryptoGateDialog>
         </div>
       </div>
     </div>
