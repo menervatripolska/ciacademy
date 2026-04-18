@@ -1270,61 +1270,44 @@ function BeforeAfterSection() {
 }
 
 // ============ REVIEWS SECTION ============
-const REVIEWS: { name: string; meta: string; text: string }[] = [
-  {
-    "name": "Мария",
-    "meta": "депозит +100% за полгода",
-    "text": "Ди, здравствуйте\\! Извините за беспокойство. Хочу поблагодарить Вас, за полгода у моего депозита +100%🎉🎉🎉"
-  },
-  {
-    "name": "Станислав",
-    "meta": "ученик потока",
-    "text": "Я уже смотрю\\! это просто топ\\! Мои поздравления учитель\\! Вы лучший учитель, который когда либо попадался на моем жизненном пути\\!"
-  },
-  {
-    "name": "ученица",
-    "meta": "первая прибыль",
-    "text": "Пишу похвастаться первым заработанным 1$ 🤪, было 3$ в кошельке. Решила посидеть поторговать. Купила эфир, так как в сторизе вашей часто вижу) через 10 минут когда цена начала падать продала... заработала первый свой доллар 😄. Спасибо Вам, за знания. Надеюсь где доллар там и больше. Всему своё время))"
-  },
-  {
-    "name": "ученица",
-    "meta": "фундаментальный анализ битка",
-    "text": "Делала домашку 2 недели назад по фундаментальному анализу битка, и там прям в итогах прогноз написала, что биток обвалится и даже даты писала к 20 числам мая. Яна меня ещё похвалила за хороший анализ и сказала потом по прогнозу время покажет))). И вот красота — биток рухнул. Я прям тащусь, что соображалка включилась, сейчас ТА изучаю."
-  },
-  {
-    "name": "ученица",
-    "meta": "апрельский поток",
-    "text": "И я тоже согласна с этой девушкой) купила курс в апреле, но почему то оттягивала, но вот уже месяц я активно пересматриваю уроки по 2-3 раза и теперь сдаю все домашки Яне. Хочу сказать что вы крутой учитель, так просто и понятно доносить информацию 👍❤️ Я благодарю вас и в ближайший месяц начну торговать, я знаю что благодаря вам у меня все получится\\!"
-  },
-  {
-    "name": "ученица",
-    "meta": "началось обучение",
-    "text": "Спасибо большое, мне очень нравится ваша подача и обучение супер. Я только в начале обучения. Жду не дождусь когда буду торговать. Думала об этом ещё в 20 лет, это аж 10 лет назад)))"
-  },
-  {
-    "name": "ученица",
-    "meta": "после Блокчейна в апреле",
-    "text": "Я подписалась на вас после Блокчейн в апреле. Купила ваш курс. Заработала. Ушла из политики. Ушла из офлайн бизнеса. Спасибо за ваш пример\\! Вы лучшая. Я горжусь вами. Хотя старше на 9 лет вас, Вы — пример для меня. Мама девочек, отличный CEO, красивая женщина."
-  },
-  {
-    "name": "ученица",
-    "meta": "личная благодарность",
-    "text": "Благодаря этому развитию и публичности ты дала многим людям столько информации по крипте, я думаю благодаря тебе пол Алматы и Шымкента узнали хотя бы о существовании крипты в принципе\\! Дала возможности, знания, рабочие места людям\\! Лично я благодарна ❤️"
-  },
-  {
-    "name": "ученик",
-    "meta": "сравнил с другим курсом за $500",
-    "text": "Ещё пол года назад не мог потянуть ваши курсы и купил доступ у сливщиков на ваш второй поток за 50 баксов. За 50 баксов, Карл, ссылку на телегу\\! И при этом инфы было много полезной. Затем смог потянуть курсы за 500 баксов, но уже у другого спикера — и инфа была такой же. Биток тогда на графике разбирали пл 8000)))"
-  },
-  {
-    "name": "ученик",
-    "meta": "«запрыгнул в кроличью нору»",
-    "text": "Ди\\!\\!\\! Ещё раз хочу сказать ОГРОМНОЕ спасибо... не знаю какие силы свели меня с тобой, всегда верил и буду верить в то, что все не случайно в этом мире... и вот я запрыгнул в кроличью нору... каждый день поглощаю все больше и больше информации, начинаю понимать какая инфа полезная, какая «скам» 😁... вступил в игру, учусь трейдить и понимать рынок... адреналин зашкаливает... кайф\\!\\!\\! Ты ЛУЧШАЯ, Ди\\!\\!\\!"
-  }
-];
+const REVIEW_IMAGES = Array.from({ length: 10 }, (_, i) => `/reviews/r${String(i + 1).padStart(2, "0")}.jpg`);
+
+function ReviewsLightbox({ src, onClose }: { src: string; onClose: () => void }) {
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", handler);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handler);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 bg-black/90 backdrop-blur-md"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
+      <button
+        onClick={onClose}
+        aria-label="Закрыть"
+        className="absolute top-4 right-4 sm:top-6 sm:right-6 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center border border-white/20 text-white transition-colors"
+      >
+        <X className="w-5 h-5" />
+      </button>
+      <img
+        src={src}
+        alt="Скриншот отзыва"
+        onClick={(e) => e.stopPropagation()}
+        className="max-w-full max-h-[88vh] rounded-xl shadow-2xl border border-white/10"
+      />
+    </div>
+  );
+}
 
 function ReviewsSection() {
-  const palette = ["#00d4aa", "#9945ff", "#06b6d4", "#f59e0b"];
+  const [open, setOpen] = useState<string | null>(null);
   return (
     <AnimatedSection className="py-20 sm:py-28 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
@@ -1335,52 +1318,55 @@ function ReviewsSection() {
         <div className="text-center mb-10 sm:mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00d4aa]/10 border border-[#00d4aa]/30 mb-4">
             <MessageCircle className="w-3.5 h-3.5 text-[#00d4aa]" />
-            <span className="text-[11px] sm:text-xs uppercase tracking-wider text-[#00d4aa] font-semibold" style={{ fontFamily: "var(--font-body)" }}>Настоящие сообщения учеников</span>
+            <span className="text-[11px] sm:text-xs uppercase tracking-wider text-[#00d4aa] font-semibold" style={{ fontFamily: "var(--font-body)" }}>
+              Скриншоты личных сообщений учеников
+            </span>
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4 tracking-tight">
             Что пишут <span className="gradient-text">после курса</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base" style={{ fontFamily: "var(--font-body)" }}>
-            Скриншоты из личных сообщений и директа. Орфография и эмодзи сохранены — мы ничего не переписывали. Имена сокращены до одного, по просьбе учеников.
+            Настоящие переписки из WhatsApp и Telegram — ничего не пересобрано, ничего не перефразировано. Нажми на скриншот, чтобы увеличить.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-          {REVIEWS.map((r, i) => {
-            const c = palette[i % palette.length];
-            return (
-              <div
-                key={i}
-                className="relative rounded-2xl p-5 sm:p-6 bg-[#0f1328]/70 border backdrop-blur-sm flex flex-col"
-                style={{ borderColor: c + "30" }}
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: c + "15", color: c, border: `1px solid ${c}40`, fontFamily: "var(--font-display)" }}>
-                    {r.name.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold text-white truncate" style={{ fontFamily: "var(--font-body)" }}>{r.name}</div>
-                    <div className="text-[11px] text-gray-500 truncate" style={{ fontFamily: "var(--font-body)" }}>{r.meta}</div>
-                  </div>
-                  <BadgeCheck className="w-4 h-4 shrink-0" style={{ color: c }} />
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 sm:gap-5 [column-fill:_balance]">
+          {REVIEW_IMAGES.map((src, i) => (
+            <button
+              key={src}
+              type="button"
+              onClick={() => setOpen(src)}
+              className="group relative w-full mb-4 sm:mb-5 rounded-2xl overflow-hidden border border-white/10 bg-[#0f1328]/60 break-inside-avoid block text-left hover:border-[#00d4aa]/50 focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/40 transition-all"
+              aria-label={`Открыть отзыв ${i + 1} из ${REVIEW_IMAGES.length}`}
+            >
+              <img
+                src={src}
+                alt={`Скриншот отзыва ученика ${i + 1}`}
+                loading="lazy"
+                className="w-full h-auto block group-hover:scale-[1.02] transition-transform duration-300"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+              <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-black/60 backdrop-blur text-white text-[10px] font-medium">
+                  <Eye className="w-3 h-3" />
+                  <span>увеличить</span>
                 </div>
-                <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-line" style={{ fontFamily: "var(--font-body)" }}>
-                  {r.text}
-                </p>
               </div>
-            );
-          })}
+            </button>
+          ))}
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-10 text-[11px] sm:text-xs text-gray-500" style={{ fontFamily: "var(--font-body)" }}>
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-            <Lock className="w-3 h-3" /> Скриншоты хранятся у автора
+            <Lock className="w-3 h-3" /> Оригиналы хранятся у автора
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-            <Info className="w-3 h-3" /> Результаты индивидуальны, не являются офертой и не гарантируют доходность
+            <Info className="w-3 h-3" /> Результаты индивидуальны — не являются офертой и не гарантируют доходность
           </span>
         </div>
       </div>
+
+      {open && <ReviewsLightbox src={open} onClose={() => setOpen(null)} />}
     </AnimatedSection>
   );
 }
