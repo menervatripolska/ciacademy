@@ -146,17 +146,17 @@ function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9, ease: "easeOut" }}
           >
-            {/* Eyebrow: course name */}
+            {/* Eyebrow: academy brand */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border-green bg-[#00d4aa]/5 mb-6">
               <Sparkles className="w-4 h-4 text-[#00d4aa]" />
               <span className="text-xs sm:text-sm font-medium text-[#00d4aa]" style={{ fontFamily: "var(--font-body)" }}>
-                Курс «Я — Криптан + твоя личная Crypto OS»
+                Crypto Intelligence
               </span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.08] mb-6 tracking-tight">
-              <span className="text-white">Crypto OS — </span>
-              <span className="gradient-text">методика, которая собирает твой крипто-портфель за тебя</span>
+              <span className="gradient-text">«Я — Криптан»</span>
+              <span className="text-white"> — это твоя личная Crypto OS</span>
             </h1>
 
             <p className="text-base sm:text-lg text-gray-300 mb-8 max-w-xl leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
@@ -1031,6 +1031,62 @@ function FinalCTASection() {
   );
 }
 
+// ============ CI LOGO (SVG monogram with unicorn gradient + spark) ============
+function CILogo({ size = 48 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="drop-shadow-[0_0_12px_rgba(167,139,250,0.45)] shrink-0"
+      aria-label="CI Academy"
+    >
+      <defs>
+        <linearGradient id="ciGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#a78bfa" />
+          <stop offset="50%" stopColor="#ec4899" />
+          <stop offset="100%" stopColor="#06b6d4" />
+        </linearGradient>
+        <linearGradient id="ciGradSoft" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.15" />
+        </linearGradient>
+        <filter id="ciGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="1.6" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      {/* iOS-style rounded frame */}
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#ciGradSoft)" />
+      <rect x="3" y="3" width="58" height="58" rx="14" stroke="url(#ciGrad)" strokeWidth="2" fill="none" />
+      {/* C — open crescent */}
+      <path
+        d="M 26 22 A 10 10 0 1 0 26 42"
+        stroke="url(#ciGrad)"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        fill="none"
+        filter="url(#ciGlow)"
+      />
+      {/* I — bold vertical with serifs */}
+      <rect x="40" y="20" width="4" height="24" rx="1.5" fill="url(#ciGrad)" filter="url(#ciGlow)" />
+      <rect x="36" y="19" width="12" height="2.5" rx="1" fill="url(#ciGrad)" />
+      <rect x="36" y="42.5" width="12" height="2.5" rx="1" fill="url(#ciGrad)" />
+      {/* Unicorn spark — rotating 4-point star */}
+      <g style={{ transformOrigin: "54px 12px" }}>
+        <path d="M 54 8 L 55.4 11.2 L 58.5 12.6 L 55.4 14 L 54 17 L 52.6 14 L 49.5 12.6 L 52.6 11.2 Z" fill="#fde68a" opacity="0.95">
+          <animateTransform attributeName="transform" type="rotate" from="0 54 12" to="360 54 12" dur="6s" repeatCount="indefinite" />
+        </path>
+      </g>
+    </svg>
+  );
+}
+
 // ============ FOOTER (true iOS glass) ============
 function Footer() {
   return (
@@ -1045,13 +1101,14 @@ function Footer() {
         <div className="grid md:grid-cols-3 gap-8 mb-10">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00d4aa] to-[#9945ff] flex items-center justify-center">
-                <span className="text-white font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>CI</span>
-              </div>
+            <div className="flex items-center gap-4 mb-4">
+              <CILogo size={56} />
               <div>
-                <span className="text-white font-bold" style={{ fontFamily: "var(--font-display)" }}>CI Academy</span>
-                <p className="text-gray-400 text-xs" style={{ fontFamily: "var(--font-body)" }}>Курс «Я — Криптан + Crypto OS»</p>
+                <div className="text-2xl font-bold text-white leading-tight" style={{ fontFamily: "var(--font-display)" }}>CI Academy</div>
+                <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-2.5 py-1 text-[11px] text-white/80" style={{ fontFamily: "var(--font-body)" }}>
+                  <Sparkles className="w-3 h-3 text-yellow-300" />
+                  <span>Crypto Intelligence</span>
+                </div>
               </div>
             </div>
             <p className="text-gray-500 text-xs leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
@@ -1116,12 +1173,10 @@ function Navbar() {
 
       <div className="container relative flex items-center justify-between h-16">
         <a href="/" className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#00d4aa] to-[#9945ff] flex items-center justify-center shrink-0">
-            <span className="text-white font-bold text-sm" style={{ fontFamily: "var(--font-display)" }}>CI</span>
-          </div>
+          <CILogo size={36} />
           <div className="flex flex-col leading-tight">
             <span className="text-white font-bold text-sm sm:text-base" style={{ fontFamily: "var(--font-display)" }}>CI Academy</span>
-            <span className="text-[10px] sm:text-[11px] text-[#00d4aa]/80 -mt-0.5" style={{ fontFamily: "var(--font-body)" }}>Я — Криптан + Crypto OS</span>
+            <span className="text-[10px] sm:text-[11px] text-[#00d4aa]/80 -mt-0.5" style={{ fontFamily: "var(--font-body)" }}>Crypto Intelligence</span>
           </div>
         </a>
 
