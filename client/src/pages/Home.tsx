@@ -244,19 +244,68 @@ function PositioningSection() {
             </h2>
 
             <div className="space-y-6 text-gray-300 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
-              <div className="p-6 sm:p-7 rounded-2xl bg-[#0f1328]/60 border border-white/10">
+              {/* 1. Pain */}
+              <div className="relative p-6 sm:p-7 rounded-2xl bg-[#0f1328]/60 border border-white/10 overflow-hidden">
+                <div className="absolute top-3 right-3 opacity-30">
+                  <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+                    <path d="M8 40 L 18 30 L 28 36 L 40 20 L 50 26" stroke="#ff6b6b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <circle cx="50" cy="26" r="3" fill="#ff6b6b" />
+                    <circle cx="18" cy="30" r="2" fill="#ff6b6b" opacity="0.6" />
+                    <circle cx="28" cy="36" r="2" fill="#ff6b6b" opacity="0.6" />
+                    <path d="M6 48 L 52 48" stroke="#ff6b6b" strokeWidth="1" opacity="0.3" strokeDasharray="3 3" />
+                  </svg>
+                </div>
+                <div className="inline-flex items-center gap-2 mb-3 px-2 py-1 rounded-md bg-[#ff6b6b]/10 border border-[#ff6b6b]/20 text-[10px] uppercase tracking-wider text-[#ff6b6b]">
+                  <XCircle className="w-3 h-3" /> Сейчас
+                </div>
                 <p className="text-base sm:text-lg">
                   Ты знаешь, что крипта — это возможность, но времени сидеть в каналах и разбираться в токеномике у тебя нет. Читаешь чужие сигналы, покупаешь на эмоциях, потом жалеешь. Хочется системы, а не гадания.
                 </p>
               </div>
 
-              <div className="p-6 sm:p-7 rounded-2xl bg-[#0f1328]/60 border border-[#00d4aa]/20">
+              {/* 2. Method */}
+              <div className="relative p-6 sm:p-7 rounded-2xl bg-[#0f1328]/60 border border-[#00d4aa]/20 overflow-hidden">
+                <div className="absolute top-3 right-3 opacity-50">
+                  <svg width="60" height="56" viewBox="0 0 60 56" fill="none">
+                    <defs>
+                      <linearGradient id="pgg" x1="0" x2="1">
+                        <stop offset="0%" stopColor="#00d4aa" />
+                        <stop offset="100%" stopColor="#06b6d4" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M8 44 A 22 22 0 0 1 52 44" fill="none" stroke="#1a2040" strokeWidth="5" strokeLinecap="round" />
+                    <path d="M8 44 A 22 22 0 0 1 52 44" fill="none" stroke="url(#pgg)" strokeWidth="5" strokeLinecap="round" strokeDasharray="70" strokeDashoffset="20" />
+                    <circle cx="30" cy="44" r="2" fill="#00d4aa" />
+                    <line x1="30" y1="44" x2="44" y2="28" stroke="#00d4aa" strokeWidth="2" strokeLinecap="round" />
+                    <text x="30" y="52" textAnchor="middle" fill="#00d4aa" fontSize="7" fontWeight="700">BUY-ZONE</text>
+                  </svg>
+                </div>
+                <div className="inline-flex items-center gap-2 mb-3 px-2 py-1 rounded-md bg-[#00d4aa]/10 border border-[#00d4aa]/20 text-[10px] uppercase tracking-wider text-[#00d4aa]">
+                  <Gauge className="w-3 h-3" /> Методика
+                </div>
                 <p className="text-base sm:text-lg">
                   «Я — Криптан + твоя личная Crypto OS» — это рабочая методика и готовая инфраструктура в одном месте. Восемь уроков учат читать рынок через макро- и крипто-мультипликаторы: ты видишь, в какой фазе мы сейчас, и какой режим сейчас актуален — накапливать, удерживать, снижать позицию или ждать. Дашборд по этой системе сам отбирает монеты по чек-листу токеномики и выдаёт их тебе как кандидатов для изучения.
                 </p>
               </div>
 
-              <div className="p-6 sm:p-7 rounded-2xl bg-[#0f1328]/60 border border-[#9945ff]/20">
+              {/* 3. Result */}
+              <div className="relative p-6 sm:p-7 rounded-2xl bg-[#0f1328]/60 border border-[#9945ff]/20 overflow-hidden">
+                <div className="absolute top-3 right-3 opacity-60">
+                  <svg width="64" height="56" viewBox="0 0 64 56" fill="none">
+                    <rect x="4" y="12" width="22" height="14" rx="3" fill="#9945ff" opacity="0.15" stroke="#9945ff" strokeWidth="1" />
+                    <rect x="30" y="12" width="14" height="14" rx="3" fill="#06b6d4" opacity="0.15" stroke="#06b6d4" strokeWidth="1" />
+                    <rect x="48" y="12" width="14" height="14" rx="3" fill="#00d4aa" opacity="0.15" stroke="#00d4aa" strokeWidth="1" />
+                    <rect x="4" y="30" width="14" height="14" rx="3" fill="#f59e0b" opacity="0.15" stroke="#f59e0b" strokeWidth="1" />
+                    <rect x="22" y="30" width="22" height="14" rx="3" fill="#9945ff" opacity="0.15" stroke="#9945ff" strokeWidth="1" />
+                    <rect x="48" y="30" width="14" height="14" rx="3" fill="#06b6d4" opacity="0.15" stroke="#06b6d4" strokeWidth="1" />
+                    <circle cx="12" cy="19" r="1.5" fill="#9945ff" />
+                    <circle cx="37" cy="19" r="1.5" fill="#06b6d4" />
+                    <circle cx="55" cy="19" r="1.5" fill="#00d4aa" />
+                  </svg>
+                </div>
+                <div className="inline-flex items-center gap-2 mb-3 px-2 py-1 rounded-md bg-[#9945ff]/10 border border-[#9945ff]/20 text-[10px] uppercase tracking-wider text-[#9945ff]">
+                  <Layers className="w-3 h-3" /> Результат
+                </div>
                 <p className="text-base sm:text-lg">
                   После курса у тебя настроенный рабочий стол с мультипликаторами, watchlist, DCA-ботами и AI-ассистентом с базой знаний курса. Раз в неделю — живой созвон с преподавателями, в чате — закрытое комьюнити учеников. Основную работу делает система. Ты смотришь на её выводы и принимаешь решение — брать или пропустить.
                 </p>
@@ -284,13 +333,20 @@ function AuthorSection() {
         <AnimatedSection>
           <div className="grid lg:grid-cols-5 gap-8 sm:gap-10 items-center">
             <div className="lg:col-span-2">
-              {/* Author "avatar" tile */}
-              <div className="relative mb-6 flex items-center gap-4">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-[#00d4aa] via-[#06b6d4] to-[#9945ff] flex items-center justify-center relative shadow-[0_0_40px_rgba(0,212,170,0.35)]">
-                  <span className="text-4xl sm:text-5xl font-bold text-white" style={{ fontFamily: "var(--font-display)" }}>К</span>
-                  <span className="absolute -bottom-2 -right-2 px-2 py-1 rounded-full bg-[#0f1328] border border-[#00d4aa]/40 text-[10px] font-bold text-[#00d4aa] uppercase" style={{ fontFamily: "var(--font-body)" }}>8 лет</span>
+              {/* Author portrait + author badge */}
+              <div className="relative mb-6">
+                <div className="relative inline-block">
+                  {/* Glow ring behind portrait */}
+                  <div className="absolute -inset-1 rounded-3xl bg-gradient-to-br from-[#00d4aa]/60 via-[#06b6d4]/40 to-[#9945ff]/60 blur-xl opacity-70" />
+                  <div className="relative w-44 h-44 sm:w-52 sm:h-52 rounded-3xl overflow-hidden ring-2 ring-white/10 shadow-[0_0_60px_rgba(0,212,170,0.3)]">
+                    <img src="/teacher/01_portrait_author_800.jpg" alt="Автор курса Crypto OS" className="w-full h-full object-cover" loading="lazy" />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-[#06091a]/30 via-transparent to-transparent" />
+                  </div>
+                  <span className="absolute -bottom-2 -right-2 px-3 py-1.5 rounded-full bg-[#0f1328] border border-[#00d4aa]/60 text-[11px] font-bold text-[#00d4aa] uppercase shadow-[0_0_20px_rgba(0,212,170,0.4)]" style={{ fontFamily: "var(--font-body)" }}>
+                    8 лет на рынке
+                  </span>
                 </div>
-                <div>
+                <div className="mt-5">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full neon-border-purple bg-[#9945ff]/5 mb-2">
                     <Sparkles className="w-3 h-3 text-[#9945ff]" />
                     <span className="text-xs font-medium text-[#9945ff]" style={{ fontFamily: "var(--font-body)" }}>Автор курса</span>
@@ -338,6 +394,91 @@ function AuthorSection() {
                   <span>Образовательный курс</span>
                 </div>
               </div>
+            </div>
+          </div>
+        </AnimatedSection>
+      </div>
+    </section>
+  );
+}
+
+// ============ TEASER SECTION — first lesson preview ============
+function TeaserSection() {
+  const thumbs = [
+    { src: "/teacher/05_illus_3_functions.jpg", label: "Три функции денег" },
+    { src: "/teacher/04_illus_inflation_100.jpg", label: "Инфляция и $100" },
+    { src: "/teacher/06_illus_bank_node.jpg", label: "Банк как узел" },
+    { src: "/teacher/07_illus_real_rate.jpg", label: "Реальная ставка" },
+  ];
+  return (
+    <section className="relative py-20 sm:py-24 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#06091a] via-[#0b1130] to-[#06091a]" />
+      <FloatingParticles />
+      <div className="container relative z-10">
+        <AnimatedSection>
+          <div className="text-center mb-10 sm:mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border-purple bg-[#9945ff]/5 mb-4">
+              <Play className="w-4 h-4 text-[#9945ff]" />
+              <span className="text-xs sm:text-sm font-medium text-[#9945ff]" style={{ fontFamily: "var(--font-body)" }}>Фрагмент урока 1</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-[1.1] tracking-tight">
+              <span className="text-white">Посмотри </span>
+              <span className="gradient-text">первый урок</span>
+              <span className="text-white"> бесплатно</span>
+            </h2>
+            <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto" style={{ fontFamily: "var(--font-body)" }}>
+              20 секунд из начала первого урока — формат, подача, визуал. Дальше разбираем, как устроены деньги и почему инфляция — это не курс доллара, а расширение кредита.
+            </p>
+          </div>
+        </AnimatedSection>
+
+        <AnimatedSection delay={0.1}>
+          <div className="max-w-3xl mx-auto">
+            <div className="relative rounded-3xl overflow-hidden backdrop-blur-2xl bg-black/30 border border-white/20 shadow-[0_0_80px_rgba(153,69,255,0.2)]">
+              <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-[#9945ff]/20 blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-[#06b6d4]/20 blur-3xl pointer-events-none" />
+              <video
+                className="relative w-full aspect-video bg-black"
+                controls
+                preload="metadata"
+                playsInline
+                poster="/teacher/02_teacher_1280_clean.jpg"
+              >
+                <source src="/teacher/00_teaser_20s.mp4" type="video/mp4" />
+                Ваш браузер не поддерживает встроенное видео.
+              </video>
+            </div>
+
+            {/* Thumbnails strip from Lesson 1 */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-6">
+              {thumbs.map((t, i) => (
+                <div key={i} className="relative rounded-xl overflow-hidden border border-white/10 aspect-[4/3] group">
+                  <img src={t.src} alt={t.label} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all" loading="lazy" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute bottom-2 left-2 right-2 text-[11px] font-medium text-white/90" style={{ fontFamily: "var(--font-body)" }}>
+                    {t.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 flex flex-wrap gap-4 justify-center">
+              <a
+                href={COURSE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#00d4aa] to-[#06b6d4] text-[#06091a] font-bold text-base hover:scale-[1.03] transition-transform shadow-[0_0_30px_rgba(0,212,170,0.4)]"
+              >
+                Получить полный курс — {NEW_PRICE}
+                <ArrowRight className="w-4 h-4" />
+              </a>
+              <a
+                href="#modules"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full backdrop-blur-xl bg-white/5 border border-white/15 text-white hover:bg-white/10 transition-colors"
+              >
+                Что внутри 8 уроков
+                <ChevronDown className="w-4 h-4" />
+              </a>
             </div>
           </div>
         </AnimatedSection>
@@ -419,6 +560,238 @@ function ModulesSection() {
   );
 }
 
+// ============ ARCHITECTURE SECTION — mini dashboards ============
+
+// Mini dashboard 1: Multipliers (gauge + phase)
+function MultiplierMini() {
+  return (
+    <div className="relative w-full h-full min-h-[140px] p-3 rounded-xl bg-[#06091a]/80 border border-[#00d4aa]/25 overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(0,212,170,0.15),transparent_60%)]" />
+      <div className="relative flex items-center gap-3 h-full">
+        {/* Semicircle gauge */}
+        <svg viewBox="0 0 100 60" className="w-20 h-12 shrink-0">
+          <defs>
+            <linearGradient id="gg" x1="0" x2="1">
+              <stop offset="0%" stopColor="#ff6b6b" />
+              <stop offset="50%" stopColor="#f59e0b" />
+              <stop offset="100%" stopColor="#00d4aa" />
+            </linearGradient>
+          </defs>
+          <path d="M10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#1a2040" strokeWidth="8" strokeLinecap="round" />
+          <path d="M10 50 A 40 40 0 0 1 90 50" fill="none" stroke="url(#gg)" strokeWidth="8" strokeLinecap="round" strokeDasharray="125" strokeDashoffset="35" />
+          <circle cx="72" cy="22" r="3.5" fill="#00d4aa" />
+          <line x1="50" y1="50" x2="72" y2="22" stroke="#00d4aa" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+        <div className="flex-1 min-w-0 space-y-1.5">
+          <div className="flex items-center justify-between text-[10px] font-medium">
+            <span className="text-gray-400" style={{ fontFamily: "var(--font-body)" }}>Макро-фаза</span>
+            <span className="px-1.5 py-0.5 rounded bg-[#00d4aa]/15 text-[#00d4aa] uppercase tracking-wider">HOLD</span>
+          </div>
+          <div className="flex items-center justify-between text-[10px] font-medium">
+            <span className="text-gray-400" style={{ fontFamily: "var(--font-body)" }}>Крипто-цикл</span>
+            <span className="px-1.5 py-0.5 rounded bg-[#06b6d4]/15 text-[#06b6d4] uppercase tracking-wider">BUY-ZONE</span>
+          </div>
+          <div className="flex items-center justify-between text-[10px] font-medium">
+            <span className="text-gray-400" style={{ fontFamily: "var(--font-body)" }}>BTC dom.</span>
+            <span className="text-white">54.2%</span>
+          </div>
+          <div className="flex items-center justify-between text-[10px] font-medium">
+            <span className="text-gray-400" style={{ fontFamily: "var(--font-body)" }}>ETH/BTC</span>
+            <span className="text-[#00d4aa]">▲ 0.047</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Mini dashboard 2: Watchlist
+function WatchlistMini() {
+  const rows = [
+    { sym: "SOL",  status: "approved", color: "#00d4aa" },
+    { sym: "LINK", status: "watch",    color: "#f59e0b" },
+    { sym: "TAO",  status: "approved", color: "#00d4aa" },
+    { sym: "APT",  status: "reject",   color: "#ff6b6b" },
+  ];
+  return (
+    <div className="relative w-full h-full min-h-[140px] p-3 rounded-xl bg-[#06091a]/80 border border-[#06b6d4]/25 overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(6,182,212,0.12),transparent_60%)]" />
+      <div className="relative">
+        <div className="flex items-center justify-between text-[10px] font-medium mb-2">
+          <span className="text-gray-400 flex items-center gap-1" style={{ fontFamily: "var(--font-body)" }}>
+            <ListChecks className="w-3 h-3 text-[#06b6d4]" /> Watchlist
+          </span>
+          <span className="text-[9px] text-gray-500">checklist 9/12</span>
+        </div>
+        <div className="space-y-1">
+          {rows.map((r, i) => (
+            <div key={i} className="flex items-center justify-between py-1 px-2 rounded-md bg-white/[0.03] border border-white/5">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold" style={{ background: r.color + "25", color: r.color }}>
+                  {r.sym[0]}
+                </div>
+                <span className="text-[11px] font-semibold text-white">{r.sym}</span>
+              </div>
+              <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded" style={{ background: r.color + "15", color: r.color }}>
+                {r.status}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Mini dashboard 3: DCA bots + indicators
+function DCAMini() {
+  return (
+    <div className="relative w-full h-full min-h-[140px] p-3 rounded-xl bg-[#06091a]/80 border border-[#f59e0b]/25 overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(245,158,11,0.12),transparent_60%)]" />
+      <div className="relative flex flex-col gap-2 h-full">
+        <div className="flex items-center justify-between text-[10px]">
+          <span className="flex items-center gap-1 text-gray-400" style={{ fontFamily: "var(--font-body)" }}>
+            <Bot className="w-3 h-3 text-[#f59e0b]" /> DCA · авто-закуп
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00d4aa] animate-pulse" />
+            <span className="text-[#00d4aa] text-[9px]">RUNNING</span>
+          </span>
+        </div>
+        {/* Mini sparkline + dots */}
+        <svg viewBox="0 0 200 50" className="w-full h-12">
+          <defs>
+            <linearGradient id="dcag" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <path d="M0 40 Q 30 30 50 32 T 100 25 T 150 18 T 200 12 L 200 50 L 0 50 Z" fill="url(#dcag)" />
+          <path d="M0 40 Q 30 30 50 32 T 100 25 T 150 18 T 200 12" fill="none" stroke="#f59e0b" strokeWidth="1.5" />
+          {[0, 40, 80, 120, 160, 195].map((x, i) => (
+            <circle key={i} cx={x} cy={[40, 32, 28, 22, 16, 12][i]} r="2.5" fill="#f59e0b" />
+          ))}
+        </svg>
+        <div className="grid grid-cols-3 gap-1 text-center">
+          <div className="py-1 rounded bg-[#00d4aa]/10 border border-[#00d4aa]/20">
+            <div className="text-[8px] uppercase text-[#00d4aa] tracking-wider">вход</div>
+          </div>
+          <div className="py-1 rounded bg-[#06b6d4]/10 border border-[#06b6d4]/20">
+            <div className="text-[8px] uppercase text-[#06b6d4] tracking-wider">удержание</div>
+          </div>
+          <div className="py-1 rounded bg-white/5 border border-white/10">
+            <div className="text-[8px] uppercase text-gray-500 tracking-wider">пауза</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Mini dashboard 4: AI chat + community
+function AIChatMini() {
+  return (
+    <div className="relative w-full h-full min-h-[140px] p-3 rounded-xl bg-[#06091a]/80 border border-[#9945ff]/25 overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,rgba(153,69,255,0.15),transparent_60%)]" />
+      <div className="relative flex flex-col gap-1.5 h-full text-[10px]" style={{ fontFamily: "var(--font-body)" }}>
+        <div className="flex items-center justify-between">
+          <span className="flex items-center gap-1 text-gray-400">
+            <Brain className="w-3 h-3 text-[#9945ff]" /> AI-ассистент
+          </span>
+          <span className="flex items-center gap-1 text-[#00d4aa] text-[9px]">
+            <Calendar className="w-2.5 h-2.5" /> созвон чт 20:00
+          </span>
+        </div>
+        {/* User question */}
+        <div className="self-end max-w-[80%] px-2 py-1 rounded-lg rounded-br-sm bg-[#06b6d4]/20 border border-[#06b6d4]/30 text-white text-[10px]">
+          как выбрать L1 под watchlist?
+        </div>
+        {/* AI answer */}
+        <div className="self-start max-w-[85%] px-2 py-1 rounded-lg rounded-bl-sm bg-[#9945ff]/15 border border-[#9945ff]/30 text-gray-200 text-[10px]">
+          Смотри чек-лист токеномики из Урока 5: unlocks, команда, TVL…
+        </div>
+        {/* Community avatars */}
+        <div className="flex items-center gap-1 mt-auto pt-1">
+          <div className="flex -space-x-2">
+            {["#00d4aa", "#06b6d4", "#9945ff", "#f59e0b"].map((c, i) => (
+              <div key={i} className="w-5 h-5 rounded-full border-2 border-[#06091a]" style={{ background: c + "50" }} />
+            ))}
+          </div>
+          <span className="text-[9px] text-gray-500">комьюнити учеников в Telegram</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============ COURSEWARE GALLERY — real slides from lessons ============
+function CoursewareGallery() {
+  const slides = [
+    { src: "/courseware/01_packaging.jpg", title: "Упаковка труда", lesson: "Урок 1" },
+    { src: "/courseware/02_functions.jpg", title: "Три функции денег", lesson: "Урок 1" },
+    { src: "/courseware/03_inflation.jpg", title: "Инфляция как эрозия", lesson: "Урок 1" },
+    { src: "/courseware/04_bank_node.jpg", title: "Банк — узел, не сейф", lesson: "Урок 1" },
+    { src: "/courseware/05_debt_work.jpg", title: "Долг = завтрашний труд", lesson: "Урок 1" },
+    { src: "/courseware/06_real_rate.jpg", title: "Реальная ставка", lesson: "Урок 1" },
+    { src: "/courseware/07_blockchain.jpg", title: "Цепочка блоков", lesson: "Урок 2" },
+    { src: "/courseware/08_halving.jpg", title: "Халвинг — встроенный дефицит", lesson: "Урок 2" },
+    { src: "/courseware/09_ethereum.jpg", title: "Ethereum — программируемая инфра", lesson: "Урок 2" },
+  ];
+  return (
+    <section className="relative py-20 sm:py-24 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#06091a] via-[#0a0e27] to-[#06091a]" />
+      <FloatingParticles />
+      <div className="container relative z-10">
+        <AnimatedSection>
+          <div className="text-center mb-10 sm:mb-14">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border-cyan bg-[#06b6d4]/5 mb-4">
+              <Eye className="w-4 h-4 text-[#06b6d4]" />
+              <span className="text-xs sm:text-sm font-medium text-[#06b6d4]" style={{ fontFamily: "var(--font-body)" }}>Что увидишь внутри</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-[1.1] tracking-tight">
+              <span className="text-white">Загляни </span>
+              <span className="gradient-text">внутрь уроков</span>
+            </h2>
+            <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto" style={{ fontFamily: "var(--font-body)" }}>
+              Так выглядит подача на уроках: каждая идея — отдельный кадр, кинематографичная инфографика, без слайдов-пустышек. Ниже — девять настоящих кадров из первых двух уроков.
+            </p>
+          </div>
+        </AnimatedSection>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 max-w-6xl mx-auto">
+          {slides.map((s, i) => (
+            <AnimatedSection key={i} delay={(i % 3) * 0.05}>
+              <div className="group relative rounded-2xl overflow-hidden border border-white/10 aspect-[16/9] bg-[#06091a] hover:border-white/30 transition-all">
+                <img
+                  src={s.src}
+                  alt={s.title}
+                  className="w-full h-full object-cover opacity-85 group-hover:opacity-100 group-hover:scale-[1.04] transition-all duration-500"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
+                <div className="absolute bottom-0 left-0 right-0 p-2.5 sm:p-3">
+                  <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-[#00d4aa] mb-0.5" style={{ fontFamily: "var(--font-body)" }}>
+                    {s.lesson}
+                  </div>
+                  <div className="text-xs sm:text-sm font-bold text-white leading-tight">
+                    {s.title}
+                  </div>
+                </div>
+              </div>
+            </AnimatedSection>
+          ))}
+        </div>
+
+        <AnimatedSection delay={0.15}>
+          <p className="text-center text-xs sm:text-sm text-gray-500 mt-8 max-w-2xl mx-auto" style={{ fontFamily: "var(--font-body)" }}>
+            Всего в курсе — 8 уроков и несколько сотен таких кадров. Плюс живой голос автора, рабочие шаблоны и настраиваемый под тебя дашборд.
+          </p>
+        </AnimatedSection>
+      </div>
+    </section>
+  );
+}
+
 // ============ ARCHITECTURE SECTION — How Crypto OS is layered ============
 function ArchitectureSection() {
   const layers = [
@@ -428,6 +801,7 @@ function ArchitectureSection() {
       desc: "Один дашборд показывает, в какой фазе сейчас рынок и какой режим актуален.",
       color: "#00d4aa",
       Icon: Gauge,
+      Visual: MultiplierMini,
     },
     {
       label: "Слой 2 — отбор кандидатов",
@@ -435,6 +809,7 @@ function ArchitectureSection() {
       desc: "Система сама подбирает монеты под разбор — у тебя готовый список для изучения.",
       color: "#06b6d4",
       Icon: ListChecks,
+      Visual: WatchlistMini,
     },
     {
       label: "Слой 3 — исполнение",
@@ -442,6 +817,7 @@ function ArchitectureSection() {
       desc: "Один раз настроил — закупки идут по плану, индикаторы показывают режимы.",
       color: "#f59e0b",
       Icon: Bot,
+      Visual: DCAMini,
     },
     {
       label: "Слой 4 — поддержка",
@@ -449,6 +825,7 @@ function ArchitectureSection() {
       desc: "Вопрос по методике — ответ 24/7. Раз в неделю — созвон. В чате — ученики.",
       color: "#9945ff",
       Icon: MessageCircle,
+      Visual: AIChatMini,
     },
   ];
 
@@ -473,27 +850,33 @@ function ArchitectureSection() {
           </div>
         </AnimatedSection>
 
-        <div className="max-w-3xl mx-auto space-y-3 sm:space-y-4">
+        <div className="max-w-5xl mx-auto space-y-3 sm:space-y-4">
           {layers.map((l, i) => {
             const Ico = l.Icon;
+            const Visual = l.Visual;
             return (
               <AnimatedSection key={i} delay={i * 0.08}>
                 <div
-                  className="relative p-5 sm:p-6 rounded-2xl backdrop-blur-xl bg-[#0f1328]/60 border flex items-center gap-4 sm:gap-5 hover:translate-x-1 transition-all"
+                  className="relative p-4 sm:p-5 rounded-2xl backdrop-blur-xl bg-[#0f1328]/60 border grid grid-cols-1 md:grid-cols-[1fr_260px] gap-4 items-center hover:translate-x-1 transition-all"
                   style={{ borderColor: l.color + "40" }}
                 >
-                  <div
-                    className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ background: l.color + "15", color: l.color, boxShadow: `0 0 30px ${l.color}25` }}
-                  >
-                    <Ico className="w-6 h-6 sm:w-7 sm:h-7" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[10px] sm:text-xs uppercase tracking-wider mb-1" style={{ color: l.color, fontFamily: "var(--font-body)" }}>
-                      {l.label}
+                  <div className="flex items-center gap-4 sm:gap-5">
+                    <div
+                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center shrink-0"
+                      style={{ background: l.color + "15", color: l.color, boxShadow: `0 0 30px ${l.color}25` }}
+                    >
+                      <Ico className="w-6 h-6 sm:w-7 sm:h-7" />
                     </div>
-                    <h3 className="text-base sm:text-lg font-bold text-white mb-1">{l.title}</h3>
-                    <p className="text-gray-400 text-xs sm:text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{l.desc}</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[10px] sm:text-xs uppercase tracking-wider mb-1" style={{ color: l.color, fontFamily: "var(--font-body)" }}>
+                        {l.label}
+                      </div>
+                      <h3 className="text-base sm:text-lg font-bold text-white mb-1">{l.title}</h3>
+                      <p className="text-gray-400 text-xs sm:text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{l.desc}</p>
+                    </div>
+                  </div>
+                  <div className="md:min-w-[240px]">
+                    <Visual />
                   </div>
                 </div>
                 {i < layers.length - 1 && (
@@ -1239,9 +1622,11 @@ export default function Home() {
       <HeroSection />
       <PositioningSection />
       <AuthorSection />
+      <TeaserSection />
       <div id="modules">
         <ModulesSection />
       </div>
+      <CoursewareGallery />
       <div id="architecture">
         <ArchitectureSection />
       </div>
