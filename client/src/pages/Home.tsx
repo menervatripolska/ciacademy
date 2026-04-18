@@ -331,22 +331,42 @@ function AuthorSection() {
       <div className="absolute inset-0 bg-gradient-to-b from-[#06091a] via-[#0a0f2a] to-[#06091a]" />
       <div className="container relative z-10">
         <AnimatedSection>
-          <div className="grid lg:grid-cols-5 gap-8 sm:gap-10 items-center">
+          <div className="grid lg:grid-cols-5 gap-8 sm:gap-10 items-start">
             <div className="lg:col-span-2">
-              {/* Author portrait + live loop */}
-              <div className="relative mb-6">
-                <div className="relative inline-block">
-                  {/* Glow ring behind portrait */}
-                  <div className="absolute -inset-1 rounded-3xl bg-gradient-to-br from-[#00d4aa]/60 via-[#06b6d4]/40 to-[#9945ff]/60 blur-xl opacity-70" />
-                  <div className="relative w-44 h-44 sm:w-52 sm:h-52 rounded-3xl overflow-hidden ring-2 ring-white/10 shadow-[0_0_60px_rgba(0,212,170,0.3)]">
-                    <img
-                      src="/author/di_portrait_800.jpg"
-                      alt="Di — автор методики Crypto OS"
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-tr from-[#06091a]/30 via-transparent to-transparent" />
-                  </div>
+              {/* Author monogram — без фото, чистая геометрия */}
+              <div className="relative mb-6 max-w-xs">
+                <div className="absolute -inset-2 rounded-3xl bg-gradient-to-br from-[#00d4aa]/40 via-[#06b6d4]/30 to-[#9945ff]/40 blur-2xl opacity-70" />
+                <div className="relative aspect-square rounded-3xl overflow-hidden border border-white/10 bg-[#0a0f2a]/80 p-8 flex flex-col items-center justify-center">
+                  {/* Geometric composition */}
+                  <svg viewBox="0 0 200 200" className="w-full h-full">
+                    <defs>
+                      <linearGradient id="monog" x1="0" x2="1" y1="0" y2="1">
+                        <stop offset="0%" stopColor="#00d4aa" />
+                        <stop offset="50%" stopColor="#06b6d4" />
+                        <stop offset="100%" stopColor="#9945ff" />
+                      </linearGradient>
+                      <radialGradient id="monoCore" cx="0.5" cy="0.5" r="0.5">
+                        <stop offset="0%" stopColor="#00d4aa" stopOpacity="0.35" />
+                        <stop offset="100%" stopColor="#00d4aa" stopOpacity="0" />
+                      </radialGradient>
+                    </defs>
+                    {/* Orbit rings */}
+                    <circle cx="100" cy="100" r="82" fill="none" stroke="url(#monog)" strokeWidth="1" strokeDasharray="3 5" opacity="0.5" />
+                    <circle cx="100" cy="100" r="64" fill="none" stroke="url(#monog)" strokeWidth="1.2" opacity="0.7" />
+                    <circle cx="100" cy="100" r="46" fill="url(#monoCore)" />
+                    {/* Crypto-OS monogram — big "8" with nodes */}
+                    <text x="100" y="120" textAnchor="middle" fontSize="80" fontWeight="800" fill="url(#monog)" style={{ fontFamily: "var(--font-display)" }}>8</text>
+                    {/* Orbit nodes */}
+                    <circle cx="100" cy="18" r="4" fill="#00d4aa" />
+                    <circle cx="182" cy="100" r="3" fill="#06b6d4" />
+                    <circle cx="100" cy="182" r="3.5" fill="#9945ff" />
+                    <circle cx="18" cy="100" r="3" fill="#f59e0b" />
+                    {/* Inner dots */}
+                    <circle cx="141" cy="59" r="2" fill="#00d4aa" opacity="0.6" />
+                    <circle cx="141" cy="141" r="2" fill="#9945ff" opacity="0.6" />
+                    <circle cx="59" cy="141" r="2" fill="#06b6d4" opacity="0.6" />
+                    <circle cx="59" cy="59" r="2" fill="#f59e0b" opacity="0.6" />
+                  </svg>
                   <span className="absolute -bottom-2 -right-2 px-3 py-1.5 rounded-full bg-[#0f1328] border border-[#00d4aa]/60 text-[11px] font-bold text-[#00d4aa] uppercase shadow-[0_0_20px_rgba(0,212,170,0.4)]" style={{ fontFamily: "var(--font-body)" }}>
                     8 лет на рынке
                   </span>
@@ -388,25 +408,6 @@ function AuthorSection() {
                 Методика построена на спот-подходе. Курс — образовательный продукт, решения о покупке активов ученик принимает самостоятельно.
               </p>
 
-              {/* Live accent — subtle looping moment, подписей нет, "внутрь уроков" не лезем */}
-              <div className="relative mt-2 rounded-2xl overflow-hidden border border-white/10 aspect-[16/9] max-w-md shadow-[0_0_40px_rgba(0,212,170,0.15)]">
-                <video
-                  className="absolute inset-0 w-full h-full object-cover"
-                  src="/author/di_loop_6s.mp4"
-                  poster="/author/di_loop_poster.jpg"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                />
-                <div className="absolute inset-0 bg-gradient-to-tr from-[#06091a]/50 via-transparent to-[#06091a]/20 pointer-events-none" />
-                <div className="absolute bottom-2 left-3 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#00d4aa] animate-pulse" />
-                  <span className="text-[10px] uppercase tracking-wider text-[#00d4aa] font-semibold" style={{ fontFamily: "var(--font-body)" }}>Live</span>
-                </div>
-              </div>
-
               <div className="flex flex-wrap gap-3 pt-2">
                 <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#0f1328]/80 border border-[#00d4aa]/30 text-sm text-gray-300">
                   <Shield className="w-4 h-4 text-[#00d4aa]" />
@@ -432,14 +433,14 @@ function AuthorSection() {
 // ============ MODULES SECTION ============
 function ModulesSection() {
   const modules = [
-    { num: "01", title: "Деньги, инфляция и макроцикл", artifact: "Macro Multiplier", desc: "Как устроены деньги, почему банки расширяют массу кредитом и как ставка ЦБ двигает ликвидность. Макро как фундамент всех решений по активам.", color: "#00d4aa", Icon: Coins, bg: "/courseware/03_inflation.jpg" },
-    { num: "02", title: "Три оси индустрии: BTC, ETH, SOL", artifact: "Asset Roles Map", desc: "Зачем появились крипта и блокчейн. BTC как ценность, ETH как инфраструктура, SOL как скорость. Базовый словарь индустрии.", color: "#9945ff", Icon: Compass, bg: "/courseware/07_blockchain.jpg" },
-    { num: "03", title: "Фазы рынка и крипто-мультипликатор", artifact: "Crypto Multiplier", desc: "Индикаторы среды в одном дашборде: настроение рынка, доминация BTC, соотношение ETH/BTC, ончейн-сигналы, циклические уровни.", color: "#06b6d4", Icon: Gauge, bg: "/courseware/08_halving.jpg" },
-    { num: "04", title: "Как не стать орангутангом", artifact: "Anti-Hamster Filter", desc: "FOMO, культ гуру, ошибка выжившего, плечо. Почему капитал разрушается не рынком, а психикой. Личный список запретов и триггеров срыва.", color: "#ff6b6b", Icon: Shield, bg: "/courseware/01_packaging.jpg" },
-    { num: "05", title: "Отбор проектов: секторы и red flags", artifact: "Asset Checklists + Watchlist", desc: "Карта крипторынка по секторам (L1, L2, DeFi, RWA, DePIN, AI, инфра), 8 red flags, чек-лист разбора токена, правила формирования watchlist.", color: "#f59e0b", Icon: Layers, bg: "/courseware/09_ethereum.jpg" },
-    { num: "06", title: "Распределение капитала: DCA и ребалансировка", artifact: "Portfolio Map", desc: "Портфель, разложенный по функциям: индексный слой, защитные активы, BTC/ETH/SOL, фавориты, кандидат недели. Ритм DCA и ребалансировки.", color: "#00d4aa", Icon: PieChart, bg: "/courseware/02_functions.jpg" },
-    { num: "07", title: "Сигналы рынка и признаки разворота", artifact: "Signal Map", desc: "Слои подтверждения: скользящие средние, RSI, свечи, уровни, ложные пробои, структура тренда. Чек-лист разворота вверх и вниз.", color: "#9945ff", Icon: Activity, bg: "/courseware/06_real_rate.jpg" },
-    { num: "08", title: "Финальная сборка Crypto OS", artifact: "Finale OS", desc: "Интеграция всех слоёв в одну систему. Карта треков продолжения. Правило дисциплины вместо плеча.", color: "#06b6d4", Icon: CheckCircle2, bg: "/courseware/04_bank_node.jpg" },
+    { num: "01", title: "Деньги, инфляция и макроцикл", artifact: "Macro Multiplier", desc: "Как устроены деньги, почему банки расширяют массу кредитом и как ставка ЦБ двигает ликвидность. Макро как фундамент всех решений по активам.", color: "#00d4aa", Icon: Coins },
+    { num: "02", title: "Три оси индустрии: BTC, ETH, SOL", artifact: "Asset Roles Map", desc: "Зачем появились крипта и блокчейн. BTC как ценность, ETH как инфраструктура, SOL как скорость. Базовый словарь индустрии.", color: "#9945ff", Icon: Compass },
+    { num: "03", title: "Фазы рынка и крипто-мультипликатор", artifact: "Crypto Multiplier", desc: "Индикаторы среды в одном дашборде: настроение рынка, доминация BTC, соотношение ETH/BTC, ончейн-сигналы, циклические уровни.", color: "#06b6d4", Icon: Gauge },
+    { num: "04", title: "Как не стать орангутангом", artifact: "Anti-Hamster Filter", desc: "FOMO, культ гуру, ошибка выжившего, плечо. Почему капитал разрушается не рынком, а психикой. Личный список запретов и триггеров срыва.", color: "#ff6b6b", Icon: Shield },
+    { num: "05", title: "Отбор проектов: секторы и red flags", artifact: "Asset Checklists + Watchlist", desc: "Карта крипторынка по секторам (L1, L2, DeFi, RWA, DePIN, AI, инфра), 8 red flags, чек-лист разбора токена, правила формирования watchlist.", color: "#f59e0b", Icon: Layers },
+    { num: "06", title: "Распределение капитала: DCA и ребалансировка", artifact: "Portfolio Map", desc: "Портфель, разложенный по функциям: индексный слой, защитные активы, BTC/ETH/SOL, фавориты, кандидат недели. Ритм DCA и ребалансировки.", color: "#00d4aa", Icon: PieChart },
+    { num: "07", title: "Сигналы рынка и признаки разворота", artifact: "Signal Map", desc: "Слои подтверждения: скользящие средние, RSI, свечи, уровни, ложные пробои, структура тренда. Чек-лист разворота вверх и вниз.", color: "#9945ff", Icon: Activity },
+    { num: "08", title: "Финальная сборка Crypto OS", artifact: "Finale OS", desc: "Интеграция всех слоёв в одну систему. Карта треков продолжения. Правило дисциплины вместо плеча.", color: "#06b6d4", Icon: CheckCircle2 },
   ];
 
   return (
@@ -470,28 +471,32 @@ function ModulesSection() {
                 <div
                   className="relative rounded-2xl bg-[#0f1328]/70 backdrop-blur-sm border border-white/5 hover:border-white/20 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(0,212,170,0.15)] transition-all duration-500 group h-full overflow-hidden flex flex-col"
                 >
-                  {/* Top visual — инфографика в фоне, без подписей, декоративно */}
-                  <div className="relative aspect-[16/9] overflow-hidden shrink-0">
-                    <img
-                      src={m.bg}
-                      alt=""
-                      aria-hidden="true"
-                      className="absolute inset-0 w-full h-full object-cover opacity-55 group-hover:opacity-80 group-hover:scale-[1.06] transition-all duration-700"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-b from-[#06091a]/35 via-[#0f1328]/55 to-[#0f1328]" />
-                    <div
-                      className="absolute inset-0 mix-blend-overlay pointer-events-none"
-                      style={{ background: `linear-gradient(135deg, ${m.color}33, transparent 60%)` }}
-                    />
+                  {/* Accent top-strip — чистый цветовой градиент, без фото */}
+                  <div
+                    className="relative h-24 sm:h-28 overflow-hidden shrink-0 border-b border-white/5"
+                    style={{ background: `linear-gradient(135deg, ${m.color}22 0%, transparent 55%), radial-gradient(circle at 85% 120%, ${m.color}33, transparent 60%), #0a0f2a` }}
+                  >
+                    {/* Geometric pattern */}
+                    <svg viewBox="0 0 300 120" className="absolute inset-0 w-full h-full opacity-40" preserveAspectRatio="xMidYMid slice">
+                      <defs>
+                        <linearGradient id={`mgl-${i}`} x1="0" x2="1" y1="0" y2="1">
+                          <stop offset="0%" stopColor={m.color} stopOpacity="0.6" />
+                          <stop offset="100%" stopColor={m.color} stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      <circle cx="250" cy="30" r="60" fill={`url(#mgl-${i})`} />
+                      <circle cx="40" cy="100" r="40" fill={m.color} opacity="0.15" />
+                      <path d="M0 90 Q 80 70 150 80 T 300 60" stroke={m.color} strokeWidth="1" fill="none" opacity="0.35" />
+                      <path d="M0 105 Q 80 90 150 95 T 300 75" stroke={m.color} strokeWidth="1" fill="none" opacity="0.2" />
+                    </svg>
                     <span
-                      className="absolute top-3 left-3 text-3xl sm:text-4xl font-bold"
-                      style={{ color: m.color, textShadow: "0 2px 20px rgba(6,9,26,0.8)", fontFamily: "var(--font-display)" }}
+                      className="absolute top-3 left-4 text-3xl sm:text-4xl font-bold"
+                      style={{ color: m.color, textShadow: "0 2px 20px rgba(6,9,26,0.6)", fontFamily: "var(--font-display)" }}
                     >
                       {m.num}
                     </span>
                     <div
-                      className="absolute top-3 right-3 w-9 h-9 rounded-xl flex items-center justify-center backdrop-blur-sm"
+                      className="absolute top-3 right-4 w-9 h-9 rounded-xl flex items-center justify-center backdrop-blur-sm"
                       style={{ background: m.color + "25", color: m.color, border: `1px solid ${m.color}55` }}
                     >
                       <Ico className="w-4 h-4" />
