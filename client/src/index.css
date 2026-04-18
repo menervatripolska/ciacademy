@@ -231,10 +231,16 @@
 
   .animate-fly-left {
     animation: hero-fly-left 7s ease-in-out infinite, neon-pulse-purple 4s ease-in-out infinite;
+    animation-delay: 0s, 0s;
+    animation-fill-mode: both;
+    will-change: transform, filter;
   }
 
   .animate-fly-right {
     animation: hero-fly-right 8s ease-in-out infinite, neon-pulse-green 5s ease-in-out infinite;
+    animation-delay: 0.3s, 0s;
+    animation-fill-mode: both;
+    will-change: transform, filter;
   }
 
   .animate-pulse-glow {
