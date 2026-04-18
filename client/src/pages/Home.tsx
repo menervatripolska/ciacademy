@@ -333,52 +333,15 @@ function AuthorSection() {
         <AnimatedSection>
           <div className="grid lg:grid-cols-5 gap-8 sm:gap-10 items-start">
             <div className="lg:col-span-2">
-              {/* Author monogram — без фото, чистая геометрия */}
-              <div className="relative mb-6 max-w-xs">
-                <div className="absolute -inset-2 rounded-3xl bg-gradient-to-br from-[#00d4aa]/40 via-[#06b6d4]/30 to-[#9945ff]/40 blur-2xl opacity-70" />
-                <div className="relative aspect-square rounded-3xl overflow-hidden border border-white/10 bg-[#0a0f2a]/80 p-8 flex flex-col items-center justify-center">
-                  {/* Geometric composition */}
-                  <svg viewBox="0 0 200 200" className="w-full h-full">
-                    <defs>
-                      <linearGradient id="monog" x1="0" x2="1" y1="0" y2="1">
-                        <stop offset="0%" stopColor="#00d4aa" />
-                        <stop offset="50%" stopColor="#06b6d4" />
-                        <stop offset="100%" stopColor="#9945ff" />
-                      </linearGradient>
-                      <radialGradient id="monoCore" cx="0.5" cy="0.5" r="0.5">
-                        <stop offset="0%" stopColor="#00d4aa" stopOpacity="0.35" />
-                        <stop offset="100%" stopColor="#00d4aa" stopOpacity="0" />
-                      </radialGradient>
-                    </defs>
-                    {/* Orbit rings */}
-                    <circle cx="100" cy="100" r="82" fill="none" stroke="url(#monog)" strokeWidth="1" strokeDasharray="3 5" opacity="0.5" />
-                    <circle cx="100" cy="100" r="64" fill="none" stroke="url(#monog)" strokeWidth="1.2" opacity="0.7" />
-                    <circle cx="100" cy="100" r="46" fill="url(#monoCore)" />
-                    {/* Crypto-OS monogram — big "8" with nodes */}
-                    <text x="100" y="120" textAnchor="middle" fontSize="80" fontWeight="800" fill="url(#monog)" style={{ fontFamily: "var(--font-display)" }}>8</text>
-                    {/* Orbit nodes */}
-                    <circle cx="100" cy="18" r="4" fill="#00d4aa" />
-                    <circle cx="182" cy="100" r="3" fill="#06b6d4" />
-                    <circle cx="100" cy="182" r="3.5" fill="#9945ff" />
-                    <circle cx="18" cy="100" r="3" fill="#f59e0b" />
-                    {/* Inner dots */}
-                    <circle cx="141" cy="59" r="2" fill="#00d4aa" opacity="0.6" />
-                    <circle cx="141" cy="141" r="2" fill="#9945ff" opacity="0.6" />
-                    <circle cx="59" cy="141" r="2" fill="#06b6d4" opacity="0.6" />
-                    <circle cx="59" cy="59" r="2" fill="#f59e0b" opacity="0.6" />
-                  </svg>
-                  <span className="absolute -bottom-2 -right-2 px-3 py-1.5 rounded-full bg-[#0f1328] border border-[#00d4aa]/60 text-[11px] font-bold text-[#00d4aa] uppercase shadow-[0_0_20px_rgba(0,212,170,0.4)]" style={{ fontFamily: "var(--font-body)" }}>
-                    8 лет на рынке
-                  </span>
+              {/* Eyebrow — author label */}
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full neon-border-purple bg-[#9945ff]/5">
+                  <Sparkles className="w-3 h-3 text-[#9945ff]" />
+                  <span className="text-xs font-medium text-[#9945ff]" style={{ fontFamily: "var(--font-body)" }}>Автор методики</span>
                 </div>
-
-                <div className="mt-5">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full neon-border-purple bg-[#9945ff]/5 mb-2">
-                    <Sparkles className="w-3 h-3 text-[#9945ff]" />
-                    <span className="text-xs font-medium text-[#9945ff]" style={{ fontFamily: "var(--font-body)" }}>Автор методики</span>
-                  </div>
-                  <p className="text-xs text-gray-400" style={{ fontFamily: "var(--font-body)" }}>Методика проверена 8 лет на живом рынке</p>
-                </div>
+                <span className="px-3 py-1 rounded-full bg-[#0f1328] border border-[#00d4aa]/60 text-[11px] font-bold text-[#00d4aa] uppercase shadow-[0_0_20px_rgba(0,212,170,0.3)]" style={{ fontFamily: "var(--font-body)" }}>
+                  8 лет на рынке
+                </span>
               </div>
 
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 leading-[1.1] tracking-tight">
@@ -793,23 +756,13 @@ function ArchitectureSection() {
 
 // ============ WHAT YOU GET SECTION ============
 function WhatYouGetSection() {
-  const desktop = [
-    { Icon: Gauge, title: "Дашборд с макро- и крипто-мультипликаторами", desc: "Картина рынка без ручного ресёрча — режимы среды собираются автоматически." },
-    { Icon: Target, title: "Автоподбор монет по чек-листу токеномики", desc: "«Кандидат дня» и «кандидат недели» сразу в твой watchlist для изучения." },
-    { Icon: Bot, title: "Настроенные DCA-боты по методике", desc: "Один раз настроил — работают сами по расписанию регулярных закупок." },
-    { Icon: Activity, title: "Уникальные индикаторы с интерпретацией", desc: "Понятные режимы: вход / удержание / пауза. Сигнал для твоего самостоятельного анализа." },
-    { Icon: LineChart, title: "Публичный портфель системы в онлайн-режиме", desc: "Пример того, как методика применяется на практике." },
-    { Icon: MessageCircle, title: "AI-ассистент с базой знаний курса", desc: "Задаёшь вопрос по методике — получаешь ответ 24/7 со ссылкой на урок." },
-  ];
-
   const forever = [
-    { icon: <BookOpen className="w-5 h-5" />, title: "8 уроков Crypto OS", desc: "Видео, доступ навсегда + обновления курса" },
-    { icon: <ListChecks className="w-5 h-5" />, title: "9 рабочих шаблонов-артефактов", desc: "Asset Roles Map, Portfolio Map, Watchlist, Signal Map, Macro Multiplier, Crypto Multiplier, Anti-Hamster Filter, Asset Checklists, Finale OS" },
-    { icon: <Calendar className="w-5 h-5" />, title: "Еженедельные живые созвоны", desc: "Групповой Q&A с преподавателями" },
-    { icon: <Users className="w-5 h-5" />, title: "Закрытое Telegram-комьюнити учеников", desc: "Обмен опытом внутри чата курса" },
-    { icon: <FileText className="w-5 h-5" />, title: "Список литературы для углубления", desc: "Подборка для самостоятельного расширения знаний" },
-    { icon: <Award className="w-5 h-5" />, title: "Сертификат о прохождении курса", desc: "Документ о завершении Crypto OS" },
-    { icon: <Shield className="w-5 h-5" />, title: "7 дней возврата без вопросов", desc: "Если не подойдёт — вернём на ту же карту" },
+    { icon: <Calendar className="w-5 h-5" />, title: "Еженедельные живые созвоны", desc: "Групповой Q&A с преподавателями — разбор рынка, ответы на вопросы по методике" },
+    { icon: <Users className="w-5 h-5" />, title: "Закрытое Telegram-комьюнити учеников", desc: "Обмен опытом, апдейты по дашборду, клуб практиков" },
+    { icon: <BookOpen className="w-5 h-5" />, title: "Доступ навсегда + обновления курса", desc: "Курс и шаблоны остаются у тебя. Когда обновляем — ты получаешь новую версию" },
+    { icon: <FileText className="w-5 h-5" />, title: "Список литературы для углубления", desc: "Подборка для самостоятельного расширения знаний по темам курса" },
+    { icon: <Award className="w-5 h-5" />, title: "Сертификат о прохождении курса", desc: "Документ о завершении Crypto OS с подписью автора методики" },
+    { icon: <Shield className="w-5 h-5" />, title: "7 дней возврата без вопросов", desc: "Если не подойдёт — вернём на ту же карту, без доказательств" },
   ];
 
   return (
@@ -818,89 +771,55 @@ function WhatYouGetSection() {
 
       <div className="container relative z-10">
         <AnimatedSection>
-          <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-              <span className="text-white">Что ты </span>
-              <span className="gradient-text">получаешь</span>
+          <div className="text-center mb-12 sm:mb-14 max-w-2xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-[1.1] tracking-tight">
+              <span className="text-white">Что </span>
+              <span className="gradient-text">остаётся с тобой</span>
             </h2>
+            <p className="text-gray-400 text-base sm:text-lg" style={{ fontFamily: "var(--font-body)" }}>
+              Помимо 8 уроков и рабочего стола — то, что продолжает работать на тебя после курса.
+            </p>
           </div>
         </AnimatedSection>
 
-        {/* Рабочий стол */}
         <AnimatedSection>
-          <div className="mb-12 sm:mb-16">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#00d4aa]/40" />
-              <h3 className="text-xl sm:text-2xl font-bold text-[#00d4aa] px-2" style={{ fontFamily: "var(--font-display)" }}>Рабочий стол</h3>
-              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[#00d4aa]/40" />
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {desktop.map((t, i) => {
-                const Ico = t.Icon;
-                return (
-                  <AnimatedSection key={i} delay={i * 0.06}>
-                    <div className="p-5 rounded-2xl bg-[#0f1328]/60 border border-white/5 hover:border-[#00d4aa]/30 hover:shadow-[0_0_30px_rgba(0,212,170,0.1)] transition-all h-full">
-                      <div className="w-11 h-11 rounded-xl bg-[#00d4aa]/10 flex items-center justify-center text-[#00d4aa] mb-4">
-                        <Ico className="w-6 h-6" />
-                      </div>
-                      <h4 className="text-white font-bold mb-2 text-base">{t.title}</h4>
-                      <p className="text-gray-400 text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{t.desc}</p>
-                    </div>
-                  </AnimatedSection>
-                );
-              })}
-            </div>
-
-            {/* Disclaimer 1 — мультипликаторы */}
-            <div className="mt-6 p-4 rounded-xl bg-[#0f1328]/40 border border-white/10 flex items-start gap-3">
-              <Info className="w-4 h-4 text-gray-500 mt-0.5 shrink-0" />
-              <p className="text-xs text-gray-500 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
-                Режимы «вход / удержание / пауза», выдаваемые мультипликаторами, являются сигналом для твоего самостоятельного анализа и не являются индивидуальной инвестиционной рекомендацией в значении ст. 3 Закона РК «О рынке ценных бумаг».
-              </p>
-            </div>
-
-            {/* Disclaimer 2 — DCA-боты */}
-            <div className="mt-3 p-4 rounded-xl bg-[#0f1328]/40 border border-white/10 flex items-start gap-3">
-              <Info className="w-4 h-4 text-gray-500 mt-0.5 shrink-0" />
-              <p className="text-xs text-gray-500 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
-                Автоматизированные торговые стратегии (DCA-боты, алгоритмические стратегии) связаны с риском частичной или полной потери средств. Подключение ботов и пополнение биржевых счетов ученик осуществляет самостоятельно, на свой страх и риск.
-              </p>
-            </div>
-
-            {/* Disclaimer 3 — публичный портфель */}
-            <div className="mt-3 p-4 rounded-xl bg-[#0f1328]/40 border border-white/10 flex items-start gap-3">
-              <Info className="w-4 h-4 text-gray-500 mt-0.5 shrink-0" />
-              <p className="text-xs text-gray-500 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
-                Публичный портфель системы демонстрирует пример применения методики. Прошлые результаты не гарантируют будущих. Копирование состава портфеля не является гарантией аналогичного финансового результата. Курс имеет образовательный характер.
-              </p>
-            </div>
-          </div>
-        </AnimatedSection>
-
-        {/* Остаётся навсегда */}
-        <AnimatedSection>
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#9945ff]/40" />
-              <h3 className="text-xl sm:text-2xl font-bold text-[#9945ff] px-2" style={{ fontFamily: "var(--font-display)" }}>Остаётся с тобой навсегда</h3>
-              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[#9945ff]/40" />
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-4">
-              {forever.map((t, i) => (
-                <AnimatedSection key={i} delay={i * 0.05}>
-                  <div className="flex items-start gap-4 p-4 sm:p-5 rounded-2xl bg-[#0f1328]/60 border border-white/5 hover:border-[#9945ff]/30 transition-all h-full">
-                    <div className="w-9 h-9 rounded-lg bg-[#9945ff]/10 flex items-center justify-center text-[#9945ff] shrink-0">
-                      {t.icon}
-                    </div>
-                    <div>
-                      <h4 className="text-white font-bold mb-1 text-sm sm:text-base">{t.title}</h4>
-                      <p className="text-gray-400 text-xs sm:text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{t.desc}</p>
-                    </div>
+          <div className="max-w-5xl mx-auto grid sm:grid-cols-2 gap-4">
+            {forever.map((t, i) => (
+              <AnimatedSection key={i} delay={i * 0.05}>
+                <div className="flex items-start gap-4 p-4 sm:p-5 rounded-2xl bg-[#0f1328]/60 border border-white/5 hover:border-[#9945ff]/30 hover:shadow-[0_0_30px_rgba(153,69,255,0.1)] transition-all h-full">
+                  <div className="w-10 h-10 rounded-lg bg-[#9945ff]/10 flex items-center justify-center text-[#9945ff] shrink-0">
+                    {t.icon}
                   </div>
-                </AnimatedSection>
-              ))}
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-white font-bold mb-1 text-sm sm:text-base">{t.title}</h4>
+                    <p className="text-gray-400 text-xs sm:text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{t.desc}</p>
+                  </div>
+                </div>
+              </AnimatedSection>
+            ))}
+          </div>
+        </AnimatedSection>
+
+        {/* Consolidated disclaimers — образовательный курс, ИИР, риски */}
+        <AnimatedSection delay={0.1}>
+          <div className="max-w-5xl mx-auto mt-8 p-5 rounded-2xl bg-[#0f1328]/40 border border-white/10">
+            <div className="flex items-start gap-3 mb-3">
+              <Info className="w-4 h-4 text-gray-500 mt-0.5 shrink-0" />
+              <p className="text-xs text-gray-500 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
+                Crypto OS — образовательный курс. Мультипликаторы выдают режимы «вход / удержание / пауза» как сигнал для твоего самостоятельного анализа и не являются индивидуальной инвестиционной рекомендацией в значении ст. 3 Закона РК «О рынке ценных бумаг».
+              </p>
+            </div>
+            <div className="flex items-start gap-3 mb-3">
+              <Info className="w-4 h-4 text-gray-500 mt-0.5 shrink-0" />
+              <p className="text-xs text-gray-500 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
+                Автоматизированные стратегии (DCA-боты) связаны с риском частичной или полной потери средств. Подключение ботов и пополнение биржевых счетов ученик осуществляет самостоятельно.
+              </p>
+            </div>
+            <div className="flex items-start gap-3">
+              <Info className="w-4 h-4 text-gray-500 mt-0.5 shrink-0" />
+              <p className="text-xs text-gray-500 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
+                Публичный портфель системы демонстрирует пример применения методики. Прошлые результаты не гарантируют будущих. Копирование состава портфеля не является гарантией аналогичного финансового результата.
+              </p>
             </div>
           </div>
         </AnimatedSection>
