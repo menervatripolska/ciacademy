@@ -1,24 +1,27 @@
 /*
  * Design: «Neon Fortress» — Cinematic Neon Realism
+ * Course: «Я — Криптан + твоя личная Crypto OS» (CI Academy)
  * Colors: Deep cosmic black, neon green (#00d4aa), electric purple (#9945ff), cyan (#06b6d4), gold (#f59e0b)
  * Typography: Rajdhani (display) + Manrope (body)
- * Layout: Full-screen cinematic sections, character-driven visuals
- * Glass: iOS-style bg-white/10 backdrop-blur-xl border border-white/20 on nav/footer
  */
 
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
-  Shield, Zap, BookOpen, Bot, BarChart3, CheckSquare,
+  Shield, ShieldCheck, Zap, BookOpen, Bot, BarChart3, CheckSquare, CheckCircle2,
   GraduationCap, Users, MessageCircle, Brain, Eye, ListChecks,
   ChevronDown, Clock, Play, Sparkles, TrendingUp, FileText, Award,
-  Gauge, Calendar, Info, Menu, X
+  Gauge, Calendar, Info, Menu, X,
+  Coins, Compass, Layers, PieChart, Activity, Target, LineChart,
+  Rocket, Repeat, ArrowRight, XCircle,
 } from "lucide-react";
-import { useState } from "react";
 
 const COURSE_URL = "https://courstore.kz/";
+const OLD_PRICE = "$1000";
+const NEW_PRICE = "$39";
+const SAVINGS = "$961";
 
-// CDN URLs (letting heroes fly — не трогаем)
+// CDN URLs (герои летают — не трогаем)
 const IMAGES = {
   heroAcademy: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663277282118/nztUJviYHysCLjpd.png",
   heroBoy: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663277282118/mcnaQpHSLpBDnqTc.png",
@@ -69,6 +72,37 @@ function FloatingParticles() {
   );
 }
 
+// ============ Small reusable price-tag ============
+function PriceTag({ size = "sm" }: { size?: "sm" | "md" | "lg" }) {
+  if (size === "lg") {
+    return (
+      <div className="flex flex-col items-center gap-2">
+        <div className="flex items-end justify-center gap-3">
+          <span className="text-2xl sm:text-3xl text-white/50 line-through decoration-red-500/70 decoration-2">{OLD_PRICE}</span>
+          <span className="text-6xl sm:text-7xl md:text-8xl font-bold gradient-text leading-none">{NEW_PRICE}</span>
+        </div>
+        <div className="text-xs sm:text-sm uppercase tracking-wider text-[#00d4aa]" style={{ fontFamily: "var(--font-body)" }}>
+          Специальная цена запуска · экономия {SAVINGS}
+        </div>
+      </div>
+    );
+  }
+  if (size === "md") {
+    return (
+      <div className="flex items-end justify-center gap-2">
+        <span className="text-lg text-white/50 line-through decoration-red-500/70 decoration-2">{OLD_PRICE}</span>
+        <span className="text-3xl font-bold gradient-text leading-none">{NEW_PRICE}</span>
+      </div>
+    );
+  }
+  return (
+    <div className="flex items-center gap-2 text-sm" style={{ fontFamily: "var(--font-body)" }}>
+      <span className="text-white/50 line-through decoration-red-500/70">{OLD_PRICE}</span>
+      <span className="font-bold text-[#00d4aa]">{NEW_PRICE}</span>
+    </div>
+  );
+}
+
 // ============ HERO SECTION ============
 function HeroSection() {
   return (
@@ -85,6 +119,26 @@ function HeroSection() {
       <FloatingParticles />
 
       <div className="container relative z-10 pt-28 pb-16">
+        {/* MOBILE / TABLET: flying heroes stacked over text */}
+        <div className="lg:hidden flex items-center justify-center gap-3 mb-6">
+          <div className="animate-fly-left shrink-0">
+            <img
+              src={IMAGES.heroGirl}
+              alt=""
+              loading="lazy"
+              className="w-24 sm:w-32 h-auto object-contain"
+            />
+          </div>
+          <div className="animate-fly-right shrink-0">
+            <img
+              src={IMAGES.heroBoy}
+              alt=""
+              loading="lazy"
+              className="w-24 sm:w-32 h-auto object-contain"
+            />
+          </div>
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-8 items-center">
           {/* Left: Text */}
           <motion.div
@@ -92,9 +146,12 @@ function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9, ease: "easeOut" }}
           >
+            {/* Eyebrow: course name */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border-green bg-[#00d4aa]/5 mb-6">
               <Sparkles className="w-4 h-4 text-[#00d4aa]" />
-              <span className="text-sm font-medium text-[#00d4aa]" style={{ fontFamily: "var(--font-body)" }}>Crypto OS</span>
+              <span className="text-xs sm:text-sm font-medium text-[#00d4aa]" style={{ fontFamily: "var(--font-body)" }}>
+                Курс «Я — Криптан + твоя личная Crypto OS»
+              </span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.08] mb-6 tracking-tight">
@@ -106,7 +163,7 @@ function HeroSection() {
               Восемь уроков, после которых ты один раз настраиваешь систему — и годами пользуешься. Макро- и крипто-мультипликаторы собирают картину рынка автоматически: тебе не нужно каждый день сидеть в каналах и сравнивать скриншоты. Дашборд сам выдаёт кандидатов для твоего watchlist по чек-листу, боты сами покупают по методике DCA, AI-ассистент отвечает на вопросы по курсу 24/7. Ты просто смотришь и решаешь — да или нет.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-8">
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-6">
               <a
                 href={COURSE_URL}
                 target="_blank"
@@ -114,12 +171,14 @@ function HeroSection() {
                 className="cta-button px-6 sm:px-8 py-4 rounded-xl text-base sm:text-lg flex items-center gap-2 w-full sm:w-auto justify-center"
               >
                 <Play className="w-5 h-5" />
-                Получить курс — $39
+                Получить курс — {NEW_PRICE}
               </a>
-              <div className="flex items-center gap-2 text-gray-400">
-                <Clock className="w-4 h-4" />
-                <span className="text-sm" style={{ fontFamily: "var(--font-body)" }}>Доступ навсегда</span>
-              </div>
+              <PriceTag size="sm" />
+            </div>
+
+            <div className="flex items-center gap-2 text-gray-400 mb-6">
+              <Clock className="w-4 h-4" />
+              <span className="text-sm" style={{ fontFamily: "var(--font-body)" }}>Доступ навсегда</span>
             </div>
 
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-400" style={{ fontFamily: "var(--font-body)" }}>
@@ -134,7 +193,7 @@ function HeroSection() {
             </div>
           </motion.div>
 
-          {/* Right: Characters — cutout PNGs with flying animation */}
+          {/* Right (desktop only): Characters flying side-by-side */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -181,7 +240,7 @@ function PositioningSection() {
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-10 text-center leading-[1.1] tracking-tight">
               <span className="text-white">Зачем </span>
-              <span className="gradient-text">Crypto OS</span>
+              <span className="gradient-text">Я — Криптан + Crypto OS</span>
             </h2>
 
             <div className="space-y-6 text-gray-300 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
@@ -193,7 +252,7 @@ function PositioningSection() {
 
               <div className="p-6 sm:p-7 rounded-2xl bg-[#0f1328]/60 border border-[#00d4aa]/20">
                 <p className="text-base sm:text-lg">
-                  Crypto OS — это рабочая методика и готовая инфраструктура в одном месте. Восемь уроков учат читать рынок через макро- и крипто-мультипликаторы: ты видишь, в какой фазе мы сейчас, и какой режим сейчас актуален — накапливать, удерживать, снижать позицию или ждать. Дашборд по этой системе сам отбирает монеты по чек-листу токеномики и выдаёт их тебе как кандидатов для изучения.
+                  «Я — Криптан + твоя личная Crypto OS» — это рабочая методика и готовая инфраструктура в одном месте. Восемь уроков учат читать рынок через макро- и крипто-мультипликаторы: ты видишь, в какой фазе мы сейчас, и какой режим сейчас актуален — накапливать, удерживать, снижать позицию или ждать. Дашборд по этой системе сам отбирает монеты по чек-листу токеномики и выдаёт их тебе как кандидатов для изучения.
                 </p>
               </div>
 
@@ -225,9 +284,19 @@ function AuthorSection() {
         <AnimatedSection>
           <div className="grid lg:grid-cols-5 gap-8 sm:gap-10 items-center">
             <div className="lg:col-span-2">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border-purple bg-[#9945ff]/5 mb-6">
-                <Sparkles className="w-4 h-4 text-[#9945ff]" />
-                <span className="text-sm font-medium text-[#9945ff]" style={{ fontFamily: "var(--font-body)" }}>Автор курса</span>
+              {/* Author "avatar" tile */}
+              <div className="relative mb-6 flex items-center gap-4">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-[#00d4aa] via-[#06b6d4] to-[#9945ff] flex items-center justify-center relative shadow-[0_0_40px_rgba(0,212,170,0.35)]">
+                  <span className="text-4xl sm:text-5xl font-bold text-white" style={{ fontFamily: "var(--font-display)" }}>К</span>
+                  <span className="absolute -bottom-2 -right-2 px-2 py-1 rounded-full bg-[#0f1328] border border-[#00d4aa]/40 text-[10px] font-bold text-[#00d4aa] uppercase" style={{ fontFamily: "var(--font-body)" }}>8 лет</span>
+                </div>
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full neon-border-purple bg-[#9945ff]/5 mb-2">
+                    <Sparkles className="w-3 h-3 text-[#9945ff]" />
+                    <span className="text-xs font-medium text-[#9945ff]" style={{ fontFamily: "var(--font-body)" }}>Автор курса</span>
+                  </div>
+                  <p className="text-xs text-gray-400" style={{ fontFamily: "var(--font-body)" }}>Методика проверена 8 лет на живом рынке</p>
+                </div>
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 leading-[1.1] tracking-tight">
                 <span className="text-white">Методика, собранная </span>
@@ -250,7 +319,7 @@ function AuthorSection() {
                 За 8 лет автор курса прошёл рынок во всех его фазах и обучил <span className="text-[#00d4aa] font-semibold">более 2000 человек лично</span>.
               </p>
               <p className="text-base">
-                Crypto OS — это выжимка того, что реально работает в долгую: макро-фундамент, чтение фаз рынка через мультипликаторы, отбор активов по токеномике, DCA-распределение и правила удержания позиций.
+                «Я — Криптан + твоя личная Crypto OS» — это выжимка того, что реально работает в долгую: макро-фундамент, чтение фаз рынка через мультипликаторы, отбор активов по токеномике, DCA-распределение и правила удержания позиций.
               </p>
               <p className="text-base text-gray-400">
                 Методика построена на спот-подходе. Курс — образовательный продукт, решения о покупке активов ученик принимает самостоятельно.
@@ -280,14 +349,14 @@ function AuthorSection() {
 // ============ MODULES SECTION ============
 function ModulesSection() {
   const modules = [
-    { num: "01", title: "Деньги, инфляция и макроцикл", artifact: "Macro Multiplier", desc: "Как устроены деньги, почему банки расширяют массу кредитом и как ставка ЦБ двигает ликвидность. Макро как фундамент всех решений по активам.", color: "#00d4aa" },
-    { num: "02", title: "Три оси индустрии: BTC, ETH, SOL", artifact: "Asset Roles Map", desc: "Зачем появились крипта и блокчейн. BTC как ценность, ETH как инфраструктура, SOL как скорость. Базовый словарь индустрии.", color: "#9945ff" },
-    { num: "03", title: "Фазы рынка и крипто-мультипликатор", artifact: "Crypto Multiplier", desc: "Индикаторы среды в одном дашборде: настроение рынка, доминация BTC, соотношение ETH/BTC, ончейн-сигналы, циклические уровни.", color: "#06b6d4" },
-    { num: "04", title: "Как не стать орангутангом", artifact: "Anti-Hamster Filter", desc: "FOMO, культ гуру, ошибка выжившего, плечо. Почему капитал разрушается не рынком, а психикой. Личный список запретов и триггеров срыва.", color: "#ff6b6b" },
-    { num: "05", title: "Отбор проектов: секторы и red flags", artifact: "Asset Checklists + Watchlist", desc: "Карта крипторынка по секторам (L1, L2, DeFi, RWA, DePIN, AI, инфра), 8 red flags, чек-лист разбора токена, правила формирования watchlist.", color: "#f59e0b" },
-    { num: "06", title: "Распределение капитала: DCA и ребалансировка", artifact: "Portfolio Map", desc: "Портфель, разложенный по функциям: индексный слой, защитные активы, BTC/ETH/SOL, фавориты, кандидат недели. Ритм DCA и ребалансировки.", color: "#00d4aa" },
-    { num: "07", title: "Сигналы рынка и признаки разворота", artifact: "Signal Map", desc: "Слои подтверждения: скользящие средние, RSI, свечи, уровни, ложные пробои, структура тренда. Чек-лист разворота вверх и вниз.", color: "#9945ff" },
-    { num: "08", title: "Финальная сборка Crypto OS", artifact: "Finale OS", desc: "Интеграция всех слоёв в одну систему. Карта треков продолжения. Правило дисциплины вместо плеча.", color: "#06b6d4" },
+    { num: "01", title: "Деньги, инфляция и макроцикл", artifact: "Macro Multiplier", desc: "Как устроены деньги, почему банки расширяют массу кредитом и как ставка ЦБ двигает ликвидность. Макро как фундамент всех решений по активам.", color: "#00d4aa", Icon: Coins },
+    { num: "02", title: "Три оси индустрии: BTC, ETH, SOL", artifact: "Asset Roles Map", desc: "Зачем появились крипта и блокчейн. BTC как ценность, ETH как инфраструктура, SOL как скорость. Базовый словарь индустрии.", color: "#9945ff", Icon: Compass },
+    { num: "03", title: "Фазы рынка и крипто-мультипликатор", artifact: "Crypto Multiplier", desc: "Индикаторы среды в одном дашборде: настроение рынка, доминация BTC, соотношение ETH/BTC, ончейн-сигналы, циклические уровни.", color: "#06b6d4", Icon: Gauge },
+    { num: "04", title: "Как не стать орангутангом", artifact: "Anti-Hamster Filter", desc: "FOMO, культ гуру, ошибка выжившего, плечо. Почему капитал разрушается не рынком, а психикой. Личный список запретов и триггеров срыва.", color: "#ff6b6b", Icon: Shield },
+    { num: "05", title: "Отбор проектов: секторы и red flags", artifact: "Asset Checklists + Watchlist", desc: "Карта крипторынка по секторам (L1, L2, DeFi, RWA, DePIN, AI, инфра), 8 red flags, чек-лист разбора токена, правила формирования watchlist.", color: "#f59e0b", Icon: Layers },
+    { num: "06", title: "Распределение капитала: DCA и ребалансировка", artifact: "Portfolio Map", desc: "Портфель, разложенный по функциям: индексный слой, защитные активы, BTC/ETH/SOL, фавориты, кандидат недели. Ритм DCA и ребалансировки.", color: "#00d4aa", Icon: PieChart },
+    { num: "07", title: "Сигналы рынка и признаки разворота", artifact: "Signal Map", desc: "Слои подтверждения: скользящие средние, RSI, свечи, уровни, ложные пробои, структура тренда. Чек-лист разворота вверх и вниз.", color: "#9945ff", Icon: Activity },
+    { num: "08", title: "Финальная сборка Crypto OS", artifact: "Finale OS", desc: "Интеграция всех слоёв в одну систему. Карта треков продолжения. Правило дисциплины вместо плеча.", color: "#06b6d4", Icon: CheckCircle2 },
   ];
 
   return (
@@ -311,30 +380,130 @@ function ModulesSection() {
         </AnimatedSection>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-          {modules.map((m, i) => (
-            <AnimatedSection key={i} delay={i * 0.08}>
-              <div
-                className="relative p-5 sm:p-6 rounded-2xl bg-[#0f1328]/70 backdrop-blur-sm border border-white/5 hover:border-white/10 transition-all duration-500 group h-full"
-              >
-                <div className="flex items-center gap-3 mb-4 flex-wrap">
-                  <span
-                    className="text-2xl sm:text-3xl font-bold opacity-30"
-                    style={{ color: m.color }}
-                  >
-                    {m.num}
-                  </span>
+          {modules.map((m, i) => {
+            const Ico = m.Icon;
+            return (
+              <AnimatedSection key={i} delay={i * 0.08}>
+                <div
+                  className="relative p-5 sm:p-6 rounded-2xl bg-[#0f1328]/70 backdrop-blur-sm border border-white/5 hover:border-white/20 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(0,212,170,0.15)] transition-all duration-500 group h-full"
+                >
+                  <div className="flex items-center gap-3 mb-4 flex-wrap">
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                      style={{ background: m.color + "15", color: m.color }}
+                    >
+                      <Ico className="w-5 h-5" />
+                    </div>
+                    <span
+                      className="text-2xl sm:text-3xl font-bold opacity-30"
+                      style={{ color: m.color }}
+                    >
+                      {m.num}
+                    </span>
+                    <div
+                      className="px-3 py-1 rounded-full text-xs font-medium"
+                      style={{ background: m.color + "15", color: m.color, fontFamily: "var(--font-body)" }}
+                    >
+                      {m.artifact}
+                    </div>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-bold text-white mb-2 group-hover:text-[#00d4aa] transition-colors">{m.title}</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{m.desc}</p>
+                </div>
+              </AnimatedSection>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============ ARCHITECTURE SECTION — How Crypto OS is layered ============
+function ArchitectureSection() {
+  const layers = [
+    {
+      label: "Слой 1 — чтение рынка",
+      title: "Макро + Крипто-мультипликаторы",
+      desc: "Один дашборд показывает, в какой фазе сейчас рынок и какой режим актуален.",
+      color: "#00d4aa",
+      Icon: Gauge,
+    },
+    {
+      label: "Слой 2 — отбор кандидатов",
+      title: "Watchlist по чек-листу токеномики",
+      desc: "Система сама подбирает монеты под разбор — у тебя готовый список для изучения.",
+      color: "#06b6d4",
+      Icon: ListChecks,
+    },
+    {
+      label: "Слой 3 — исполнение",
+      title: "DCA-боты + уникальные индикаторы",
+      desc: "Один раз настроил — закупки идут по плану, индикаторы показывают режимы.",
+      color: "#f59e0b",
+      Icon: Bot,
+    },
+    {
+      label: "Слой 4 — поддержка",
+      title: "AI-ассистент + живые созвоны + комьюнити",
+      desc: "Вопрос по методике — ответ 24/7. Раз в неделю — созвон. В чате — ученики.",
+      color: "#9945ff",
+      Icon: MessageCircle,
+    },
+  ];
+
+  return (
+    <section className="relative py-20 sm:py-24 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#06091a] via-[#0a0e27] to-[#06091a]" />
+      <FloatingParticles />
+      <div className="container relative z-10">
+        <AnimatedSection>
+          <div className="text-center mb-10 sm:mb-14">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border-green bg-[#00d4aa]/5 mb-4">
+              <Layers className="w-4 h-4 text-[#00d4aa]" />
+              <span className="text-xs sm:text-sm font-medium text-[#00d4aa]" style={{ fontFamily: "var(--font-body)" }}>Архитектура</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+              <span className="text-white">Как устроена </span>
+              <span className="gradient-text">Crypto OS</span>
+            </h2>
+            <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto" style={{ fontFamily: "var(--font-body)" }}>
+              Четыре слоя, из которых собран рабочий стол криптана. Каждый слой — это конкретный инструмент, а не абстракция.
+            </p>
+          </div>
+        </AnimatedSection>
+
+        <div className="max-w-3xl mx-auto space-y-3 sm:space-y-4">
+          {layers.map((l, i) => {
+            const Ico = l.Icon;
+            return (
+              <AnimatedSection key={i} delay={i * 0.08}>
+                <div
+                  className="relative p-5 sm:p-6 rounded-2xl backdrop-blur-xl bg-[#0f1328]/60 border flex items-center gap-4 sm:gap-5 hover:translate-x-1 transition-all"
+                  style={{ borderColor: l.color + "40" }}
+                >
                   <div
-                    className="px-3 py-1 rounded-full text-xs font-medium"
-                    style={{ background: m.color + "15", color: m.color, fontFamily: "var(--font-body)" }}
+                    className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center shrink-0"
+                    style={{ background: l.color + "15", color: l.color, boxShadow: `0 0 30px ${l.color}25` }}
                   >
-                    {m.artifact}
+                    <Ico className="w-6 h-6 sm:w-7 sm:h-7" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] sm:text-xs uppercase tracking-wider mb-1" style={{ color: l.color, fontFamily: "var(--font-body)" }}>
+                      {l.label}
+                    </div>
+                    <h3 className="text-base sm:text-lg font-bold text-white mb-1">{l.title}</h3>
+                    <p className="text-gray-400 text-xs sm:text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{l.desc}</p>
                   </div>
                 </div>
-                <h3 className="text-base sm:text-lg font-bold text-white mb-2 group-hover:text-[#00d4aa] transition-colors">{m.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{m.desc}</p>
-              </div>
-            </AnimatedSection>
-          ))}
+                {i < layers.length - 1 && (
+                  <div className="flex justify-center py-1">
+                    <ChevronDown className="w-4 h-4 text-white/30" />
+                  </div>
+                )}
+              </AnimatedSection>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -344,12 +513,12 @@ function ModulesSection() {
 // ============ WHAT YOU GET SECTION ============
 function WhatYouGetSection() {
   const desktop = [
-    { icon: <BarChart3 className="w-6 h-6" />, title: "Дашборд с макро- и крипто-мультипликаторами", desc: "Картина рынка без ручного ресёрча — режимы среды собираются автоматически." },
-    { icon: <CheckSquare className="w-6 h-6" />, title: "Автоподбор монет по чек-листу токеномики", desc: "«Кандидат дня» и «кандидат недели» сразу в твой watchlist для изучения." },
-    { icon: <Bot className="w-6 h-6" />, title: "Настроенные DCA-боты по методике", desc: "Один раз настроил — работают сами по расписанию регулярных закупок." },
-    { icon: <Gauge className="w-6 h-6" />, title: "Уникальные индикаторы с интерпретацией", desc: "Понятные режимы: вход / удержание / пауза. Сигнал для твоего самостоятельного анализа." },
-    { icon: <Eye className="w-6 h-6" />, title: "Публичный портфель системы в онлайн-режиме", desc: "Пример того, как методика применяется на практике." },
-    { icon: <MessageCircle className="w-6 h-6" />, title: "AI-ассистент с базой знаний курса", desc: "Задаёшь вопрос по методике — получаешь ответ 24/7 со ссылкой на урок." },
+    { Icon: Gauge, title: "Дашборд с макро- и крипто-мультипликаторами", desc: "Картина рынка без ручного ресёрча — режимы среды собираются автоматически." },
+    { Icon: Target, title: "Автоподбор монет по чек-листу токеномики", desc: "«Кандидат дня» и «кандидат недели» сразу в твой watchlist для изучения." },
+    { Icon: Bot, title: "Настроенные DCA-боты по методике", desc: "Один раз настроил — работают сами по расписанию регулярных закупок." },
+    { Icon: Activity, title: "Уникальные индикаторы с интерпретацией", desc: "Понятные режимы: вход / удержание / пауза. Сигнал для твоего самостоятельного анализа." },
+    { Icon: LineChart, title: "Публичный портфель системы в онлайн-режиме", desc: "Пример того, как методика применяется на практике." },
+    { Icon: MessageCircle, title: "AI-ассистент с базой знаний курса", desc: "Задаёшь вопрос по методике — получаешь ответ 24/7 со ссылкой на урок." },
   ];
 
   const forever = [
@@ -386,17 +555,20 @@ function WhatYouGetSection() {
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {desktop.map((t, i) => (
-                <AnimatedSection key={i} delay={i * 0.06}>
-                  <div className="p-5 rounded-2xl bg-[#0f1328]/60 border border-white/5 hover:border-[#00d4aa]/30 transition-all h-full">
-                    <div className="w-11 h-11 rounded-xl bg-[#00d4aa]/10 flex items-center justify-center text-[#00d4aa] mb-4">
-                      {t.icon}
+              {desktop.map((t, i) => {
+                const Ico = t.Icon;
+                return (
+                  <AnimatedSection key={i} delay={i * 0.06}>
+                    <div className="p-5 rounded-2xl bg-[#0f1328]/60 border border-white/5 hover:border-[#00d4aa]/30 hover:shadow-[0_0_30px_rgba(0,212,170,0.1)] transition-all h-full">
+                      <div className="w-11 h-11 rounded-xl bg-[#00d4aa]/10 flex items-center justify-center text-[#00d4aa] mb-4">
+                        <Ico className="w-6 h-6" />
+                      </div>
+                      <h4 className="text-white font-bold mb-2 text-base">{t.title}</h4>
+                      <p className="text-gray-400 text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{t.desc}</p>
                     </div>
-                    <h4 className="text-white font-bold mb-2 text-base">{t.title}</h4>
-                    <p className="text-gray-400 text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{t.desc}</p>
-                  </div>
-                </AnimatedSection>
-              ))}
+                  </AnimatedSection>
+                );
+              })}
             </div>
 
             {/* Disclaimer 1 — мультипликаторы */}
@@ -456,6 +628,162 @@ function WhatYouGetSection() {
   );
 }
 
+// ============ BEFORE / AFTER SECTION ============
+function BeforeAfterSection() {
+  const before = [
+    "Панически читаешь каналы — и всё равно опаздываешь",
+    "Покупаешь на эмоциях, продаёшь на страхе",
+    "Не видишь общей картины рынка и фазы",
+    "Теряешь деньги на локальных пиках",
+    "Сигналы гуру противоречат друг другу",
+  ];
+  const after = [
+    "Смотришь на режим мультипликатора — видишь фазу рынка",
+    "Кандидаты сами попадают в watchlist по чек-листу",
+    "DCA-боты закупают по плану, без эмоций",
+    "Решаешь раз в неделю: да или нет",
+    "AI-ассистент отвечает по методике со ссылкой на урок",
+  ];
+  return (
+    <section className="relative py-20 sm:py-24 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#06091a] via-[#0a0f2a] to-[#06091a]" />
+      <div className="container relative z-10">
+        <AnimatedSection>
+          <div className="text-center mb-10 sm:mb-14">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border-purple bg-[#9945ff]/5 mb-4">
+              <Repeat className="w-4 h-4 text-[#9945ff]" />
+              <span className="text-xs sm:text-sm font-medium text-[#9945ff]" style={{ fontFamily: "var(--font-body)" }}>Сдвиг</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+              <span className="text-white">До / после </span>
+              <span className="gradient-text">Crypto OS</span>
+            </h2>
+          </div>
+        </AnimatedSection>
+
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-6 max-w-5xl mx-auto">
+          {/* BEFORE */}
+          <AnimatedSection delay={0.1}>
+            <div className="h-full p-6 sm:p-7 rounded-2xl bg-[#180f13]/70 border border-red-500/25 backdrop-blur-sm">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center text-red-400">
+                  <XCircle className="w-5 h-5" />
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white" style={{ fontFamily: "var(--font-display)" }}>ДО</h3>
+              </div>
+              <ul className="space-y-3">
+                {before.map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm sm:text-base text-gray-300" style={{ fontFamily: "var(--font-body)" }}>
+                    <XCircle className="w-4 h-4 text-red-400/70 mt-1 shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </AnimatedSection>
+
+          {/* AFTER */}
+          <AnimatedSection delay={0.2}>
+            <div className="h-full p-6 sm:p-7 rounded-2xl bg-[#0c1a16]/70 border border-[#00d4aa]/30 backdrop-blur-sm shadow-[0_0_40px_rgba(0,212,170,0.1)]">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 rounded-xl bg-[#00d4aa]/10 flex items-center justify-center text-[#00d4aa]">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white" style={{ fontFamily: "var(--font-display)" }}>ПОСЛЕ</h3>
+              </div>
+              <ul className="space-y-3">
+                {after.map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm sm:text-base text-gray-200" style={{ fontFamily: "var(--font-body)" }}>
+                    <CheckCircle2 className="w-4 h-4 text-[#00d4aa] mt-1 shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </AnimatedSection>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============ TIMELINE SECTION — Как проходит курс ============
+function TimelineSection() {
+  const steps = [
+    {
+      label: "Неделя 1",
+      title: "Смотришь 8 уроков, собираешь рабочий стол",
+      desc: "Проходишь методику, наполняешь шаблоны, подключаешь дашборд с мультипликаторами.",
+      Icon: BookOpen,
+      color: "#00d4aa",
+    },
+    {
+      label: "Недели 2–4",
+      title: "Практика с чек-листами, первый DCA",
+      desc: "Формируешь watchlist, настраиваешь DCA-боты по методике, разбираешь кандидатов.",
+      Icon: Repeat,
+      color: "#06b6d4",
+    },
+    {
+      label: "Месяц 2+",
+      title: "Система работает, ты решаешь раз в неделю",
+      desc: "Мультипликаторы показывают режим, watchlist обновляется сам, ты принимаешь решения по кандидатам.",
+      Icon: Rocket,
+      color: "#9945ff",
+    },
+  ];
+  return (
+    <section className="relative py-20 sm:py-24 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#06091a] via-[#0a0e27] to-[#06091a]" />
+      <div className="container relative z-10">
+        <AnimatedSection>
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border-green bg-[#00d4aa]/5 mb-4">
+              <Calendar className="w-4 h-4 text-[#00d4aa]" />
+              <span className="text-xs sm:text-sm font-medium text-[#00d4aa]" style={{ fontFamily: "var(--font-body)" }}>Как проходит курс</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+              <span className="text-white">Путь внутри </span>
+              <span className="gradient-text">Crypto OS</span>
+            </h2>
+          </div>
+        </AnimatedSection>
+
+        <div className="grid md:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto">
+          {steps.map((s, i) => {
+            const Ico = s.Icon;
+            return (
+              <AnimatedSection key={i} delay={i * 0.1}>
+                <div
+                  className="relative h-full p-6 rounded-2xl bg-[#0f1328]/60 border backdrop-blur-sm"
+                  style={{ borderColor: s.color + "30" }}
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div
+                      className="w-11 h-11 rounded-xl flex items-center justify-center"
+                      style={{ background: s.color + "15", color: s.color }}
+                    >
+                      <Ico className="w-5 h-5" />
+                    </div>
+                    <div className="text-[10px] sm:text-xs uppercase tracking-wider font-bold" style={{ color: s.color, fontFamily: "var(--font-body)" }}>
+                      {s.label}
+                    </div>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-bold text-white mb-2">{s.title}</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{s.desc}</p>
+                  {i < steps.length - 1 && (
+                    <ArrowRight className="hidden md:block absolute -right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-white/20" />
+                  )}
+                </div>
+              </AnimatedSection>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ============ CULTURE / WEEKLY SECTION ============
 function CultureSection() {
   return (
@@ -470,6 +798,7 @@ function CultureSection() {
                 <img
                   src={IMAGES.heroGirl}
                   alt=""
+                  loading="lazy"
                   className="h-[240px] sm:h-[320px] md:h-[400px] object-contain"
                 />
               </div>
@@ -512,6 +841,37 @@ function CultureSection() {
   );
 }
 
+// ============ GUARANTEE SECTION ============
+function GuaranteeSection() {
+  return (
+    <section className="relative py-16 sm:py-20 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#06091a] via-[#0c0f2e] to-[#06091a]" />
+      <div className="container relative z-10">
+        <AnimatedSection>
+          <div className="max-w-3xl mx-auto p-6 sm:p-10 rounded-3xl bg-[#0f1328]/60 border border-[#00d4aa]/30 backdrop-blur-xl shadow-[0_0_60px_rgba(0,212,170,0.15)] flex flex-col sm:flex-row items-center gap-6 sm:gap-8 text-center sm:text-left">
+            <div className="relative shrink-0">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-[#00d4aa]/20 to-[#9945ff]/20 flex items-center justify-center border-2 border-[#00d4aa]/40 shadow-[0_0_40px_rgba(0,212,170,0.3)]">
+                <ShieldCheck className="w-12 h-12 sm:w-14 sm:h-14 text-[#00d4aa]" />
+              </div>
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#00d4aa] text-[#06091a] text-xs font-bold whitespace-nowrap" style={{ fontFamily: "var(--font-body)" }}>
+                7 дней
+              </div>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2" style={{ fontFamily: "var(--font-display)" }}>
+                Гарантия возврата 7 дней
+              </h3>
+              <p className="text-gray-300 text-sm sm:text-base leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
+                Если курс не подойдёт — вернём на ту же карту или кошелёк. Без вопросов. Условия описаны в публичной оферте.
+              </p>
+            </div>
+          </div>
+        </AnimatedSection>
+      </div>
+    </section>
+  );
+}
+
 // ============ PRICING SECTION ============
 function PricingSection() {
   const bullets = [
@@ -546,12 +906,14 @@ function PricingSection() {
                   <span className="text-sm font-medium text-[#f59e0b]" style={{ fontFamily: "var(--font-body)" }}>Одна цена. Всё включено.</span>
                 </div>
 
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
-                  Crypto OS
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
+                  Я — Криптан +<br className="sm:hidden" /> твоя личная Crypto OS
                 </h2>
-                <div className="flex items-baseline justify-center gap-2 mb-4">
-                  <span className="text-6xl sm:text-7xl md:text-8xl font-bold gradient-text">$39</span>
+
+                <div className="mb-4">
+                  <PriceTag size="lg" />
                 </div>
+
                 <p className="text-gray-400 mb-8 text-base sm:text-lg" style={{ fontFamily: "var(--font-body)" }}>
                   Разовый платёж. Доступ навсегда.
                 </p>
@@ -574,7 +936,7 @@ function PricingSection() {
                   className="cta-button w-full py-4 sm:py-5 rounded-xl text-lg sm:text-xl flex items-center justify-center gap-3"
                 >
                   <Play className="w-5 h-5 sm:w-6 sm:h-6" />
-                  Получить курс
+                  Получить курс — {NEW_PRICE}
                 </a>
 
                 <p className="text-gray-500 text-xs mt-4" style={{ fontFamily: "var(--font-body)" }}>
@@ -592,14 +954,15 @@ function PricingSection() {
 // ============ FAQ SECTION ============
 function FAQSection() {
   const faqs = [
-    { q: "Нужен ли опыт в криптовалютах?", a: "Нет. Первый урок начинается с того, как устроены деньги и инфляция — до крипты мы дойдём на втором уроке. Курс спроектирован для того, у кого есть сбережения и желание разобраться в методике." },
+    { q: "Нужен ли опыт в криптовалютах?", a: "Нет. Курс «Я — Криптан + твоя личная Crypto OS» рассчитан в том числе на тех, кто раньше не занимался крипторынком. Первый урок начинается с того, как устроены деньги и инфляция — до крипты мы дойдём на втором уроке. Курс спроектирован для того, у кого есть сбережения и желание разобраться в методике." },
     { q: "Сколько времени нужно на прохождение?", a: "8 уроков Crypto OS. Смотришь в своём ритме. Настройка рабочего стола (мультипликаторы, watchlist, DCA) — ещё пара часов. Доступ к материалам навсегда." },
     { q: "Какой формат уроков?", a: "Видеоуроки с разборами методики и рабочими шаблонами. К каждому уроку прилагается артефакт-шаблон, который ты наполняешь своими данными." },
-    { q: "Для кого этот курс?", a: "Для тех, кто хочет разобраться в крипте системно, а не по каналам и сигналам. Ученики обычно — это люди с работой, у которых нет времени сидеть в рынке 8 часов в день." },
+    { q: "Для кого этот курс?", a: "«Я — Криптан + твоя личная Crypto OS» — для тех, кто хочет разобраться в крипте системно, а не по каналам и сигналам. Ученики обычно — это люди с работой, у которых нет времени сидеть в рынке 8 часов в день." },
     { q: "Что я буду делать после курса?", a: "У тебя будет настроенный рабочий стол: мультипликаторы, watchlist, DCA-боты, AI-ассистент. Раз в неделю — созвон. Задача — принимать решения по кандидатам, которых система тебе подаёт, и вести свой портфель по методике." },
     { q: "Это финансовая рекомендация?", a: "Нет. Курс носит строго образовательный характер и не является индивидуальной инвестиционной рекомендацией в понимании ст. 3 Закона РК «О рынке ценных бумаг», а также не является финансовой, налоговой или юридической консультацией. Все решения по сделкам ученик принимает самостоятельно." },
     { q: "Есть ли гарантия возврата?", a: "Да. 7 дней с момента покупки без вопросов — возврат на ту же карту или кошелёк. Условия описаны в публичной оферте." },
     { q: "Сколько длится доступ?", a: "Доступ к урокам и обновлениям курса — навсегда. Доступ к рабочему столу, живым созвонам и AI-ассистенту действует пока курс активен." },
+    { q: "Почему такая низкая цена — $39 вместо $1000?", a: "$39 — это специальная цена запуска курса «Я — Криптан + твоя личная Crypto OS». Полная стоимость методики и инфраструктуры — $1000. Цена запуска действует, чтобы собрать первую волну учеников." },
   ];
 
   return (
@@ -651,7 +1014,7 @@ function FinalCTASection() {
             <span className="gradient-text">годами пользуешься</span>
           </h2>
           <p className="text-gray-300 text-base sm:text-xl mb-10 max-w-2xl mx-auto" style={{ fontFamily: "var(--font-body)" }}>
-            Crypto OS — восемь уроков и рабочий стол, который собирает картину рынка за тебя.
+            Курс «Я — Криптан + твоя личная Crypto OS» — восемь уроков и рабочий стол, который собирает картину рынка за тебя.
           </p>
           <a
             href={COURSE_URL}
@@ -660,7 +1023,7 @@ function FinalCTASection() {
             className="cta-button px-8 sm:px-12 py-4 sm:py-5 rounded-xl text-lg sm:text-xl inline-flex items-center gap-3"
           >
             <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" />
-            Получить курс — $39
+            Получить курс — {NEW_PRICE}
           </a>
         </AnimatedSection>
       </div>
@@ -668,13 +1031,15 @@ function FinalCTASection() {
   );
 }
 
-// ============ FOOTER (glassmorphism) ============
+// ============ FOOTER (true iOS glass) ============
 function Footer() {
   return (
     <footer className="relative pt-12 pb-8">
       <div className="absolute inset-0 bg-[#06091a]" />
-      {/* Glass overlay */}
-      <div className="absolute inset-0 bg-white/5 backdrop-blur-xl border-t border-white/10" />
+      {/* True glass overlay */}
+      <div className="absolute inset-0 backdrop-blur-2xl bg-black/40 border-t border-white/20 shadow-[0_-8px_32px_rgba(0,0,0,0.4)] supports-[backdrop-filter]:bg-black/30" />
+      {/* Inner gradient sheen */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-white/5 via-transparent to-transparent" />
 
       <div className="container relative z-10">
         <div className="grid md:grid-cols-3 gap-8 mb-10">
@@ -686,11 +1051,11 @@ function Footer() {
               </div>
               <div>
                 <span className="text-white font-bold" style={{ fontFamily: "var(--font-display)" }}>CI Academy</span>
-                <p className="text-gray-500 text-xs" style={{ fontFamily: "var(--font-body)" }}>Crypto OS</p>
+                <p className="text-gray-400 text-xs" style={{ fontFamily: "var(--font-body)" }}>Курс «Я — Криптан + Crypto OS»</p>
               </div>
             </div>
             <p className="text-gray-500 text-xs leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
-              CI Academy — образовательная платформа. Курс Crypto OS обучает методике работы с криптоактивами в спот-подходе.
+              CI Academy — образовательная платформа. Курс «Я — Криптан + твоя личная Crypto OS» обучает методике работы с криптоактивами в спот-подходе.
             </p>
           </div>
 
@@ -740,22 +1105,29 @@ function Footer() {
   );
 }
 
-// ============ NAVBAR (glassmorphism) ============
+// ============ NAVBAR (true iOS glass) ============
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/5 backdrop-blur-xl border-b border-white/10 shadow-lg">
-      <div className="container flex items-center justify-between h-16">
+    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-2xl bg-black/30 border-b border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.4)] supports-[backdrop-filter]:bg-black/20">
+      {/* Inner sheen for iOS glass feel */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-white/10 via-transparent to-transparent" />
+
+      <div className="container relative flex items-center justify-between h-16">
         <a href="/" className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#00d4aa] to-[#9945ff] flex items-center justify-center">
+          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#00d4aa] to-[#9945ff] flex items-center justify-center shrink-0">
             <span className="text-white font-bold text-sm" style={{ fontFamily: "var(--font-display)" }}>CI</span>
           </div>
-          <span className="text-white font-bold text-base sm:text-lg" style={{ fontFamily: "var(--font-display)" }}>CI Academy</span>
+          <div className="flex flex-col leading-tight">
+            <span className="text-white font-bold text-sm sm:text-base" style={{ fontFamily: "var(--font-display)" }}>CI Academy</span>
+            <span className="text-[10px] sm:text-[11px] text-[#00d4aa]/80 -mt-0.5" style={{ fontFamily: "var(--font-body)" }}>Я — Криптан + Crypto OS</span>
+          </div>
         </a>
 
         <div className="hidden md:flex items-center gap-8">
           <a href="#modules" className="text-gray-300 hover:text-white text-sm transition-colors" style={{ fontFamily: "var(--font-body)" }}>Программа</a>
+          <a href="#architecture" className="text-gray-300 hover:text-white text-sm transition-colors" style={{ fontFamily: "var(--font-body)" }}>Как устроено</a>
           <a href="#get" className="text-gray-300 hover:text-white text-sm transition-colors" style={{ fontFamily: "var(--font-body)" }}>Что получаешь</a>
           <a href="#pricing" className="text-gray-300 hover:text-white text-sm transition-colors" style={{ fontFamily: "var(--font-body)" }}>Цена</a>
           <a href="#faq" className="text-gray-300 hover:text-white text-sm transition-colors" style={{ fontFamily: "var(--font-body)" }}>FAQ</a>
@@ -768,7 +1140,7 @@ function Navbar() {
             rel="noopener noreferrer"
             className="cta-button px-4 sm:px-5 py-2 rounded-lg text-xs sm:text-sm hidden sm:inline-block"
           >
-            Получить — $39
+            Получить — {NEW_PRICE}
           </a>
           <button
             className="md:hidden text-white p-2 rounded-lg bg-white/5 border border-white/10"
@@ -782,9 +1154,10 @@ function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-white/5 backdrop-blur-xl border-t border-white/10">
-          <div className="container py-4 flex flex-col gap-3">
+        <div className="md:hidden backdrop-blur-2xl bg-black/40 border-t border-white/20">
+          <div className="container py-4 flex flex-col gap-3 relative">
             <a href="#modules" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-white text-sm py-2" style={{ fontFamily: "var(--font-body)" }}>Программа</a>
+            <a href="#architecture" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-white text-sm py-2" style={{ fontFamily: "var(--font-body)" }}>Как устроено</a>
             <a href="#get" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-white text-sm py-2" style={{ fontFamily: "var(--font-body)" }}>Что получаешь</a>
             <a href="#pricing" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-white text-sm py-2" style={{ fontFamily: "var(--font-body)" }}>Цена</a>
             <a href="#faq" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-white text-sm py-2" style={{ fontFamily: "var(--font-body)" }}>FAQ</a>
@@ -794,7 +1167,7 @@ function Navbar() {
               rel="noopener noreferrer"
               className="cta-button px-5 py-3 rounded-lg text-sm text-center mt-2 sm:hidden"
             >
-              Получить курс — $39
+              Получить курс — {NEW_PRICE}
             </a>
           </div>
         </div>
@@ -814,10 +1187,16 @@ export default function Home() {
       <div id="modules">
         <ModulesSection />
       </div>
+      <div id="architecture">
+        <ArchitectureSection />
+      </div>
       <div id="get">
         <WhatYouGetSection />
       </div>
+      <BeforeAfterSection />
+      <TimelineSection />
       <CultureSection />
+      <GuaranteeSection />
       <div id="pricing">
         <PricingSection />
       </div>
