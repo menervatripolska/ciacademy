@@ -322,7 +322,7 @@ function PositioningSection() {
 function AuthorSection() {
   const stats = [
     { num: "8", suffix: " лет", label: "на крипторынке" },
-    { num: "2000+", suffix: "", label: "учеников обучено лично" },
+    { num: "2000+", suffix: "", label: "учеников обучила лично" },
     { num: "8", suffix: "", label: "уроков в курсе" },
     { num: "9", suffix: "", label: "рабочих шаблонов" },
   ];
@@ -333,27 +333,34 @@ function AuthorSection() {
         <AnimatedSection>
           <div className="grid lg:grid-cols-5 gap-8 sm:gap-10 items-center">
             <div className="lg:col-span-2">
-              {/* Author portrait + author badge */}
+              {/* Author portrait + live loop */}
               <div className="relative mb-6">
                 <div className="relative inline-block">
                   {/* Glow ring behind portrait */}
                   <div className="absolute -inset-1 rounded-3xl bg-gradient-to-br from-[#00d4aa]/60 via-[#06b6d4]/40 to-[#9945ff]/60 blur-xl opacity-70" />
                   <div className="relative w-44 h-44 sm:w-52 sm:h-52 rounded-3xl overflow-hidden ring-2 ring-white/10 shadow-[0_0_60px_rgba(0,212,170,0.3)]">
-                    <img src="/teacher/01_portrait_author_800.jpg" alt="Автор курса Crypto OS" className="w-full h-full object-cover" loading="lazy" />
+                    <img
+                      src="/author/di_portrait_800.jpg"
+                      alt="Di — автор методики Crypto OS"
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-tr from-[#06091a]/30 via-transparent to-transparent" />
                   </div>
                   <span className="absolute -bottom-2 -right-2 px-3 py-1.5 rounded-full bg-[#0f1328] border border-[#00d4aa]/60 text-[11px] font-bold text-[#00d4aa] uppercase shadow-[0_0_20px_rgba(0,212,170,0.4)]" style={{ fontFamily: "var(--font-body)" }}>
                     8 лет на рынке
                   </span>
                 </div>
+
                 <div className="mt-5">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full neon-border-purple bg-[#9945ff]/5 mb-2">
                     <Sparkles className="w-3 h-3 text-[#9945ff]" />
-                    <span className="text-xs font-medium text-[#9945ff]" style={{ fontFamily: "var(--font-body)" }}>Автор курса</span>
+                    <span className="text-xs font-medium text-[#9945ff]" style={{ fontFamily: "var(--font-body)" }}>Автор методики</span>
                   </div>
                   <p className="text-xs text-gray-400" style={{ fontFamily: "var(--font-body)" }}>Методика проверена 8 лет на живом рынке</p>
                 </div>
               </div>
+
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 leading-[1.1] tracking-tight">
                 <span className="text-white">Методика, собранная </span>
                 <span className="gradient-text">за 8 лет практики</span>
@@ -372,7 +379,7 @@ function AuthorSection() {
 
             <div className="lg:col-span-3 space-y-5 text-gray-300 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
               <p className="text-lg sm:text-xl text-white">
-                За 8 лет автор курса прошёл рынок во всех его фазах и обучил <span className="text-[#00d4aa] font-semibold">более 2000 человек лично</span>.
+                За 8 лет я прошла рынок во всех его фазах и <span className="text-[#00d4aa] font-semibold">обучила более 2000 человек лично</span>.
               </p>
               <p className="text-base">
                 «Я — Криптан + твоя личная Crypto OS» — это выжимка того, что реально работает в долгую: макро-фундамент, чтение фаз рынка через мультипликаторы, отбор активов по токеномике, DCA-распределение и правила удержания позиций.
@@ -380,6 +387,26 @@ function AuthorSection() {
               <p className="text-base text-gray-400">
                 Методика построена на спот-подходе. Курс — образовательный продукт, решения о покупке активов ученик принимает самостоятельно.
               </p>
+
+              {/* Live accent — subtle looping moment, подписей нет, "внутрь уроков" не лезем */}
+              <div className="relative mt-2 rounded-2xl overflow-hidden border border-white/10 aspect-[16/9] max-w-md shadow-[0_0_40px_rgba(0,212,170,0.15)]">
+                <video
+                  className="absolute inset-0 w-full h-full object-cover"
+                  src="/author/di_loop_6s.mp4"
+                  poster="/author/di_loop_poster.jpg"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                />
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#06091a]/50 via-transparent to-[#06091a]/20 pointer-events-none" />
+                <div className="absolute bottom-2 left-3 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00d4aa] animate-pulse" />
+                  <span className="text-[10px] uppercase tracking-wider text-[#00d4aa] font-semibold" style={{ fontFamily: "var(--font-body)" }}>Live</span>
+                </div>
+              </div>
+
               <div className="flex flex-wrap gap-3 pt-2">
                 <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#0f1328]/80 border border-[#00d4aa]/30 text-sm text-gray-300">
                   <Shield className="w-4 h-4 text-[#00d4aa]" />
@@ -402,102 +429,17 @@ function AuthorSection() {
   );
 }
 
-// ============ TEASER SECTION — first lesson preview ============
-function TeaserSection() {
-  const thumbs = [
-    { src: "/teacher/05_illus_3_functions.jpg", label: "Три функции денег" },
-    { src: "/teacher/04_illus_inflation_100.jpg", label: "Инфляция и $100" },
-    { src: "/teacher/06_illus_bank_node.jpg", label: "Банк как узел" },
-    { src: "/teacher/07_illus_real_rate.jpg", label: "Реальная ставка" },
-  ];
-  return (
-    <section className="relative py-20 sm:py-24 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#06091a] via-[#0b1130] to-[#06091a]" />
-      <FloatingParticles />
-      <div className="container relative z-10">
-        <AnimatedSection>
-          <div className="text-center mb-10 sm:mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border-purple bg-[#9945ff]/5 mb-4">
-              <Play className="w-4 h-4 text-[#9945ff]" />
-              <span className="text-xs sm:text-sm font-medium text-[#9945ff]" style={{ fontFamily: "var(--font-body)" }}>Фрагмент урока 1</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-[1.1] tracking-tight">
-              <span className="text-white">Посмотри </span>
-              <span className="gradient-text">первый урок</span>
-              <span className="text-white"> бесплатно</span>
-            </h2>
-            <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto" style={{ fontFamily: "var(--font-body)" }}>
-              20 секунд из начала первого урока — формат, подача, визуал. Дальше разбираем, как устроены деньги и почему инфляция — это не курс доллара, а расширение кредита.
-            </p>
-          </div>
-        </AnimatedSection>
-
-        <AnimatedSection delay={0.1}>
-          <div className="max-w-3xl mx-auto">
-            <div className="relative rounded-3xl overflow-hidden backdrop-blur-2xl bg-black/30 border border-white/20 shadow-[0_0_80px_rgba(153,69,255,0.2)]">
-              <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-[#9945ff]/20 blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-[#06b6d4]/20 blur-3xl pointer-events-none" />
-              <video
-                className="relative w-full aspect-video bg-black"
-                controls
-                preload="metadata"
-                playsInline
-                poster="/teacher/02_teacher_1280_clean.jpg"
-              >
-                <source src="/teacher/00_teaser_20s.mp4" type="video/mp4" />
-                Ваш браузер не поддерживает встроенное видео.
-              </video>
-            </div>
-
-            {/* Thumbnails strip from Lesson 1 */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-6">
-              {thumbs.map((t, i) => (
-                <div key={i} className="relative rounded-xl overflow-hidden border border-white/10 aspect-[4/3] group">
-                  <img src={t.src} alt={t.label} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute bottom-2 left-2 right-2 text-[11px] font-medium text-white/90" style={{ fontFamily: "var(--font-body)" }}>
-                    {t.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8 flex flex-wrap gap-4 justify-center">
-              <a
-                href={COURSE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#00d4aa] to-[#06b6d4] text-[#06091a] font-bold text-base hover:scale-[1.03] transition-transform shadow-[0_0_30px_rgba(0,212,170,0.4)]"
-              >
-                Получить полный курс — {NEW_PRICE}
-                <ArrowRight className="w-4 h-4" />
-              </a>
-              <a
-                href="#modules"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full backdrop-blur-xl bg-white/5 border border-white/15 text-white hover:bg-white/10 transition-colors"
-              >
-                Что внутри 8 уроков
-                <ChevronDown className="w-4 h-4" />
-              </a>
-            </div>
-          </div>
-        </AnimatedSection>
-      </div>
-    </section>
-  );
-}
-
 // ============ MODULES SECTION ============
 function ModulesSection() {
   const modules = [
-    { num: "01", title: "Деньги, инфляция и макроцикл", artifact: "Macro Multiplier", desc: "Как устроены деньги, почему банки расширяют массу кредитом и как ставка ЦБ двигает ликвидность. Макро как фундамент всех решений по активам.", color: "#00d4aa", Icon: Coins },
-    { num: "02", title: "Три оси индустрии: BTC, ETH, SOL", artifact: "Asset Roles Map", desc: "Зачем появились крипта и блокчейн. BTC как ценность, ETH как инфраструктура, SOL как скорость. Базовый словарь индустрии.", color: "#9945ff", Icon: Compass },
-    { num: "03", title: "Фазы рынка и крипто-мультипликатор", artifact: "Crypto Multiplier", desc: "Индикаторы среды в одном дашборде: настроение рынка, доминация BTC, соотношение ETH/BTC, ончейн-сигналы, циклические уровни.", color: "#06b6d4", Icon: Gauge },
-    { num: "04", title: "Как не стать орангутангом", artifact: "Anti-Hamster Filter", desc: "FOMO, культ гуру, ошибка выжившего, плечо. Почему капитал разрушается не рынком, а психикой. Личный список запретов и триггеров срыва.", color: "#ff6b6b", Icon: Shield },
-    { num: "05", title: "Отбор проектов: секторы и red flags", artifact: "Asset Checklists + Watchlist", desc: "Карта крипторынка по секторам (L1, L2, DeFi, RWA, DePIN, AI, инфра), 8 red flags, чек-лист разбора токена, правила формирования watchlist.", color: "#f59e0b", Icon: Layers },
-    { num: "06", title: "Распределение капитала: DCA и ребалансировка", artifact: "Portfolio Map", desc: "Портфель, разложенный по функциям: индексный слой, защитные активы, BTC/ETH/SOL, фавориты, кандидат недели. Ритм DCA и ребалансировки.", color: "#00d4aa", Icon: PieChart },
-    { num: "07", title: "Сигналы рынка и признаки разворота", artifact: "Signal Map", desc: "Слои подтверждения: скользящие средние, RSI, свечи, уровни, ложные пробои, структура тренда. Чек-лист разворота вверх и вниз.", color: "#9945ff", Icon: Activity },
-    { num: "08", title: "Финальная сборка Crypto OS", artifact: "Finale OS", desc: "Интеграция всех слоёв в одну систему. Карта треков продолжения. Правило дисциплины вместо плеча.", color: "#06b6d4", Icon: CheckCircle2 },
+    { num: "01", title: "Деньги, инфляция и макроцикл", artifact: "Macro Multiplier", desc: "Как устроены деньги, почему банки расширяют массу кредитом и как ставка ЦБ двигает ликвидность. Макро как фундамент всех решений по активам.", color: "#00d4aa", Icon: Coins, bg: "/courseware/03_inflation.jpg" },
+    { num: "02", title: "Три оси индустрии: BTC, ETH, SOL", artifact: "Asset Roles Map", desc: "Зачем появились крипта и блокчейн. BTC как ценность, ETH как инфраструктура, SOL как скорость. Базовый словарь индустрии.", color: "#9945ff", Icon: Compass, bg: "/courseware/07_blockchain.jpg" },
+    { num: "03", title: "Фазы рынка и крипто-мультипликатор", artifact: "Crypto Multiplier", desc: "Индикаторы среды в одном дашборде: настроение рынка, доминация BTC, соотношение ETH/BTC, ончейн-сигналы, циклические уровни.", color: "#06b6d4", Icon: Gauge, bg: "/courseware/08_halving.jpg" },
+    { num: "04", title: "Как не стать орангутангом", artifact: "Anti-Hamster Filter", desc: "FOMO, культ гуру, ошибка выжившего, плечо. Почему капитал разрушается не рынком, а психикой. Личный список запретов и триггеров срыва.", color: "#ff6b6b", Icon: Shield, bg: "/courseware/01_packaging.jpg" },
+    { num: "05", title: "Отбор проектов: секторы и red flags", artifact: "Asset Checklists + Watchlist", desc: "Карта крипторынка по секторам (L1, L2, DeFi, RWA, DePIN, AI, инфра), 8 red flags, чек-лист разбора токена, правила формирования watchlist.", color: "#f59e0b", Icon: Layers, bg: "/courseware/09_ethereum.jpg" },
+    { num: "06", title: "Распределение капитала: DCA и ребалансировка", artifact: "Portfolio Map", desc: "Портфель, разложенный по функциям: индексный слой, защитные активы, BTC/ETH/SOL, фавориты, кандидат недели. Ритм DCA и ребалансировки.", color: "#00d4aa", Icon: PieChart, bg: "/courseware/02_functions.jpg" },
+    { num: "07", title: "Сигналы рынка и признаки разворота", artifact: "Signal Map", desc: "Слои подтверждения: скользящие средние, RSI, свечи, уровни, ложные пробои, структура тренда. Чек-лист разворота вверх и вниз.", color: "#9945ff", Icon: Activity, bg: "/courseware/06_real_rate.jpg" },
+    { num: "08", title: "Финальная сборка Crypto OS", artifact: "Finale OS", desc: "Интеграция всех слоёв в одну систему. Карта треков продолжения. Правило дисциплины вместо плеча.", color: "#06b6d4", Icon: CheckCircle2, bg: "/courseware/04_bank_node.jpg" },
   ];
 
   return (
@@ -526,30 +468,49 @@ function ModulesSection() {
             return (
               <AnimatedSection key={i} delay={i * 0.08}>
                 <div
-                  className="relative p-5 sm:p-6 rounded-2xl bg-[#0f1328]/70 backdrop-blur-sm border border-white/5 hover:border-white/20 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(0,212,170,0.15)] transition-all duration-500 group h-full"
+                  className="relative rounded-2xl bg-[#0f1328]/70 backdrop-blur-sm border border-white/5 hover:border-white/20 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(0,212,170,0.15)] transition-all duration-500 group h-full overflow-hidden flex flex-col"
                 >
-                  <div className="flex items-center gap-3 mb-4 flex-wrap">
+                  {/* Top visual — инфографика в фоне, без подписей, декоративно */}
+                  <div className="relative aspect-[16/9] overflow-hidden shrink-0">
+                    <img
+                      src={m.bg}
+                      alt=""
+                      aria-hidden="true"
+                      className="absolute inset-0 w-full h-full object-cover opacity-55 group-hover:opacity-80 group-hover:scale-[1.06] transition-all duration-700"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-[#06091a]/35 via-[#0f1328]/55 to-[#0f1328]" />
                     <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                      style={{ background: m.color + "15", color: m.color }}
-                    >
-                      <Ico className="w-5 h-5" />
-                    </div>
+                      className="absolute inset-0 mix-blend-overlay pointer-events-none"
+                      style={{ background: `linear-gradient(135deg, ${m.color}33, transparent 60%)` }}
+                    />
                     <span
-                      className="text-2xl sm:text-3xl font-bold opacity-30"
-                      style={{ color: m.color }}
+                      className="absolute top-3 left-3 text-3xl sm:text-4xl font-bold"
+                      style={{ color: m.color, textShadow: "0 2px 20px rgba(6,9,26,0.8)", fontFamily: "var(--font-display)" }}
                     >
                       {m.num}
                     </span>
                     <div
-                      className="px-3 py-1 rounded-full text-xs font-medium"
-                      style={{ background: m.color + "15", color: m.color, fontFamily: "var(--font-body)" }}
+                      className="absolute top-3 right-3 w-9 h-9 rounded-xl flex items-center justify-center backdrop-blur-sm"
+                      style={{ background: m.color + "25", color: m.color, border: `1px solid ${m.color}55` }}
                     >
-                      {m.artifact}
+                      <Ico className="w-4 h-4" />
                     </div>
                   </div>
-                  <h3 className="text-base sm:text-lg font-bold text-white mb-2 group-hover:text-[#00d4aa] transition-colors">{m.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{m.desc}</p>
+
+                  {/* Body */}
+                  <div className="p-5 sm:p-6 flex-1 flex flex-col">
+                    <div className="mb-3">
+                      <div
+                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+                        style={{ background: m.color + "15", color: m.color, fontFamily: "var(--font-body)" }}
+                      >
+                        {m.artifact}
+                      </div>
+                    </div>
+                    <h3 className="text-base sm:text-lg font-bold text-white mb-2 group-hover:text-[#00d4aa] transition-colors">{m.title}</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{m.desc}</p>
+                  </div>
                 </div>
               </AnimatedSection>
             );
@@ -721,74 +682,6 @@ function AIChatMini() {
         </div>
       </div>
     </div>
-  );
-}
-
-// ============ COURSEWARE GALLERY — real slides from lessons ============
-function CoursewareGallery() {
-  const slides = [
-    { src: "/courseware/01_packaging.jpg", title: "Упаковка труда", lesson: "Урок 1" },
-    { src: "/courseware/02_functions.jpg", title: "Три функции денег", lesson: "Урок 1" },
-    { src: "/courseware/03_inflation.jpg", title: "Инфляция как эрозия", lesson: "Урок 1" },
-    { src: "/courseware/04_bank_node.jpg", title: "Банк — узел, не сейф", lesson: "Урок 1" },
-    { src: "/courseware/05_debt_work.jpg", title: "Долг = завтрашний труд", lesson: "Урок 1" },
-    { src: "/courseware/06_real_rate.jpg", title: "Реальная ставка", lesson: "Урок 1" },
-    { src: "/courseware/07_blockchain.jpg", title: "Цепочка блоков", lesson: "Урок 2" },
-    { src: "/courseware/08_halving.jpg", title: "Халвинг — встроенный дефицит", lesson: "Урок 2" },
-    { src: "/courseware/09_ethereum.jpg", title: "Ethereum — программируемая инфра", lesson: "Урок 2" },
-  ];
-  return (
-    <section className="relative py-20 sm:py-24 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#06091a] via-[#0a0e27] to-[#06091a]" />
-      <FloatingParticles />
-      <div className="container relative z-10">
-        <AnimatedSection>
-          <div className="text-center mb-10 sm:mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full neon-border-cyan bg-[#06b6d4]/5 mb-4">
-              <Eye className="w-4 h-4 text-[#06b6d4]" />
-              <span className="text-xs sm:text-sm font-medium text-[#06b6d4]" style={{ fontFamily: "var(--font-body)" }}>Что увидишь внутри</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-[1.1] tracking-tight">
-              <span className="text-white">Загляни </span>
-              <span className="gradient-text">внутрь уроков</span>
-            </h2>
-            <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto" style={{ fontFamily: "var(--font-body)" }}>
-              Так выглядит подача на уроках: каждая идея — отдельный кадр, кинематографичная инфографика, без слайдов-пустышек. Ниже — девять настоящих кадров из первых двух уроков.
-            </p>
-          </div>
-        </AnimatedSection>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 max-w-6xl mx-auto">
-          {slides.map((s, i) => (
-            <AnimatedSection key={i} delay={(i % 3) * 0.05}>
-              <div className="group relative rounded-2xl overflow-hidden border border-white/10 aspect-[16/9] bg-[#06091a] hover:border-white/30 transition-all">
-                <img
-                  src={s.src}
-                  alt={s.title}
-                  className="w-full h-full object-cover opacity-85 group-hover:opacity-100 group-hover:scale-[1.04] transition-all duration-500"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
-                <div className="absolute bottom-0 left-0 right-0 p-2.5 sm:p-3">
-                  <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-[#00d4aa] mb-0.5" style={{ fontFamily: "var(--font-body)" }}>
-                    {s.lesson}
-                  </div>
-                  <div className="text-xs sm:text-sm font-bold text-white leading-tight">
-                    {s.title}
-                  </div>
-                </div>
-              </div>
-            </AnimatedSection>
-          ))}
-        </div>
-
-        <AnimatedSection delay={0.15}>
-          <p className="text-center text-xs sm:text-sm text-gray-500 mt-8 max-w-2xl mx-auto" style={{ fontFamily: "var(--font-body)" }}>
-            Всего в курсе — 8 уроков и несколько сотен таких кадров. Плюс живой голос автора, рабочие шаблоны и настраиваемый под тебя дашборд.
-          </p>
-        </AnimatedSection>
-      </div>
-    </section>
   );
 }
 
@@ -1622,11 +1515,9 @@ export default function Home() {
       <HeroSection />
       <PositioningSection />
       <AuthorSection />
-      <TeaserSection />
       <div id="modules">
         <ModulesSection />
       </div>
-      <CoursewareGallery />
       <div id="architecture">
         <ArchitectureSection />
       </div>
