@@ -14,6 +14,8 @@ import {
   advancedModules,
   architectureLayers,
   executionModules,
+  coinOfTheWeek,
+  weeksHistory,
 } from "@/components/dashboard/dashboardData";
 
 // Единая точка доступа к данным дашборда.
@@ -43,6 +45,8 @@ export interface DashboardLiveData {
   advancedModules: typeof advancedModules;
   architectureLayers: typeof architectureLayers;
   executionModules: typeof executionModules;
+  coinOfTheWeek: typeof coinOfTheWeek;
+  weeksHistory: typeof weeksHistory;
   refresh: () => void;
 }
 
@@ -72,6 +76,8 @@ export function useDashboardLiveData(): DashboardLiveData {
     advancedModules,
     architectureLayers,
     executionModules,
+    coinOfTheWeek,
+    weeksHistory,
     refresh: () => setTick((n) => n + 1),
   };
 }

@@ -5,6 +5,7 @@ import {
   ArchitectureLayersSection,
   BtcStructureSection,
   CryptoMapSection,
+  CoinOfTheWeekSection,
   CryptoMultiplierSection,
   DcaSection,
   ExecutionModulesSection,
@@ -24,6 +25,7 @@ export default function Dashboard() {
       <BtcStructureSection />
       <CryptoMapSection />
       <WatchlistSection />
+      <CoinOfTheWeekSection />
       <DcaSection />
       <GridSection />
       <AiGuideSection />

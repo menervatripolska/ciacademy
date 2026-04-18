@@ -109,6 +109,32 @@ export interface AiGuideInsight {
   tags: string[];
 }
 
+
+export interface CoinOfTheWeek {
+  week: string;
+  ticker: string;
+  name: string;
+  sector: string;
+  aiScore: number;
+  socialScore: number;
+  allocationBucket: string;
+  reason: string;
+  thesis: string;
+  strengths: string[];
+  risks: string[];
+  publishedAt: string;
+  sourceUrl?: string;
+}
+
+export interface WeekHistoryEntry {
+  week: string;
+  ticker: string;
+  sector: string;
+  aiScore: number;
+  shortReason: string;
+  publishedAt: string;
+}
+
 export interface SemiCoreAsset {
   symbol: string;
   allocationPct: number;
@@ -210,52 +236,72 @@ export const cryptoMap: CryptoMapRow[] = [
 
 export const watchlist: WatchlistTicker[] = [
   {
-    symbol: "BTC",
-    name: "Bitcoin",
-    score: 78,
-    galaxyScore: 72,
-    altRank: 1,
-    trigger: "F&G ≤25 + ETF нетто-приток 5 сессий подряд + киты +270k за 30 дней",
-    timeframe: "Сегодня",
-    risk: "Низкий",
+    symbol: "KMNO",
+    name: "Kamino Finance",
+    score: 7,
+    galaxyScore: 84,
+    altRank: undefined,
+    trigger: "TVL >$1B в RWA-депозитах, xStocks-интеграция, Sentiment 84% (52w high), MCap $84M",
+    timeframe: "На неделе",
+    risk: "Средний",
+  },
+  {
+    symbol: "DUSK",
+    name: "Dusk Network",
+    score: 8,
+    galaxyScore: 84,
+    altRank: 12,
+    trigger: "Privacy L1 для RWA, ZK-proofs, NPEX $300M AUM, объём +1430%",
+    timeframe: "На неделе",
+    risk: "Высокий",
   },
   {
     symbol: "TAO",
     name: "Bittensor",
-    score: 71,
-    galaxyScore: 68,
-    altRank: 18,
-    trigger: "Galaxy Score растёт 4 дня, AI-сектор отвязался от альта-беты",
-    timeframe: "На неделе",
+    score: 8,
+    galaxyScore: 82,
+    altRank: undefined,
+    trigger: "$43M выручки Q1 2026, 21M max supply с halving, 73% стейкинг, endorsement Nvidia",
+    timeframe: "В течение месяца",
     risk: "Средний",
   },
   {
-    symbol: "LINK",
-    name: "Chainlink",
-    score: 65,
-    galaxyScore: 61,
-    altRank: 22,
-    trigger: "Закрытие ≥ $12.8 недельной свечой + рост OI",
-    timeframe: "На неделе",
+    symbol: "ZEC",
+    name: "Zcash",
+    score: 7,
+    galaxyScore: undefined,
+    altRank: 1,
+    trigger: "Privacy-нарратив, Grayscale спот-ETF, фикс-supply 21M, +650% engagements YoY",
+    timeframe: "В течение месяца",
     risk: "Средний",
   },
   {
-    symbol: "SOL",
-    name: "Solana",
-    score: 54,
-    galaxyScore: 58,
-    altRank: 12,
-    trigger: "Держит $82 на недельке, иначе — выпадает из ядра",
+    symbol: "ZETA",
+    name: "ZetaChain",
+    score: 7,
+    galaxyScore: undefined,
+    altRank: 6,
+    trigger: "L1 cross-chain BTC/ETH/BSC/SOL нативно, sentiment 92%, Galaxy Score +212%",
+    timeframe: "На неделе",
+    risk: "Высокий",
+  },
+  {
+    symbol: "KAS",
+    name: "Kaspa",
+    score: 7,
+    galaxyScore: undefined,
+    altRank: 30,
+    trigger: "L1 PoW BlockDAG, fair launch без pre-mine, +20% за неделю",
     timeframe: "В течение месяца",
     risk: "Высокий",
   },
   {
-    symbol: "SUI",
-    name: "Sui",
-    score: 49,
-    galaxyScore: 55,
-    altRank: 35,
-    trigger: "Ретест $1.65, отскок — сигнал накопления",
+    symbol: "DEXE",
+    name: "DeXe Protocol",
+    score: 7,
+    galaxyScore: 73,
+    altRank: 11,
+    trigger: "DAO-платформа соц.трейдинга, MCap $626M, +205% monthly, объём +328%",
     timeframe: "В течение месяца",
     risk: "Высокий",
   },
@@ -401,4 +447,65 @@ export const executionModules: ExecutionModule[] = [
   { name: "Grid-ребаланс", trigger: "Выход цены из диапазона", action: "Пауза бота, пересчёт, перезапуск", cadence: "Событийная" },
   { name: "Watchlist-алерт", trigger: "Срабатывает trigger тикера", action: "Пуш/письмо + ручное решение", cadence: "Событийная" },
   { name: "Ежемесячный ревью", trigger: "1-е число месяца", action: "Оценка режима, аллокации, эффективности ботов", cadence: "Месячная" },
+];
+
+
+// -------------- COIN OF THE WEEK (Airtable · «Crypto OS» → «Coin of the Week») --------------
+
+export const coinOfTheWeek: CoinOfTheWeek = {
+  week: "W15 · 7–13 апреля 2026",
+  ticker: "KMNO",
+  name: "Kamino Finance",
+  sector: "DeFi / RWA / Solana",
+  aiScore: 7,
+  socialScore: 84,
+  allocationBucket: "Микро (1–2%)",
+  reason:
+    "Лучший баланс «реальный продукт + низкий MCap + трендирующий нарратив» среди кандидатов недели. TVL >$1B в RWA-депозитах, xStocks-интеграция (токенизированные акции как залог) и рекордный sentiment 95 (52-недельный максимум). MCap всего $84M — редкий случай, когда серьёзный финансовый продукт с миллиардным TVL стоит дешевле своего реального веса.",
+  thesis:
+    "Kamino превращается в «RWA-хаб Solana». xStocks делает токенизированные акции продуктивным залогом — это начало нового цикла RWA-лендинга. При растущем TVL и сильном нарративе RWA, протокол с низким MCap и функциональным токеном имеет непропорциональный upside относительно обычных DeFi-форков.",
+  strengths: [
+    "Реальный TVL >$1B в RWA-депозитах — не обещания, а цифры",
+    "Лидерство в RWA-лендинге на Solana",
+    "xStocks — первый протокол с токенизированными акциями как залогом",
+    "Партнёры: Galaxy, USD1, Exponent Finance",
+    "Sentiment 84% (52w high), engagements 1.78M",
+    "Низкий MCap $84M при реальных протокольных fees",
+    "Нулевой impact от Drift-эксплоита: код под аудитом, multisig + timelock",
+  ],
+  risks: [
+    "Unlocks по вестинг-расписанию дают временное sell-pressure (последний раз $4M сорвал 52w low)",
+    "Зависимость от здоровья Solana — системный риск",
+    "Конкуренция: Jupiter Lend, Loopscale, Exponent Finance",
+    "Coinbase делистил KMNO-фьючерсы — удар по ликвидности",
+    "Стандартный смарт-контрактный риск любого DeFi",
+  ],
+  publishedAt: "2026-04-10",
+};
+
+export const weeksHistory: WeekHistoryEntry[] = [
+  {
+    week: "W15 · 7–13 апр 2026",
+    ticker: "KMNO",
+    sector: "DeFi / RWA / Solana",
+    aiScore: 7,
+    shortReason: "RWA-хаб Solana, TVL >$1B, xStocks-интеграция",
+    publishedAt: "2026-04-10",
+  },
+  {
+    week: "W14 · 31 мар – 6 апр 2026",
+    ticker: "TAO",
+    sector: "AI / Инфраструктура",
+    aiScore: 8,
+    shortReason: "$43M выручки Q1, Bitcoin-токеномика, 73% стейкинг",
+    publishedAt: "2026-04-01",
+  },
+  {
+    week: "W13 · 23 мар 2026",
+    ticker: "HYPE",
+    sector: "DeFi / торговая инфраструктура",
+    aiScore: 8,
+    shortReason: "Perp DEX с собственным L1, buyback+burn, fair launch",
+    publishedAt: "2026-03-23",
+  },
 ];

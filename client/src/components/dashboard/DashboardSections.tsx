@@ -23,6 +23,8 @@ import {
   Sparkles,
   Target,
   TrendingUp,
+  Trophy,
+  History,
   Wallet,
   Workflow,
   Zap,
@@ -522,6 +524,114 @@ export function WatchlistSection() {
             </Card>
           </motion.div>
         ))}
+      </div>
+    </section>
+  );
+}
+
+// ============ 6b. COIN OF THE WEEK ============
+
+export function CoinOfTheWeekSection() {
+  const { coinOfTheWeek: c, weeksHistory } = useDashboardLiveData();
+  return (
+    <section>
+      <SectionHeader
+        icon={Trophy}
+        title="Монета недели"
+        kicker="06+ · Airtable · Coin of the Week"
+        right={<Badge tone="up">{c.week}</Badge>}
+      />
+      <div className="grid lg:grid-cols-3 gap-4">
+        {/* Main card */}
+        <Card className="p-6 lg:col-span-2 relative overflow-hidden" accent>
+          <div className="absolute -top-10 -right-10 text-[140px] font-black text-white/[0.03] tracking-tighter select-none">
+            {c.ticker}
+          </div>
+          <div className="relative">
+            <div className="flex items-start justify-between gap-4 mb-3">
+              <div>
+                <div className="text-[11px] uppercase tracking-wider text-white/45 mb-1">
+                  {c.sector}
+                </div>
+                <div className="flex items-end gap-3">
+                  <h3 className="text-3xl sm:text-4xl font-black tracking-tight">{c.ticker}</h3>
+                  <span className="text-lg text-white/60 mb-1">{c.name}</span>
+                </div>
+              </div>
+              <div className="flex flex-col items-end gap-1">
+                <Badge tone="up">AI Score {c.aiScore}/10</Badge>
+                <Badge tone="hot">Social {c.socialScore}</Badge>
+                <Badge tone="warn">{c.allocationBucket}</Badge>
+              </div>
+            </div>
+
+            <div className="text-sm text-white/80 leading-relaxed mb-4">{c.reason}</div>
+
+            <div className="rounded-xl bg-white/[0.03] border border-white/5 p-4 mb-4">
+              <div className="text-[11px] uppercase tracking-wider text-white/45 mb-1">
+                Ключевой тезис
+              </div>
+              <div className="text-sm text-white/85 leading-relaxed">{c.thesis}</div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <div className="text-xs font-semibold text-[#00d4aa] mb-2">Сильные стороны</div>
+                <ul className="space-y-1.5">
+                  {c.strengths.map((s, i) => (
+                    <li key={i} className="text-xs text-white/75 leading-relaxed flex gap-2">
+                      <span className="text-[#00d4aa] mt-0.5">+</span>
+                      <span>{s}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-red-400 mb-2">Риски</div>
+                <ul className="space-y-1.5">
+                  {c.risks.map((r, i) => (
+                    <li key={i} className="text-xs text-white/75 leading-relaxed flex gap-2">
+                      <span className="text-red-400 mt-0.5">−</span>
+                      <span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* History */}
+        <Card className="p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <History className="w-4 h-4 text-white/60" />
+            <div className="text-sm font-semibold">История недель</div>
+          </div>
+          <div className="space-y-2">
+            {weeksHistory.map((w, i) => (
+              <div
+                key={w.week}
+                className={`rounded-xl p-3 border ${
+                  i === 0
+                    ? "bg-[#00d4aa]/10 border-[#00d4aa]/30"
+                    : "bg-white/[0.03] border-white/5"
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <div className="text-sm font-bold">{w.ticker}</div>
+                  <Badge tone={i === 0 ? "up" : "neutral"}>AI {w.aiScore}</Badge>
+                </div>
+                <div className="text-[11px] text-white/45 mb-1">{w.week}</div>
+                <div className="text-[11px] text-white/60 leading-relaxed">{w.shortReason}</div>
+                <div className="text-[10px] text-white/35 mt-1">{w.sector}</div>
+              </div>
+            ))}
+          </div>
+          <div className="text-[11px] text-white/40 mt-3 leading-relaxed">
+            Источник: Airtable «Crypto OS» → «Coin of the Week». Обновляется планировщиком
+            crypto-os-coin-of-the-week каждый понедельник 10:10.
+          </div>
+        </Card>
       </div>
     </section>
   );
