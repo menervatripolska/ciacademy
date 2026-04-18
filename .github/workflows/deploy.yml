@@ -37,13 +37,13 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: "/www/ciacademy.kz/"
+          server-dir: "./"
           local-dir: ./dist/public/
           protocol: ftp
           port: 21
           log-level: verbose
           dangerous-clean-slate: false
-          state-name: .ftp-deploy-sync-state.json
+          state-name: .ftp-deploy-force-${{ github.run_id }}.json
           exclude: |
             **/.git*
             **/.git*/**
