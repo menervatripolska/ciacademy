@@ -1932,6 +1932,17 @@ function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
+          <CryptoGateDialog>
+            <button
+              type="button"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 text-white text-xs sm:text-sm font-semibold transition-colors"
+              style={{ fontFamily: "var(--font-body)" }}
+              data-testid="button-navbar-gate"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>Я — Криптан</span>
+            </button>
+          </CryptoGateDialog>
           <a
             href={COURSE_URL}
             target="_blank"
@@ -1959,6 +1970,18 @@ function Navbar() {
             <a href="#get" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-white text-sm py-2" style={{ fontFamily: "var(--font-body)" }}>Что получаешь</a>
             <a href="#pricing" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-white text-sm py-2" style={{ fontFamily: "var(--font-body)" }}>Цена</a>
             <a href="#faq" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-white text-sm py-2" style={{ fontFamily: "var(--font-body)" }}>FAQ</a>
+            <CryptoGateDialog>
+              <button
+                type="button"
+                onClick={() => setMenuOpen(false)}
+                className="sm:hidden inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 text-white text-sm font-semibold mt-2"
+                style={{ fontFamily: "var(--font-body)" }}
+                data-testid="button-navbar-gate-mobile"
+              >
+                <Lock className="w-4 h-4" />
+                <span>Я — Криптан</span>
+              </button>
+            </CryptoGateDialog>
             <a
               href={COURSE_URL}
               target="_blank"
