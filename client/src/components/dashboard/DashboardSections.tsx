@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Activity,
+  ArrowDown as ArrowDownIcon,
+  BellRing,
+  BookOpen,
   AlertTriangle,
   ArrowDownRight,
   ArrowUpRight,
@@ -29,8 +33,33 @@ import {
   Workflow,
   Zap,
 } from "lucide-react";
+import {
+  Area,
+  CartesianGrid,
+  ComposedChart,
+  Line,
+  LineChart as RechartsLineChart,
+  ReferenceDot,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { useDashboardLiveData } from "@/hooks/useDashboardLiveData";
 import type { CryptoMapRow } from "./dashboardData";
+import {
+  altseasonIndexToday,
+  btcS2fNowIndex,
+  btcS2fSeries,
+  fearGreedToday,
+  hashRibbonsStatus,
+  marketWidgetLinks,
+  miningCostSeries,
+  miningCostToday,
+  piCycleStatus,
+  publishedCharts,
+} from "./dashboardData";
+
 
 // ----- shared primitives -----
 
@@ -373,7 +402,222 @@ export function CryptoMultiplierSection() {
   );
 }
 
+
+// ============================================================================
+// BTC Structure — вспомогательные виджеты (Hash Ribbons lamp, Pi Cycle arrow,
+// Mining Cost Zones chart, S2F chart, TV mini-widgets, F&G round, Altseason)
+// ============================================================================
+
+function ChartCard({
+  title,
+  subtitle,
+  children,
+  footer,
+}: {
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+}) {
+  return (
+    <Card className="p-5">
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <div>
+          <div className="text-sm font-semibold text-white">{title}</div>
+          {subtitle ? <div className="text-[11px] text-white/50">{subtitle}</div> : null}
+        </div>
+      </div>
+      <div className="h-[240px]">{children}</div>
+      {footer ? <div className="mt-3 text-xs text-white/70">{footer}</div> : null}
+    </Card>
+  );
+}
+
+function TvMiniSymbol({ url, title }: { url: string; title: string }) {
+  return (
+    <Card className="p-0 overflow-hidden">
+      <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/45">{title}</div>
+      <iframe
+        src={url}
+        title={title}
+        loading="lazy"
+        style={{ width: "100%", height: 200, border: 0, background: "transparent" }}
+      />
+    </Card>
+  );
+}
+
+function HashRibbonsLamp({ on }: { on: boolean }) {
+  return (
+    <div
+      className={
+        "relative inline-flex h-14 w-14 items-center justify-center rounded-full border " +
+        (on ? "border-[#3ba5ff]/70 bg-[#0a2540]" : "border-white/15 bg-black/30")
+      }
+      style={on ? { boxShadow: "0 0 22px rgba(59,165,255,0.55)" } : undefined}
+      aria-label={on ? "Hash Ribbons buy — сигнал активен" : "Hash Ribbons — сигнала нет"}
+    >
+      <BellRing className={"h-6 w-6 " + (on ? "text-[#7bc6ff]" : "text-white/35")} />
+    </div>
+  );
+}
+
+function PiCycleArrow({ on }: { on: boolean }) {
+  return (
+    <div
+      className={
+        "relative inline-flex h-14 w-14 items-center justify-center rounded-full border " +
+        (on ? "border-[#ff4d4f]/80 bg-[#2a0a0a]" : "border-white/15 bg-black/30")
+      }
+      style={on ? { boxShadow: "0 0 22px rgba(255,77,79,0.55)" } : undefined}
+      aria-label={on ? "Pi Cycle TOP — сигнал активен" : "Pi Cycle — сигнала нет"}
+    >
+      <ArrowDownIcon className={"h-6 w-6 " + (on ? "text-[#ff8a8a]" : "text-white/35")} />
+    </div>
+  );
+}
+
+function TimeframeToggle({
+  value,
+  onChange,
+}: {
+  value: "daily" | "weekly";
+  onChange: (v: "daily" | "weekly") => void;
+}) {
+  const btn = (v: "daily" | "weekly", label: string) => (
+    <button
+      type="button"
+      onClick={() => onChange(v)}
+      className={
+        "px-3 py-1 text-xs rounded-md border transition " +
+        (value === v
+          ? "border-white/30 bg-white/10 text-white"
+          : "border-white/10 text-white/60 hover:text-white")
+      }
+    >
+      {label}
+    </button>
+  );
+  return (
+    <div className="inline-flex gap-1.5">
+      {btn("daily", "1D")}
+      {btn("weekly", "1W")}
+    </div>
+  );
+}
+
+function TvPublishedEmbed({ url, label }: { url: string; label: string }) {
+  if (!url) {
+    return (
+      <div className="mt-3 rounded-md border border-dashed border-white/15 p-3 text-[11px] text-white/45">
+        {label}: публикация TradingView будет вставлена сюда (URL пустой — обнови publishedCharts).
+      </div>
+    );
+  }
+  return (
+    <div className="mt-3 overflow-hidden rounded-md border border-white/10 bg-black/30">
+      <iframe
+        src={url}
+        title={label}
+        loading="lazy"
+        style={{ width: "100%", height: 320, border: 0 }}
+      />
+    </div>
+  );
+}
+
+function HashRibbonsWidget() {
+  const [tf, setTf] = useState<"daily" | "weekly">("daily");
+  const cur = hashRibbonsStatus.timeframes[tf];
+  const on = cur.state === "recovery";
+  const spreadPct = (((cur.ma30 - cur.ma60) / cur.ma60) * 100).toFixed(2);
+  const snapshotUrl = tf === "daily" ? publishedCharts.hashRibbonsDaily : publishedCharts.hashRibbonsWeekly;
+  return (
+    <Card className="p-5">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <HashRibbonsLamp on={on} />
+          <div>
+            <div className="text-sm font-semibold text-white">Hash Ribbons</div>
+            <div className="text-[11px] text-white/50">
+              Обновлено {new Date(hashRibbonsStatus.updatedAt).toLocaleString("ru-RU")}
+            </div>
+          </div>
+        </div>
+        <TimeframeToggle value={tf} onChange={setTf} />
+      </div>
+      <div className="mt-4 text-sm text-white/80">{cur.label}</div>
+      <div className="mt-3 grid grid-cols-3 gap-3 text-xs">
+        <div className="rounded-md border border-white/10 bg-black/20 p-2">
+          <div className="text-white/45 text-[11px]">MA30 хэшрейт</div>
+          <div className="text-white tabular-nums">{cur.ma30} EH/s</div>
+        </div>
+        <div className="rounded-md border border-white/10 bg-black/20 p-2">
+          <div className="text-white/45 text-[11px]">MA60 хэшрейт</div>
+          <div className="text-white tabular-nums">{cur.ma60} EH/s</div>
+        </div>
+        <div className="rounded-md border border-white/10 bg-black/20 p-2">
+          <div className="text-white/45 text-[11px]">Спред MA30 − MA60</div>
+          <div className={"tabular-nums " + (on ? "text-[#7bc6ff]" : "text-white/70")}>
+            {on ? "+" : ""}
+            {spreadPct}%
+          </div>
+        </div>
+      </div>
+      <div className="mt-3 text-[12px] text-white/60">
+        Последний Buy: <span className="text-white">{cur.lastBuy}</span> · Последняя капитуляция:{" "}
+        <span className="text-white/80">{cur.lastCapitulation}</span>
+      </div>
+      <div className="mt-3 text-sm leading-relaxed text-white/75">{cur.interpretation}</div>
+      <TvPublishedEmbed url={snapshotUrl} label={`Hash Ribbons · ${tf === "daily" ? "дневной ТФ" : "недельный ТФ"}`} />
+    </Card>
+  );
+}
+
+function PiCycleWidget() {
+  const [tf, setTf] = useState<"daily" | "weekly">("daily");
+  const cur = piCycleStatus.timeframes[tf];
+  const on = cur.state === "top-signal";
+  const snapshotUrl = tf === "daily" ? publishedCharts.piCycleDaily : publishedCharts.piCycleWeekly;
+  return (
+    <Card className="p-5">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <PiCycleArrow on={on} />
+          <div>
+            <div className="text-sm font-semibold text-white">Pi Cycle Top</div>
+            <div className="text-[11px] text-white/50">
+              Обновлено {new Date(piCycleStatus.updatedAt).toLocaleString("ru-RU")}
+            </div>
+          </div>
+        </div>
+        <TimeframeToggle value={tf} onChange={setTf} />
+      </div>
+      <div className="mt-4 text-sm text-white/80">{cur.label}</div>
+      <div className="mt-3 grid grid-cols-3 gap-3 text-xs">
+        <div className="rounded-md border border-white/10 bg-black/20 p-2">
+          <div className="text-white/45 text-[11px]">MA111</div>
+          <div className="text-white tabular-nums">${cur.ma111.toLocaleString("en-US")}</div>
+        </div>
+        <div className="rounded-md border border-white/10 bg-black/20 p-2">
+          <div className="text-white/45 text-[11px]">MA350×2</div>
+          <div className="text-white tabular-nums">${cur.ma350x2.toLocaleString("en-US")}</div>
+        </div>
+        <div className="rounded-md border border-white/10 bg-black/20 p-2">
+          <div className="text-white/45 text-[11px]">До top-зоны</div>
+          <div className={"tabular-nums " + (on ? "text-[#ff8a8a]" : "text-white/70")}>
+            {cur.distancePct.toFixed(1)}%
+          </div>
+        </div>
+      </div>
+      <div className="mt-3 text-sm leading-relaxed text-white/75">{cur.interpretation}</div>
+      <TvPublishedEmbed url={snapshotUrl} label={`Pi Cycle · ${tf === "daily" ? "дневной ТФ" : "недельный ТФ"}`} />
+    </Card>
+  );
+}
+
 // ============ 4. BTC STRUCTURE ============
+
 
 export function BtcStructureSection() {
   const { btc } = useDashboardLiveData();
@@ -402,6 +646,157 @@ export function BtcStructureSection() {
           Это сигнал накопления, а не раздачи.
         </div>
       </Card>
+
+      {/* --- Дополнительный слой: рыночный контекст + цикл + Hash Ribbons + Pi Cycle --- */}
+
+      <div className="mt-6 grid gap-3 md:grid-cols-3">
+        <Card className="p-5">
+          <div className="text-[11px] uppercase tracking-wider text-white/45">Fear &amp; Greed · alternative.me</div>
+          <div className="mt-3 flex items-center justify-center">
+            <a
+              href={fearGreedToday.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="block"
+              title="Открыть на alternative.me"
+            >
+              <img
+                src={fearGreedToday.widgetImgUrl}
+                alt={`Fear & Greed Index: ${fearGreedToday.value} · ${fearGreedToday.label}`}
+                loading="lazy"
+                style={{ width: 200, height: 200, display: "block" }}
+              />
+            </a>
+          </div>
+          <div className="mt-3 text-[12px] text-white/65">
+            Сейчас <span className="text-white">{fearGreedToday.value}</span> · {fearGreedToday.label}. Неделю
+            назад было {fearGreedToday.history7d[0].value}.
+          </div>
+        </Card>
+        <Card className="p-5">
+          <div className="text-[11px] uppercase tracking-wider text-white/45">Altseason Index</div>
+          <div className="mt-3 flex items-end gap-3">
+            <div className="text-5xl font-black text-[#f59e0b] tabular-nums">{altseasonIndexToday.value}</div>
+            <div className="pb-1 text-sm text-white/60">/ 100 · {altseasonIndexToday.label}</div>
+          </div>
+          <div className="mt-3 h-2 w-full overflow-hidden rounded bg-white/5">
+            <div
+              style={{ width: `${altseasonIndexToday.value}%` }}
+              className="h-2 bg-gradient-to-r from-[#f59e0b] via-[#00d4aa] to-[#3ba5ff]"
+            />
+          </div>
+          <div className="mt-3 text-[12px] text-white/60">{altseasonIndexToday.note}</div>
+          <a
+            href={altseasonIndexToday.sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-2 inline-block text-[11px] text-[#3ba5ff] hover:underline"
+          >
+            blockchaincenter.net →
+          </a>
+        </Card>
+        <TvMiniSymbol url={marketWidgetLinks.totalMarketCap} title="Крипторынок · Total Market Cap" />
+      </div>
+
+      <div className="mt-3 grid gap-3 md:grid-cols-2">
+        <TvMiniSymbol url={marketWidgetLinks.btcDominance} title="Доминация BTC · BTC.D" />
+        <TvMiniSymbol url={marketWidgetLinks.ethBtc} title="Сила альтов · ETH / BTC" />
+      </div>
+
+      <div className="mt-6 grid gap-3 md:grid-cols-2">
+        <ChartCard
+          title="Зоны себестоимости майнинга"
+          subtitle="Цена BTC vs диапазоны себестоимости добычи (6 мес)"
+          footer={
+            <>
+              Сейчас цена <span className="text-white">${miningCostToday.price.toLocaleString("en-US")}</span> при
+              средней себестоимости <span className="text-white">${miningCostToday.avgCostUsd.toLocaleString("en-US")}</span>.
+              Маржа майнеров <span className="text-[#00d4aa]">+{miningCostToday.marginPct.toFixed(1)}%</span> — зелёная
+              зона, капитуляции нет.
+            </>
+          }
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <ComposedChart data={miningCostSeries} margin={{ top: 8, right: 8, bottom: 4, left: 0 }}>
+              <defs>
+                <linearGradient id="miningGreen" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#00d4aa" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="#00d4aa" stopOpacity={0.05} />
+                </linearGradient>
+                <linearGradient id="miningYellow" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="#f59e0b" stopOpacity={0.05} />
+                </linearGradient>
+                <linearGradient id="miningRed" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#ff4d4f" stopOpacity={0.28} />
+                  <stop offset="100%" stopColor="#ff4d4f" stopOpacity={0.05} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+              <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 10 }} />
+              <YAxis tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 10 }} width={52} />
+              <Tooltip
+                contentStyle={{ background: "#0b0b10", border: "1px solid rgba(255,255,255,0.12)", fontSize: 12 }}
+                labelStyle={{ color: "rgba(255,255,255,0.6)" }}
+              />
+              <Area type="monotone" dataKey="redZone" stroke="#ff4d4f" fill="url(#miningRed)" strokeWidth={1} />
+              <Area type="monotone" dataKey="yellowZone" stroke="#f59e0b" fill="url(#miningYellow)" strokeWidth={1} />
+              <Area type="monotone" dataKey="greenZone" stroke="#00d4aa" fill="url(#miningGreen)" strokeWidth={1} />
+              <Line type="monotone" dataKey="price" stroke="#ffffff" strokeWidth={2} dot={false} />
+            </ComposedChart>
+          </ResponsiveContainer>
+        </ChartCard>
+
+        <ChartCard
+          title="Stock-to-Flow · модель vs факт"
+          subtitle="Где BTC относительно модельной кривой Plan B"
+          footer={
+            <>
+              Сегодня цена{" "}
+              <span className="text-white">
+                ${btcS2fSeries[btcS2fNowIndex].price.toLocaleString("en-US")}
+              </span>{" "}
+              при модели{" "}
+              <span className="text-white">
+                ${btcS2fSeries[btcS2fNowIndex].model.toLocaleString("en-US")}
+              </span>{" "}
+              — цикл догоняет модель после халвинга 2024.
+            </>
+          }
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <RechartsLineChart data={btcS2fSeries} margin={{ top: 8, right: 8, bottom: 4, left: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+              <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 10 }} />
+              <YAxis
+                scale="log"
+                domain={["auto", "auto"]}
+                tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 10 }}
+                width={58}
+              />
+              <Tooltip
+                contentStyle={{ background: "#0b0b10", border: "1px solid rgba(255,255,255,0.12)", fontSize: 12 }}
+                labelStyle={{ color: "rgba(255,255,255,0.6)" }}
+              />
+              <Line type="monotone" dataKey="model" stroke="#f59e0b" strokeWidth={2} dot={false} />
+              <Line type="monotone" dataKey="price" stroke="#3ba5ff" strokeWidth={2} dot={false} />
+              <ReferenceDot
+                x={btcS2fSeries[btcS2fNowIndex].date}
+                y={btcS2fSeries[btcS2fNowIndex].price}
+                r={5}
+                fill="#ffffff"
+                stroke="#ffffff"
+                label={{ value: "мы здесь", position: "top", fill: "#ffffff", fontSize: 10 }}
+              />
+            </RechartsLineChart>
+          </ResponsiveContainer>
+        </ChartCard>
+      </div>
+
+      <div className="mt-3 grid gap-3 md:grid-cols-2">
+        <HashRibbonsWidget />
+        <PiCycleWidget />
+      </div>
     </section>
   );
 }

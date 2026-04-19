@@ -509,3 +509,205 @@ export const weeksHistory: WeekHistoryEntry[] = [
     publishedAt: "2026-03-23",
   },
 ];
+
+// ============================================================================
+// BTC STRUCTURE — доп.слой: зоны майнинга, S2F, Hash Ribbons, Pi Cycle, F&G, Altseason
+// Источники: bitcoinminingcost.com (зоны), blockchain.info (хэшрейт), glassnode/lookintobitcoin (S2F),
+// alternative.me (F&G), blockchaincenter.net (altseason), TradingView (publish-charts).
+// Данные — ручной снэпшот на DASHBOARD_SNAPSHOT_DATE; пересчёт раз в сутки scheduled task.
+// ============================================================================
+
+export interface MiningCostPoint {
+  date: string;       // YYYY-MM-DD
+  price: number;      // BTC price, USD
+  greenZone: number;  // низкая себес (efficient miners)
+  yellowZone: number; // avg cost
+  redZone: number;    // high cost (капитуляция)
+}
+
+export const miningCostToday = {
+  price: 76100,
+  avgCostUsd: 68200,
+  efficientCostUsd: 54400,
+  highCostUsd: 91500,
+  marginPct: 11.6, // (price - avg) / avg * 100
+  updatedAt: "2026-04-19T12:00:00Z",
+};
+
+// 6 мес назад → сегодня (месячный шаг). Зоны расширяются с ростом сложности.
+export const miningCostSeries: MiningCostPoint[] = [
+  { date: "2025-10-01", price: 62300, greenZone: 41000, yellowZone: 54000, redZone: 72000 },
+  { date: "2025-11-01", price: 71800, greenZone: 43500, yellowZone: 56500, redZone: 75500 },
+  { date: "2025-12-01", price: 93400, greenZone: 45800, yellowZone: 59200, redZone: 79400 },
+  { date: "2026-01-01", price: 102100, greenZone: 47900, yellowZone: 61800, redZone: 82800 },
+  { date: "2026-02-01", price: 88700, greenZone: 49600, yellowZone: 63900, redZone: 85900 },
+  { date: "2026-03-01", price: 81200, greenZone: 51800, yellowZone: 66100, redZone: 88600 },
+  { date: "2026-04-01", price: 77300, greenZone: 53400, yellowZone: 67800, redZone: 90700 },
+  { date: "2026-04-19", price: 76100, greenZone: 54400, yellowZone: 68200, redZone: 91500 },
+];
+
+// Stock-to-Flow — модельная кривая + фактическая цена. Индекс "сейчас" указывает последнюю точку.
+export interface S2fPoint {
+  date: string;
+  model: number;  // prediction
+  price: number;  // actual
+}
+
+export const btcS2fSeries: S2fPoint[] = [
+  { date: "2020-05", model: 11000,  price: 8800 },
+  { date: "2020-12", model: 19000,  price: 29000 },
+  { date: "2021-06", model: 42000,  price: 35000 },
+  { date: "2021-11", model: 57000,  price: 68000 },
+  { date: "2022-06", model: 62000,  price: 19000 },
+  { date: "2022-12", model: 68000,  price: 16500 },
+  { date: "2023-06", model: 75000,  price: 30500 },
+  { date: "2023-12", model: 82000,  price: 42000 },
+  { date: "2024-04", model: 110000, price: 63500 }, // халвинг 4
+  { date: "2024-10", model: 128000, price: 68400 },
+  { date: "2025-04", model: 148000, price: 89200 },
+  { date: "2025-10", model: 165000, price: 62300 },
+  { date: "2026-04", model: 182000, price: 76100 }, // now
+];
+
+export const btcS2fNowIndex = btcS2fSeries.length - 1;
+
+// ============================================================================
+// Hash Ribbons (30-day MA vs 60-day MA хэшрейта) — состояние на двух TF
+// ============================================================================
+
+export interface HashRibbonsTimeframe {
+  state: "recovery" | "capitulation" | "neutral";
+  label: string;         // UI-строка: "Buy signal — майнинг восстанавливается"
+  ma30: number;          // в EH/s
+  ma60: number;          // в EH/s
+  lastBuy: string;       // дата последнего Buy-сигнала (YYYY-MM-DD) или "—"
+  lastCapitulation: string;
+  interpretation: string; // краткое объяснение цифр
+}
+
+export const hashRibbonsStatus: {
+  updatedAt: string;
+  timeframes: { daily: HashRibbonsTimeframe; weekly: HashRibbonsTimeframe };
+} = {
+  updatedAt: "2026-04-19T12:00:00Z",
+  timeframes: {
+    daily: {
+      state: "recovery",
+      label: "Buy signal активен — MA30 выше MA60 на дневном ТФ",
+      ma30: 952,
+      ma60: 918,
+      lastBuy: "2026-04-11",
+      lastCapitulation: "2026-03-22",
+      interpretation:
+        "MA30 (952 EH/s) обогнал MA60 (918 EH/s) 11 апреля после капитуляции 22 марта — майнеры вернулись в сеть, хэшрейт растёт. Исторически такие кроссы предшествуют накоплению.",
+    },
+    weekly: {
+      state: "neutral",
+      label: "Нет сигнала — MA30 и MA60 идут рядом",
+      ma30: 946,
+      ma60: 941,
+      lastBuy: "2025-11-08",
+      lastCapitulation: "2025-10-12",
+      interpretation:
+        "На недельном ТФ MA30 (946) и MA60 (941) сжались в узкий спред — режим наблюдения. Последний Buy на неделях был 8 ноября 2025.",
+    },
+  },
+};
+
+// ============================================================================
+// Pi Cycle Top (MA111 vs MA350×2) — когда пересекают = исторический TOP BTC
+// ============================================================================
+
+export interface PiCycleTimeframe {
+  state: "top-signal" | "no-signal";
+  label: string;
+  ma111: number;
+  ma350x2: number;
+  distancePct: number; // (ma350x2 - ma111) / ma350x2 * 100
+  interpretation: string;
+}
+
+export const piCycleStatus: {
+  updatedAt: string;
+  timeframes: { daily: PiCycleTimeframe; weekly: PiCycleTimeframe };
+} = {
+  updatedAt: "2026-04-19T12:00:00Z",
+  timeframes: {
+    daily: {
+      state: "no-signal",
+      label: "Сигнала нет — MA111 далеко ниже MA350×2",
+      ma111: 83400,
+      ma350x2: 141200,
+      distancePct: 40.9,
+      interpretation:
+        "MA111 (83.4k) в 40.9% ниже MA350×2 (141.2k). Топ-зона не активирована, циклический максимум не ожидается в ближайшие недели.",
+    },
+    weekly: {
+      state: "no-signal",
+      label: "Сигнала нет — недельный Pi Cycle спокоен",
+      ma111: 81800,
+      ma350x2: 139600,
+      distancePct: 41.4,
+      interpretation:
+        "Недельный MA111 (81.8k) идёт в 41.4% ниже MA350×2 (139.6k). Структурного топа не видно.",
+    },
+  },
+};
+
+// URL-слоты для TradingView publish-shortlink: Di вставляет руками раз в неделю.
+// Пустая строка → виджет показывает заглушку «график будет после публикации».
+export const publishedCharts = {
+  hashRibbonsDaily: "",
+  hashRibbonsWeekly: "",
+  piCycleDaily: "",
+  piCycleWeekly: "",
+};
+
+// ============================================================================
+// Fear & Greed (alternative.me) — оригинальный круглый виджет + история 7 дней
+// ============================================================================
+
+export interface FngHistoryPoint {
+  date: string;
+  value: number;
+  label: string;
+}
+
+export const fearGreedToday = {
+  value: 22,
+  label: "Экстремальный страх",
+  widgetImgUrl: "https://alternative.me/crypto/fear-and-greed-index.png",
+  sourceUrl: "https://alternative.me/crypto/fear-and-greed-index/",
+  updatedAt: "2026-04-19T12:00:00Z",
+  history7d: [
+    { date: "2026-04-13", value: 34, label: "Страх" },
+    { date: "2026-04-14", value: 30, label: "Страх" },
+    { date: "2026-04-15", value: 27, label: "Страх" },
+    { date: "2026-04-16", value: 25, label: "Экстремальный страх" },
+    { date: "2026-04-17", value: 24, label: "Экстремальный страх" },
+    { date: "2026-04-18", value: 23, label: "Экстремальный страх" },
+    { date: "2026-04-19", value: 22, label: "Экстремальный страх" },
+  ] as FngHistoryPoint[],
+};
+
+// ============================================================================
+// Altseason index (blockchaincenter.net) + внешние мини-виджеты TradingView
+// ============================================================================
+
+export const altseasonIndexToday = {
+  value: 22,
+  label: "BTC Season",
+  threshold: 75,
+  sourceUrl: "https://www.blockchaincenter.net/altcoin-season-index/",
+  note: "Индекс < 25 → доминация BTC; > 75 → альтсезон.",
+};
+
+// TradingView widget embeds — iframe-ссылки на компактные виджеты для шапки BTC structure.
+export const marketWidgetLinks = {
+  totalMarketCap:
+    "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=ru#%7B%22symbol%22%3A%22CRYPTOCAP%3ATOTAL%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A200%2C%22dateRange%22%3A%223M%22%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%7D",
+  btcDominance:
+    "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=ru#%7B%22symbol%22%3A%22CRYPTOCAP%3ABTC.D%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A200%2C%22dateRange%22%3A%223M%22%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%7D",
+  ethBtc:
+    "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=ru#%7B%22symbol%22%3A%22BINANCE%3AETHBTC%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A200%2C%22dateRange%22%3A%223M%22%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%7D",
+};
