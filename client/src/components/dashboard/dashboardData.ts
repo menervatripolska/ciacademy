@@ -82,18 +82,28 @@ export interface WatchlistTicker {
   risk: "Низкий" | "Средний" | "Высокий";
 }
 
+// DCA по системе «монета недели / монета дня»:
+// - монета недели закупается 3 частями на 1% от капитала
+// - монета дня — 3 частями на 0.5% от капитала
+// Уровни закупа: по текущей цене, -5% от текущей, -10% от текущей.
+export type DcaBucket = "week" | "day";
+
 export interface DcaPlan {
-  asset: string;
-  // % от ежемесячного DCA-бюджета (базовое распределение, без учёта мультипликатора).
-  basePct: number;
-  multiplier: number;
-  // % от бюджета после применения мультипликатора (нормализовано к 100).
-  currentPct: number;
-  // Опционально: пример в $ для тех, кто считает в долларах.
-  baseMonthlyUsd?: number;
-  recommendedMonthlyUsd?: number;
-  frequency: "Еженедельно" | "Двухнедельно" | "Ежемесячно";
-  nextBuyDate: string;
+  bucket: DcaBucket;
+  // Название бакета — человеческое ("Монета недели" / "Монета дня")
+  label: string;
+  ticker: string;
+  name: string;
+  sector: string;
+  currentPriceUsd: number;
+  // Процент от капитала (1.0 = 1%, 0.5 = 0.5%)
+  totalPctOfCapital: number;
+  // Как общий процент делится по закупам — доли должны в сумме давать 1
+  splits: Array<{
+    level: "now" | "-5%" | "-10%";
+    priceMultiplier: number; // 1.00, 0.95, 0.90
+    shareOfBucket: number;   // доля внутри бакета, 0.333... для 3 равных
+  }>;
   reason: string;
 }
 
@@ -120,6 +130,7 @@ export interface CoinOfTheWeek {
   ticker: string;
   name: string;
   sector: string;
+  priceUsd: number;
   aiScore: number;
   socialScore: number;
   allocationBucket: string;
@@ -312,42 +323,39 @@ export const watchlist: WatchlistTicker[] = [
   },
 ];
 
-// Базовое распределение DCA: BTC 62.5% / ETH 25% / SOL 12.5% (суммарно 100%).
-// После мультипликаторов текущего режима (BTC x1.5, ETH x1.0, SOL x0.5) нормализуется
-// в BTC 75% / ETH 20% / SOL 5%. Пример в $ показывается только как иллюстрация.
+// DCA-уровни: каждый бакет делится на 3 равные закупки по ценовым триггерам.
+// Монета недели = 1% от капитала, монета дня = 0.5%. Пересчёт под капитал
+// пользователя выполняется в DcaSection на основе totalPctOfCapital и priceMultiplier.
+const dcaSplitsThreeLevels: DcaPlan["splits"] = [
+  { level: "now", priceMultiplier: 1.0, shareOfBucket: 1 / 3 },
+  { level: "-5%", priceMultiplier: 0.95, shareOfBucket: 1 / 3 },
+  { level: "-10%", priceMultiplier: 0.9, shareOfBucket: 1 / 3 },
+];
+
 export const dcaPlans: DcaPlan[] = [
   {
-    asset: "BTC",
-    basePct: 62.5,
-    multiplier: 1.5,
-    currentPct: 75,
-    baseMonthlyUsd: 500,
-    recommendedMonthlyUsd: 750,
-    frequency: "Еженедельно",
-    nextBuyDate: "2026-04-22",
-    reason: "Экстремальный страх + приток ETF — усиленная закупка BTC",
+    bucket: "week",
+    label: "Монета недели",
+    ticker: coinOfTheWeek.ticker,
+    name: coinOfTheWeek.name,
+    sector: coinOfTheWeek.sector,
+    currentPriceUsd: coinOfTheWeek.priceUsd,
+    totalPctOfCapital: 1.0,
+    splits: dcaSplitsThreeLevels,
+    reason:
+      "1% от капитала в монету недели. Три равные закупки: по текущей цене, при откате −5% и −10%. Не весь объём сразу — даём цене донести себя до уровней.",
   },
   {
-    asset: "ETH",
-    basePct: 25,
-    multiplier: 1.0,
-    currentPct: 20,
-    baseMonthlyUsd: 200,
-    recommendedMonthlyUsd: 200,
-    frequency: "Двухнедельно",
-    nextBuyDate: "2026-04-28",
-    reason: "ETH/BTC на минимумах цикла — базовый ритм без усиления",
-  },
-  {
-    asset: "SOL",
-    basePct: 12.5,
-    multiplier: 0.5,
-    currentPct: 5,
-    baseMonthlyUsd: 100,
-    recommendedMonthlyUsd: 50,
-    frequency: "Ежемесячно",
-    nextBuyDate: "2026-05-05",
-    reason: "SOL слабее BTC — половинная доля, до возвращения силы",
+    bucket: "day",
+    label: "Монета дня",
+    ticker: coinOfTheDay.ticker,
+    name: coinOfTheDay.name,
+    sector: coinOfTheDay.sector,
+    currentPriceUsd: coinOfTheDay.priceUsd,
+    totalPctOfCapital: 0.5,
+    splits: dcaSplitsThreeLevels,
+    reason:
+      "0.5% от капитала в монету дня. Та же лестница закупов: сейчас, −5%, −10%. Меньшая доля — горизонт у идеи короче, чем у «недели».",
   },
 ];
 
@@ -471,6 +479,7 @@ export const coinOfTheWeek: CoinOfTheWeek = {
   ticker: "KMNO",
   name: "Kamino Finance",
   sector: "DeFi / RWA / Solana",
+  priceUsd: 0.085,
   aiScore: 7,
   socialScore: 84,
   allocationBucket: "Микро (1–2%)",
@@ -495,6 +504,32 @@ export const coinOfTheWeek: CoinOfTheWeek = {
     "Стандартный смарт-контрактный риск любого DeFi",
   ],
   publishedAt: "2026-04-10",
+};
+
+
+// -------------- COIN OF THE DAY --------------
+
+export interface CoinOfTheDay {
+  date: string;
+  ticker: string;
+  name: string;
+  sector: string;
+  priceUsd: number;
+  aiScore: number;
+  reason: string;
+  publishedAt: string;
+}
+
+export const coinOfTheDay: CoinOfTheDay = {
+  date: "2026-04-19",
+  ticker: "JITO",
+  name: "Jito",
+  sector: "LST / Solana / MEV",
+  priceUsd: 2.47,
+  aiScore: 8,
+  reason:
+    "Рекордный MEV-доход за сутки + рост stSOL TVL на +4.2% за 24ч. Техническая картина — откат к поддержке $2.40 при sideways-рынке = хороший вход для позиционной покупки.",
+  publishedAt: "2026-04-19T12:00:00Z",
 };
 
 export const weeksHistory: WeekHistoryEntry[] = [

@@ -448,6 +448,53 @@ function TvMiniSymbol({ url, title }: { url: string; title: string }) {
   );
 }
 
+function TvChartShot({
+  src,
+  timeframe,
+  caption,
+}: {
+  src: string;
+  timeframe: string;
+  caption: string;
+}) {
+  return (
+    <Card className="p-0 overflow-hidden">
+      <div className="flex items-center justify-between px-4 pt-3 pb-2">
+        <div className="text-[11px] uppercase tracking-wider text-white/45">
+          TradingView · BTC / USD
+        </div>
+        <div className="rounded-full border border-white/15 bg-black/30 px-2 py-0.5 text-[10px] font-semibold tabular-nums text-white/80">
+          {timeframe}
+        </div>
+      </div>
+      <div className="relative bg-black/40">
+        <img
+          src={src}
+          alt={`BTC Pi Cycle + Hash Ribbons ${timeframe}`}
+          loading="lazy"
+          className="block w-full h-auto"
+          onError={(e) => {
+            const el = e.currentTarget;
+            el.style.display = "none";
+            const fallback = el.nextElementSibling as HTMLDivElement | null;
+            if (fallback) fallback.style.display = "flex";
+          }}
+        />
+        <div
+          style={{ display: "none" }}
+          className="aspect-[16/9] w-full items-center justify-center text-center p-6 text-[12px] leading-relaxed text-white/45"
+        >
+          Скриншот ещё не загружен. Положите файл по пути{" "}
+          <code className="text-white/70">client/public{src}</code>, запушьте — и график появится здесь автоматически.
+        </div>
+      </div>
+      <div className="px-4 py-3 text-[12px] leading-relaxed text-white/65 border-t border-white/10">
+        {caption}
+      </div>
+    </Card>
+  );
+}
+
 function HashRibbonsLamp({ on }: { on: boolean }) {
   return (
     <div
@@ -866,6 +913,24 @@ export function BtcStructureSection() {
         <HashRibbonsWidget />
         <PiCycleWidget />
       </div>
+
+      <div className="mt-6">
+        <div className="text-[11px] uppercase tracking-wider text-white/45 mb-2">
+          TradingView · Pi Cycle + Hash Ribbons · BTC / USD
+        </div>
+        <div className="grid gap-3 md:grid-cols-2">
+          <TvChartShot
+            src="/dashboard/btc-pi-hash-1w.png"
+            timeframe="1W"
+            caption="Цена $75.1k пробила 50W MA ($71k) вверх · Hash Ribbons: Capriole Buy сработал в январе"
+          />
+          <TvChartShot
+            src="/dashboard/btc-pi-hash-1d.png"
+            timeframe="1D"
+            caption="Дневка: 50D MA перекрестила 100D (бычий кросс) · Hash Ribbons Buy-сигнал 10 апреля"
+          />
+        </div>
+      </div>
     </section>
   );
 }
@@ -1105,56 +1170,137 @@ export function CoinOfTheWeekSection() {
 
 export function DcaSection() {
   const { dcaPlans } = useDashboardLiveData();
+  const [capital, setCapital] = useState<number>(10000);
+  const [capitalInput, setCapitalInput] = useState<string>("10000");
+
+  const applyCapital = (value: string) => {
+    setCapitalInput(value);
+    const digitsOnly = value.replace(/[^0-9]/g, "");
+    const parsed = digitsOnly === "" ? 0 : parseInt(digitsOnly, 10);
+    setCapital(isFinite(parsed) ? parsed : 0);
+  };
+
+  const presets = [1000, 5000, 10000, 50000];
+
   return (
     <section>
       <SectionHeader icon={Target} title="DCA-движок" kicker="07 · Автозакупка" />
-      <div className="mb-3 text-[12px] leading-relaxed text-white/60">
-        Доли — процент от вашего ежемесячного DCA-бюджета. Бюджет выбираете сами (хоть $50, хоть $5 000),
-        пропорции остаются одинаковыми. Пример в $ внизу карточки — справочный.
-      </div>
-      <div className="grid md:grid-cols-3 gap-4">
+
+      <Card className="p-5 mb-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex-1">
+            <div className="text-[11px] uppercase tracking-wider text-white/45 mb-1">Ваш капитал (весь портфель)</div>
+            <div className="flex items-center gap-2">
+              <span className="text-xl text-white/60">$</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={capitalInput}
+                onChange={(e) => applyCapital(e.target.value)}
+                className="w-full max-w-[220px] rounded-md border border-white/15 bg-black/30 px-3 py-2 text-2xl font-bold tabular-nums text-white focus:border-[#3ba5ff]/60 focus:outline-none"
+                placeholder="10000"
+                data-testid="input-dca-capital"
+              />
+            </div>
+            <div className="mt-2 text-[12px] text-white/55 leading-relaxed">
+              Монета недели — 1% капитала ({'$'}{(capital * 0.01).toLocaleString("en-US", { maximumFractionDigits: 2 })}),
+              монета дня — 0.5% ({'$'}{(capital * 0.005).toLocaleString("en-US", { maximumFractionDigits: 2 })}). Каждый
+              бакет делится на 3 равные закупки по ценовым уровням.
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {presets.map((v) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => applyCapital(String(v))}
+                className={
+                  "rounded-md border px-3 py-1.5 text-xs tabular-nums transition " +
+                  (capital === v
+                    ? "border-[#3ba5ff]/60 bg-[#3ba5ff]/15 text-white"
+                    : "border-white/15 bg-black/30 text-white/70 hover:border-white/30")
+                }
+                data-testid={`button-dca-preset-${v}`}
+              >
+                ${v.toLocaleString("en-US")}
+              </button>
+            ))}
+          </div>
+        </div>
+      </Card>
+
+      <div className="grid md:grid-cols-2 gap-4">
         {dcaPlans.map((p) => {
-          const delta = p.currentPct - p.basePct;
-          const deltaLabel = delta === 0 ? "без сдвига" : `${delta > 0 ? "+" : ""}${delta.toFixed(1)} п.п.`;
+          const bucketUsd = (capital * p.totalPctOfCapital) / 100;
           return (
-            <Card key={p.asset} className="p-5">
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-lg font-bold">{p.asset}</div>
-                <Badge tone={p.multiplier > 1 ? "up" : p.multiplier === 1 ? "neutral" : "warn"}>
-                  x{p.multiplier}
-                </Badge>
-              </div>
-              <div className="text-xs text-white/50 mb-3">{p.frequency} · след. {p.nextBuyDate}</div>
-              <div className="flex items-end gap-2 mb-1">
-                <div className="text-4xl font-bold tabular-nums">{p.currentPct}%</div>
-                <div className="text-xs text-white/45 mb-1.5">от DCA-бюджета</div>
-              </div>
-              <div className="text-[11px] text-white/50 mb-3 tabular-nums">
-                База {p.basePct}% · сейчас {p.currentPct}% · {deltaLabel}
-              </div>
-              <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden mb-3">
-                <div
-                  style={{ width: `${Math.min(100, p.currentPct)}%` }}
-                  className={
-                    "h-1.5 " +
-                    (p.multiplier > 1
-                      ? "bg-gradient-to-r from-[#00d4aa] to-[#3ba5ff]"
-                      : p.multiplier === 1
-                      ? "bg-white/50"
-                      : "bg-[#f59e0b]/70")
-                  }
-                />
-              </div>
-              <div className="text-sm text-white/75 leading-relaxed mb-2">{p.reason}</div>
-              {p.baseMonthlyUsd !== undefined && p.recommendedMonthlyUsd !== undefined ? (
-                <div className="mt-2 rounded-md border border-white/10 bg-black/20 px-3 py-2 text-[11px] text-white/50 leading-relaxed">
-                  Пример при DCA-бюджете <span className="text-white/75">$1 000/мес</span>:{" "}
-                  <span className="text-white/85 tabular-nums">${(p.currentPct * 10).toFixed(0)}/мес</span> в {p.asset}.
+            <Card key={p.bucket} className="p-5">
+              <div className="flex items-start justify-between mb-3 gap-3">
+                <div>
+                  <div className="text-[11px] uppercase tracking-wider text-white/45">{p.label}</div>
+                  <div className="text-xl font-bold tabular-nums">{p.ticker}</div>
+                  <div className="text-xs text-white/55">{p.name} · {p.sector}</div>
                 </div>
-              ) : null}
+                <div className="text-right">
+                  <div className="text-[11px] uppercase tracking-wider text-white/45">Всего</div>
+                  <div className="text-lg font-semibold text-white tabular-nums">
+                    ${bucketUsd.toLocaleString("en-US", { maximumFractionDigits: 2 })}
+                  </div>
+                  <div className="text-[11px] text-white/50">
+                    {p.totalPctOfCapital}% от капитала
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-[11px] text-white/50 mb-2">
+                Текущая цена: ${p.currentPriceUsd.toLocaleString("en-US", { maximumFractionDigits: 4 })}
+              </div>
+
+              <div className="rounded-md border border-white/10 bg-black/20 overflow-hidden mb-3">
+                <div className="grid grid-cols-[auto,1fr,1fr,1fr] gap-2 px-3 py-2 text-[10px] uppercase tracking-wider text-white/45 border-b border-white/10">
+                  <div>Уровень</div>
+                  <div className="text-right">Цена</div>
+                  <div className="text-right">Сумма</div>
+                  <div className="text-right">Кол-во</div>
+                </div>
+                {p.splits.map((s) => {
+                  const price = p.currentPriceUsd * s.priceMultiplier;
+                  const usd = bucketUsd * s.shareOfBucket;
+                  const qty = price > 0 ? usd / price : 0;
+                  const tone =
+                    s.level === "now"
+                      ? "text-white"
+                      : s.level === "-5%"
+                      ? "text-[#f59e0b]"
+                      : "text-[#ff4d4f]";
+                  return (
+                    <div
+                      key={s.level}
+                      className="grid grid-cols-[auto,1fr,1fr,1fr] gap-2 px-3 py-2 text-[12px] tabular-nums border-b border-white/5 last:border-b-0"
+                    >
+                      <div className={"font-semibold " + tone}>{s.level === "now" ? "Сейчас" : s.level}</div>
+                      <div className="text-right text-white/80">
+                        ${price.toLocaleString("en-US", { maximumFractionDigits: 4 })}
+                      </div>
+                      <div className="text-right text-white">
+                        ${usd.toLocaleString("en-US", { maximumFractionDigits: 2 })}
+                      </div>
+                      <div className="text-right text-white/70">
+                        {qty.toLocaleString("en-US", { maximumFractionDigits: 4 })} {p.ticker}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="text-sm text-white/75 leading-relaxed">{p.reason}</div>
             </Card>
           );
         })}
+      </div>
+
+      <div className="mt-3 text-[11px] leading-relaxed text-white/50">
+        Логика: не «всё и сразу», а лесенка закупок. Если цена идёт вверх — уже взяли первую треть по текущей.
+        Если падает — вторая и третья трети отрабатывают на коррекциях −5% и −10%, делая среднюю цену лучше.
       </div>
     </section>
   );

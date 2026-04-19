@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { ACCESS_LS_KEY, ACCESS_CODE_LS_KEY } from "@/config/accessCodes";
 import { useDashboardLiveData } from "@/hooks/useDashboardLiveData";
+import { DashboardAiChat } from "@/components/dashboard/DashboardAiChat";
 
 interface DashboardShellProps {
   children: ReactNode;
@@ -149,6 +150,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
           </div>
         </div>
       </footer>
+      <DashboardAiChat />
     </div>
   );
 }
