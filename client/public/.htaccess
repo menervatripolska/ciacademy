@@ -1,6 +1,53 @@
-RewriteEngine On
-RewriteBase /
-RewriteRule ^index\.html$ - [L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.html [L]
+# ================= Security headers =================
+<IfModule mod_headers.c>
+    # HTTPS: обязать браузеры не ходить по http, 6 месяцев
+    Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains" env=HTTPS
+
+    # Запрет класть наш сайт во фрейм (защита от clickjacking / phishing-оболочек)
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # Не сниффать тип контента (защита от MIME confusion)
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Не утекать URL при переходах на внешние ресурсы
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Отключить ненужные браузерные API
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+
+    # Ограниченный CSP: наши скрипты + разрешённые iframe-источники виджетов.
+    # Если добавится ещё один TV/CG источник — дописать сюда.
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://*.tradingview.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://api.coingecko.com https://api.alternative.me https://mempool.space https://*.workers.dev https://*.tradingview.com; frame-src 'self' https://*.tradingview.com https://www.blockchaincenter.net https://alternative.me https://www.youtube.com https://www.youtube-nocookie.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+</IfModule>
+
+# ================= HTTPS redirect =================
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # http → https
+    RewriteCond %{HTTPS} \!=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} \!=https
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+    # SPA fallback: любой путь, который не файл/каталог — отдаём index.html
+    RewriteRule ^index\.html$ - [L]
+    RewriteCond %{REQUEST_FILENAME} \!-f
+    RewriteCond %{REQUEST_FILENAME} \!-d
+    RewriteRule . /index.html [L]
+</IfModule>
+
+# ================= Кеширование =================
+<IfModule mod_expires.c>
+    ExpiresActive On
+    # html — не кешировать агрессивно, чтоб правки сразу видны
+    ExpiresByType text/html "access plus 0 seconds"
+    # assets с хешами в имени — кешировать долго
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
