@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { CryptoGateDialog } from "@/components/CryptoGateDialog";
 
-const COURSE_URL = "https://courstore.kz/";
+const COURSE_URL = "https://ciacademy.courstore.com/ru/courses/810850";
 const SELECTION_BOT_URL = "https://t.me/cicelectionbot";
 const OLD_PRICE = "$1000";
 const NEW_PRICE = "$39";
@@ -1907,92 +1907,54 @@ function Footer() {
 
 // ============ NAVBAR (true iOS glass) ============
 function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-2xl bg-black/30 border-b border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.4)] supports-[backdrop-filter]:bg-black/20">
       {/* Inner sheen for iOS glass feel */}
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-white/10 via-transparent to-transparent" />
 
-      <div className="container relative flex items-center justify-between h-16">
-        <a href="/" className="flex items-center gap-3">
+      <div className="container relative flex items-center justify-between gap-2 sm:gap-3 h-16">
+        <a href="/" className="flex items-center gap-2 sm:gap-3 min-w-0">
           <CILogo size={36} />
-          <div className="flex flex-col leading-tight">
-            <span className="text-white font-bold text-sm sm:text-base" style={{ fontFamily: "var(--font-display)" }}>CI Academy</span>
-            <span className="text-[10px] sm:text-[11px] text-[#00d4aa]/80 -mt-0.5" style={{ fontFamily: "var(--font-body)" }}>Crypto Intelligence</span>
+          <div className="hidden min-[420px]:flex flex-col leading-tight min-w-0">
+            <span
+              className="text-white font-bold text-sm sm:text-base truncate"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              CI Academy
+            </span>
+            <span
+              className="text-[10px] sm:text-[11px] text-[#00d4aa]/80 -mt-0.5 truncate"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              Crypto Intelligence
+            </span>
           </div>
         </a>
 
-        <div className="hidden md:flex items-center gap-8">
-          <a href="#modules" className="text-gray-300 hover:text-white text-sm transition-colors" style={{ fontFamily: "var(--font-body)" }}>Программа</a>
-          <a href="#architecture" className="text-gray-300 hover:text-white text-sm transition-colors" style={{ fontFamily: "var(--font-body)" }}>Как устроено</a>
-          <a href="#get" className="text-gray-300 hover:text-white text-sm transition-colors" style={{ fontFamily: "var(--font-body)" }}>Что получаешь</a>
-          <a href="#pricing" className="text-gray-300 hover:text-white text-sm transition-colors" style={{ fontFamily: "var(--font-body)" }}>Цена</a>
-          <a href="#faq" className="text-gray-300 hover:text-white text-sm transition-colors" style={{ fontFamily: "var(--font-body)" }}>FAQ</a>
-        </div>
-
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <CryptoGateDialog>
             <button
               type="button"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 text-white text-xs sm:text-sm font-semibold transition-colors"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 text-white text-[12px] sm:text-sm font-semibold transition-colors"
               style={{ fontFamily: "var(--font-body)" }}
               data-testid="button-navbar-gate"
             >
               <Lock className="w-3.5 h-3.5" />
-              <span>Я — Криптан</span>
+              <span className="hidden min-[380px]:inline">Я — Криптан</span>
+              <span className="min-[380px]:hidden">Я&nbsp;—&nbsp;Криптан</span>
             </button>
           </CryptoGateDialog>
           <a
             href={COURSE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="cta-button px-4 sm:px-5 py-2 rounded-lg text-xs sm:text-sm hidden sm:inline-block"
+            className="cta-button px-3 sm:px-5 py-2 rounded-lg text-[12px] sm:text-sm whitespace-nowrap"
+            data-testid="button-navbar-cta"
           >
-            Получить — {NEW_PRICE}
+            Получить&nbsp;—&nbsp;{NEW_PRICE}
           </a>
-          <button
-            className="md:hidden text-white p-2 rounded-lg bg-white/5 border border-white/10"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Меню"
-          >
-            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
         </div>
       </div>
-
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div className="md:hidden backdrop-blur-2xl bg-black/40 border-t border-white/20">
-          <div className="container py-4 flex flex-col gap-3 relative">
-            <a href="#modules" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-white text-sm py-2" style={{ fontFamily: "var(--font-body)" }}>Программа</a>
-            <a href="#architecture" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-white text-sm py-2" style={{ fontFamily: "var(--font-body)" }}>Как устроено</a>
-            <a href="#get" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-white text-sm py-2" style={{ fontFamily: "var(--font-body)" }}>Что получаешь</a>
-            <a href="#pricing" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-white text-sm py-2" style={{ fontFamily: "var(--font-body)" }}>Цена</a>
-            <a href="#faq" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-white text-sm py-2" style={{ fontFamily: "var(--font-body)" }}>FAQ</a>
-            <CryptoGateDialog>
-              <button
-                type="button"
-                onClick={() => setMenuOpen(false)}
-                className="sm:hidden inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 text-white text-sm font-semibold mt-2"
-                style={{ fontFamily: "var(--font-body)" }}
-                data-testid="button-navbar-gate-mobile"
-              >
-                <Lock className="w-4 h-4" />
-                <span>Я — Криптан</span>
-              </button>
-            </CryptoGateDialog>
-            <a
-              href={COURSE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cta-button px-5 py-3 rounded-lg text-sm text-center mt-2 sm:hidden"
-            >
-              Получить курс — {NEW_PRICE}
-            </a>
-          </div>
-        </div>
-      )}
     </nav>
   );
 }
