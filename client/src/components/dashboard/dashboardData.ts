@@ -84,9 +84,14 @@ export interface WatchlistTicker {
 
 export interface DcaPlan {
   asset: string;
-  baseMonthlyUsd: number;
+  // % от ежемесячного DCA-бюджета (базовое распределение, без учёта мультипликатора).
+  basePct: number;
   multiplier: number;
-  recommendedMonthlyUsd: number;
+  // % от бюджета после применения мультипликатора (нормализовано к 100).
+  currentPct: number;
+  // Опционально: пример в $ для тех, кто считает в долларах.
+  baseMonthlyUsd?: number;
+  recommendedMonthlyUsd?: number;
   frequency: "Еженедельно" | "Двухнедельно" | "Ежемесячно";
   nextBuyDate: string;
   reason: string;
@@ -307,11 +312,16 @@ export const watchlist: WatchlistTicker[] = [
   },
 ];
 
+// Базовое распределение DCA: BTC 62.5% / ETH 25% / SOL 12.5% (суммарно 100%).
+// После мультипликаторов текущего режима (BTC x1.5, ETH x1.0, SOL x0.5) нормализуется
+// в BTC 75% / ETH 20% / SOL 5%. Пример в $ показывается только как иллюстрация.
 export const dcaPlans: DcaPlan[] = [
   {
     asset: "BTC",
-    baseMonthlyUsd: 500,
+    basePct: 62.5,
     multiplier: 1.5,
+    currentPct: 75,
+    baseMonthlyUsd: 500,
     recommendedMonthlyUsd: 750,
     frequency: "Еженедельно",
     nextBuyDate: "2026-04-22",
@@ -319,8 +329,10 @@ export const dcaPlans: DcaPlan[] = [
   },
   {
     asset: "ETH",
-    baseMonthlyUsd: 200,
+    basePct: 25,
     multiplier: 1.0,
+    currentPct: 20,
+    baseMonthlyUsd: 200,
     recommendedMonthlyUsd: 200,
     frequency: "Двухнедельно",
     nextBuyDate: "2026-04-28",
@@ -328,8 +340,10 @@ export const dcaPlans: DcaPlan[] = [
   },
   {
     asset: "SOL",
-    baseMonthlyUsd: 100,
+    basePct: 12.5,
     multiplier: 0.5,
+    currentPct: 5,
+    baseMonthlyUsd: 100,
     recommendedMonthlyUsd: 50,
     frequency: "Ежемесячно",
     nextBuyDate: "2026-05-05",
@@ -549,10 +563,12 @@ export const miningCostSeries: MiningCostPoint[] = [
 // Stock-to-Flow — модельная кривая + фактическая цена. Индекс "сейчас" указывает последнюю точку.
 export interface S2fPoint {
   date: string;
-  model: number;  // prediction
-  price: number;  // actual
+  model: number;           // prediction
+  price?: number;          // actual — undefined для будущих точек
 }
 
+// Price имеет значение только до "now"; дальше — undefined (recharts не рисует линию).
+// Модель расширена до 2030-10 (следующий халвинг 2028 → плато к 2030).
 export const btcS2fSeries: S2fPoint[] = [
   { date: "2020-05", model: 11000,  price: 8800 },
   { date: "2020-12", model: 19000,  price: 29000 },
@@ -567,9 +583,19 @@ export const btcS2fSeries: S2fPoint[] = [
   { date: "2025-04", model: 148000, price: 89200 },
   { date: "2025-10", model: 165000, price: 62300 },
   { date: "2026-04", model: 182000, price: 76100 }, // now
+  { date: "2026-10", model: 205000 },
+  { date: "2027-04", model: 230000 },
+  { date: "2027-10", model: 255000 },
+  { date: "2028-04", model: 295000 }, // халвинг 5
+  { date: "2028-10", model: 335000 },
+  { date: "2029-04", model: 380000 },
+  { date: "2029-10", model: 420000 },
+  { date: "2030-04", model: 455000 },
+  { date: "2030-10", model: 480000 },
 ];
 
-export const btcS2fNowIndex = btcS2fSeries.length - 1;
+// индекс точки "сейчас" (2026-04) — она оказывается в середине ряда
+export const btcS2fNowIndex = 12;
 
 // ============================================================================
 // Hash Ribbons (30-day MA vs 60-day MA хэшрейта) — состояние на двух TF

@@ -40,6 +40,7 @@ import {
   Line,
   LineChart as RechartsLineChart,
   ReferenceDot,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -620,7 +621,7 @@ function PiCycleWidget() {
 
 
 export function BtcStructureSection() {
-  const { btc } = useDashboardLiveData();
+  const { btc, crypto } = useDashboardLiveData();
   return (
     <section>
       <SectionHeader
@@ -700,52 +701,120 @@ export function BtcStructureSection() {
 
       <div className="mt-3 grid gap-3 md:grid-cols-2">
         <TvMiniSymbol url={marketWidgetLinks.btcDominance} title="Доминация BTC · BTC.D" />
-        <TvMiniSymbol url={marketWidgetLinks.ethBtc} title="Сила альтов · ETH / BTC" />
+        <Card className="p-0 overflow-hidden">
+          <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/45">Сила альтов · ETH / BTC</div>
+          <iframe
+            src={marketWidgetLinks.ethBtc}
+            title="ETH/BTC"
+            loading="lazy"
+            style={{ width: "100%", height: 200, border: 0, background: "transparent" }}
+          />
+          <div className="px-4 pb-4 pt-1 text-[12px] leading-relaxed text-white/75">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-1.5">
+              <span className="text-white/50 text-[11px] uppercase tracking-wider">Сейчас</span>
+              <span className="text-base font-semibold text-white tabular-nums">{crypto.ethBtcRatio.toFixed(4)}</span>
+              <span className="rounded-full bg-[#f59e0b]/15 border border-[#f59e0b]/30 px-2 py-0.5 text-[10px] uppercase tracking-wider text-[#f59e0b]">BTC-фаза</span>
+            </div>
+            <p>
+              ETH/BTC держится у минимумов цикла — капитал не перетекает из BTC в альты. Пока этот коэффициент{" "}
+              <span className="text-white/90">не пробьёт вверх зону 0.040–0.055</span>, альтсезона не будет: ETH и весь рынок альтов продолжают слабеть относительно биткоина.
+            </p>
+            <p className="mt-2 text-white/60">
+              <span className="text-white/80">Триггер разворота:</span> рост выше 0.055 + падение BTC.D ниже 55%. До этого — альты только для точечных идей, не для широкой закупки.
+            </p>
+          </div>
+        </Card>
       </div>
 
       <div className="mt-6 grid gap-3 md:grid-cols-2">
-        <ChartCard
-          title="Зоны себестоимости майнинга"
-          subtitle="Цена BTC vs диапазоны себестоимости добычи (6 мес)"
-          footer={
-            <>
-              Сейчас цена <span className="text-white">${miningCostToday.price.toLocaleString("en-US")}</span> при
-              средней себестоимости <span className="text-white">${miningCostToday.avgCostUsd.toLocaleString("en-US")}</span>.
-              Маржа майнеров <span className="text-[#00d4aa]">+{miningCostToday.marginPct.toFixed(1)}%</span> — зелёная
-              зона, капитуляции нет.
-            </>
-          }
-        >
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={miningCostSeries} margin={{ top: 8, right: 8, bottom: 4, left: 0 }}>
-              <defs>
-                <linearGradient id="miningGreen" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#00d4aa" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="#00d4aa" stopOpacity={0.05} />
-                </linearGradient>
-                <linearGradient id="miningYellow" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="#f59e0b" stopOpacity={0.05} />
-                </linearGradient>
-                <linearGradient id="miningRed" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#ff4d4f" stopOpacity={0.28} />
-                  <stop offset="100%" stopColor="#ff4d4f" stopOpacity={0.05} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-              <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 10 }} />
-              <YAxis tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 10 }} width={52} />
-              <Tooltip
-                contentStyle={{ background: "#0b0b10", border: "1px solid rgba(255,255,255,0.12)", fontSize: 12 }}
-                labelStyle={{ color: "rgba(255,255,255,0.6)" }}
-              />
-              <Area type="monotone" dataKey="redZone" stroke="#ff4d4f" fill="url(#miningRed)" strokeWidth={1} />
-              <Area type="monotone" dataKey="yellowZone" stroke="#f59e0b" fill="url(#miningYellow)" strokeWidth={1} />
-              <Area type="monotone" dataKey="greenZone" stroke="#00d4aa" fill="url(#miningGreen)" strokeWidth={1} />
-              <Line type="monotone" dataKey="price" stroke="#ffffff" strokeWidth={2} dot={false} />
-            </ComposedChart>
-          </ResponsiveContainer>
-        </ChartCard>
+        <Card className="p-5">
+          <div className="flex items-center justify-between gap-3 mb-3">
+            <div>
+              <div className="text-sm font-semibold text-white">Зоны себестоимости майнинга</div>
+              <div className="text-[11px] text-white/50">Цена BTC vs диапазоны себестоимости добычи (6 мес)</div>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-2 mb-3 text-xs">
+            <div className="rounded-md border border-white/10 bg-black/30 p-3">
+              <div className="text-[11px] text-white/45">Цена BTC</div>
+              <div className="text-lg font-semibold text-white tabular-nums">${miningCostToday.price.toLocaleString("en-US")}</div>
+            </div>
+            <div className="rounded-md border border-[#f59e0b]/25 bg-[#f59e0b]/10 p-3">
+              <div className="text-[11px] text-[#f59e0b]">Средняя себестоимость</div>
+              <div className="text-lg font-semibold text-white tabular-nums">${miningCostToday.avgCostUsd.toLocaleString("en-US")}</div>
+            </div>
+            <div className="rounded-md border border-[#00d4aa]/25 bg-[#00d4aa]/10 p-3">
+              <div className="text-[11px] text-[#00d4aa]">Маржа майнеров</div>
+              <div className="text-lg font-semibold text-white tabular-nums">+{miningCostToday.marginPct.toFixed(1)}%</div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2 mb-3 text-[11px]">
+            <div className="rounded border border-white/10 bg-black/20 p-2">
+              <span className="text-[#00d4aa]">эффективные майнеры</span>{" "}
+              <span className="text-white tabular-nums">${miningCostToday.efficientCostUsd.toLocaleString("en-US")}</span>
+            </div>
+            <div className="rounded border border-white/10 bg-black/20 p-2">
+              <span className="text-[#ff4d4f]">высокая себес (риск капитуляции)</span>{" "}
+              <span className="text-white tabular-nums">${miningCostToday.highCostUsd.toLocaleString("en-US")}</span>
+            </div>
+          </div>
+          <div className="h-[240px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={miningCostSeries} margin={{ top: 8, right: 8, bottom: 4, left: 0 }}>
+                <defs>
+                  <linearGradient id="miningGreen" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#00d4aa" stopOpacity={0.35} />
+                    <stop offset="100%" stopColor="#00d4aa" stopOpacity={0.05} />
+                  </linearGradient>
+                  <linearGradient id="miningYellow" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#f59e0b" stopOpacity={0.05} />
+                  </linearGradient>
+                  <linearGradient id="miningRed" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#ff4d4f" stopOpacity={0.28} />
+                    <stop offset="100%" stopColor="#ff4d4f" stopOpacity={0.05} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+                <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 10 }} />
+                <YAxis
+                  tick={{ fill: "rgba(255,255,255,0.45)", fontSize: 10 }}
+                  width={62}
+                  domain={[40000, 100000]}
+                  ticks={[40000, 55000, 68200, 76100, 85000, 100000]}
+                  tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                />
+                <Tooltip
+                  contentStyle={{ background: "#0b0b10", border: "1px solid rgba(255,255,255,0.12)", fontSize: 12 }}
+                  labelStyle={{ color: "rgba(255,255,255,0.6)" }}
+                  formatter={(v: number) => `$${v.toLocaleString("en-US")}`}
+                />
+                <Area type="monotone" dataKey="redZone" stroke="#ff4d4f" fill="url(#miningRed)" strokeWidth={1} />
+                <Area type="monotone" dataKey="yellowZone" stroke="#f59e0b" fill="url(#miningYellow)" strokeWidth={1} />
+                <Area type="monotone" dataKey="greenZone" stroke="#00d4aa" fill="url(#miningGreen)" strokeWidth={1} />
+                <Line type="monotone" dataKey="price" stroke="#ffffff" strokeWidth={2} dot={false} />
+                <ReferenceLine
+                  y={miningCostToday.avgCostUsd}
+                  stroke="#f59e0b"
+                  strokeDasharray="4 4"
+                  label={{ value: `себес ${(miningCostToday.avgCostUsd / 1000).toFixed(1)}k`, position: "insideRight", fill: "#f59e0b", fontSize: 10 }}
+                />
+                <ReferenceLine
+                  y={miningCostToday.price}
+                  stroke="#ffffff"
+                  strokeDasharray="2 2"
+                  label={{ value: `цена ${(miningCostToday.price / 1000).toFixed(1)}k`, position: "insideRight", fill: "#ffffff", fontSize: 10 }}
+                />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-3 text-xs text-white/70">
+            Цена <span className="text-white">${miningCostToday.price.toLocaleString("en-US")}</span> выше средней
+            себестоимости <span className="text-white">${miningCostToday.avgCostUsd.toLocaleString("en-US")}</span> —
+            майнеры в зелёной зоне, маржа <span className="text-[#00d4aa]">+{miningCostToday.marginPct.toFixed(1)}%</span>,
+            капитуляции нет.
+          </div>
+        </Card>
 
         <ChartCard
           title="Stock-to-Flow · модель vs факт"
@@ -1039,24 +1108,53 @@ export function DcaSection() {
   return (
     <section>
       <SectionHeader icon={Target} title="DCA-движок" kicker="07 · Автозакупка" />
+      <div className="mb-3 text-[12px] leading-relaxed text-white/60">
+        Доли — процент от вашего ежемесячного DCA-бюджета. Бюджет выбираете сами (хоть $50, хоть $5 000),
+        пропорции остаются одинаковыми. Пример в $ внизу карточки — справочный.
+      </div>
       <div className="grid md:grid-cols-3 gap-4">
-        {dcaPlans.map((p) => (
-          <Card key={p.asset} className="p-5">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-lg font-bold">{p.asset}</div>
-              <Badge tone={p.multiplier > 1 ? "up" : p.multiplier === 1 ? "neutral" : "warn"}>
-                x{p.multiplier}
-              </Badge>
-            </div>
-            <div className="text-xs text-white/50 mb-3">{p.frequency} · след. {p.nextBuyDate}</div>
-            <div className="flex items-end gap-2 mb-3">
-              <div className="text-3xl font-bold">${p.recommendedMonthlyUsd}</div>
-              <div className="text-xs text-white/45 mb-1">/мес</div>
-            </div>
-            <div className="text-xs text-white/50 mb-3">База ${p.baseMonthlyUsd} × {p.multiplier}</div>
-            <div className="text-sm text-white/70 leading-relaxed">{p.reason}</div>
-          </Card>
-        ))}
+        {dcaPlans.map((p) => {
+          const delta = p.currentPct - p.basePct;
+          const deltaLabel = delta === 0 ? "без сдвига" : `${delta > 0 ? "+" : ""}${delta.toFixed(1)} п.п.`;
+          return (
+            <Card key={p.asset} className="p-5">
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-lg font-bold">{p.asset}</div>
+                <Badge tone={p.multiplier > 1 ? "up" : p.multiplier === 1 ? "neutral" : "warn"}>
+                  x{p.multiplier}
+                </Badge>
+              </div>
+              <div className="text-xs text-white/50 mb-3">{p.frequency} · след. {p.nextBuyDate}</div>
+              <div className="flex items-end gap-2 mb-1">
+                <div className="text-4xl font-bold tabular-nums">{p.currentPct}%</div>
+                <div className="text-xs text-white/45 mb-1.5">от DCA-бюджета</div>
+              </div>
+              <div className="text-[11px] text-white/50 mb-3 tabular-nums">
+                База {p.basePct}% · сейчас {p.currentPct}% · {deltaLabel}
+              </div>
+              <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden mb-3">
+                <div
+                  style={{ width: `${Math.min(100, p.currentPct)}%` }}
+                  className={
+                    "h-1.5 " +
+                    (p.multiplier > 1
+                      ? "bg-gradient-to-r from-[#00d4aa] to-[#3ba5ff]"
+                      : p.multiplier === 1
+                      ? "bg-white/50"
+                      : "bg-[#f59e0b]/70")
+                  }
+                />
+              </div>
+              <div className="text-sm text-white/75 leading-relaxed mb-2">{p.reason}</div>
+              {p.baseMonthlyUsd !== undefined && p.recommendedMonthlyUsd !== undefined ? (
+                <div className="mt-2 rounded-md border border-white/10 bg-black/20 px-3 py-2 text-[11px] text-white/50 leading-relaxed">
+                  Пример при DCA-бюджете <span className="text-white/75">$1 000/мес</span>:{" "}
+                  <span className="text-white/85 tabular-nums">${(p.currentPct * 10).toFixed(0)}/мес</span> в {p.asset}.
+                </div>
+              ) : null}
+            </Card>
+          );
+        })}
       </div>
     </section>
   );
