@@ -448,109 +448,90 @@ function TvMiniSymbol({ url, title }: { url: string; title: string }) {
   );
 }
 
-function TvChartShot({
-  src,
-  timeframe,
+function TvAdvancedChart({
+  interval,
   caption,
 }: {
-  src: string;
-  timeframe: string;
+  interval: "W" | "D";
   caption: string;
 }) {
+  // TradingView advanced-chart widget: BTCUSD с двумя MA, которые формируют классический
+  // Pi Cycle Top сигнал (MA111 оранжевая + MA350 зелёная ×2). Visual Hash Ribbons у нас
+  // уже нарисован выше в HashRibbonsWidget — эти чарты дают «сырую» картину рынка от TV.
+  const intervalLabel = interval === "W" ? "1W" : "1D";
+  const config = {
+    symbol: "BITSTAMP:BTCUSD",
+    interval,
+    theme: "dark",
+    style: "1",
+    locale: "ru",
+    withdateranges: true,
+    hide_side_toolbar: false,
+    allow_symbol_change: false,
+    save_image: false,
+    studies: [
+      "MASimple@tv-basicstudies",
+      "MASimple@tv-basicstudies",
+    ],
+    studies_overrides: {
+      "moving average.length": 111,
+      "moving average.plot.color": "#f59e0b",
+      "moving average 2.length": 350,
+      "moving average 2.plot.color": "#00d4aa",
+    },
+    hide_top_toolbar: false,
+    hide_legend: false,
+    backgroundColor: "rgba(10,12,24,0.0)",
+    gridColor: "rgba(255,255,255,0.05)",
+    support_host: "https://www.tradingview.com",
+  };
+  const src = `https://s.tradingview.com/widgetembed/?${new URLSearchParams({
+    symbol: config.symbol,
+    interval,
+    theme: "dark",
+    style: "1",
+    locale: "ru",
+    toolbarbg: "0a0c18",
+    studies: JSON.stringify(["MASimple@tv-basicstudies(111)", "MASimple@tv-basicstudies(350)"]),
+    withdateranges: "1",
+    hide_side_toolbar: "0",
+    allow_symbol_change: "0",
+    save_image: "0",
+    hideideas: "1",
+  }).toString()}`;
+  const openUrl = `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(config.symbol)}&interval=${interval}`;
   return (
     <Card className="p-0 overflow-hidden">
       <div className="flex items-center justify-between px-4 pt-3 pb-2">
         <div className="text-[11px] uppercase tracking-wider text-white/45">
           TradingView · BTC / USD
         </div>
-        <div className="rounded-full border border-white/15 bg-black/30 px-2 py-0.5 text-[10px] font-semibold tabular-nums text-white/80">
-          {timeframe}
+        <div className="flex items-center gap-2">
+          <div className="rounded-full border border-white/15 bg-black/30 px-2 py-0.5 text-[10px] font-semibold tabular-nums text-white/80">
+            {intervalLabel}
+          </div>
+          <a
+            href={openUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-[10px] uppercase tracking-wider text-[#3ba5ff] hover:underline"
+          >
+            открыть →
+          </a>
         </div>
       </div>
-      <div className="relative bg-black/40">
-        <img
+      <div className="relative bg-black/40" style={{ aspectRatio: "16 / 10" }}>
+        <iframe
           src={src}
-          alt={`BTC Pi Cycle + Hash Ribbons ${timeframe}`}
+          title={`TradingView BTCUSD ${intervalLabel} · Pi Cycle + Hash Ribbons`}
           loading="lazy"
-          className="block w-full h-auto"
-          onError={(e) => {
-            const el = e.currentTarget;
-            el.style.display = "none";
-            const fallback = el.nextElementSibling as HTMLDivElement | null;
-            if (fallback) fallback.style.display = "flex";
-          }}
+          style={{ width: "100%", height: "100%", border: 0, background: "transparent" }}
         />
-        <div
-          style={{ display: "none" }}
-          className="aspect-[16/9] w-full items-center justify-center text-center p-6 text-[12px] leading-relaxed text-white/45"
-        >
-          Скриншот ещё не загружен. Положите файл по пути{" "}
-          <code className="text-white/70">client/public{src}</code>, запушьте — и график появится здесь автоматически.
-        </div>
       </div>
-      <div className="px-4 py-3 text-[12px] leading-relaxed text-white/65 border-t border-white/10">
+      <div className="px-4 py-3 text-[12px] leading-relaxed text-white/60 border-t border-white/5">
         {caption}
       </div>
     </Card>
-  );
-}
-
-function HashRibbonsLamp({ on }: { on: boolean }) {
-  return (
-    <div
-      className={
-        "relative inline-flex h-14 w-14 items-center justify-center rounded-full border " +
-        (on ? "border-[#3ba5ff]/70 bg-[#0a2540]" : "border-white/15 bg-black/30")
-      }
-      style={on ? { boxShadow: "0 0 22px rgba(59,165,255,0.55)" } : undefined}
-      aria-label={on ? "Hash Ribbons buy — сигнал активен" : "Hash Ribbons — сигнала нет"}
-    >
-      <BellRing className={"h-6 w-6 " + (on ? "text-[#7bc6ff]" : "text-white/35")} />
-    </div>
-  );
-}
-
-function PiCycleArrow({ on }: { on: boolean }) {
-  return (
-    <div
-      className={
-        "relative inline-flex h-14 w-14 items-center justify-center rounded-full border " +
-        (on ? "border-[#ff4d4f]/80 bg-[#2a0a0a]" : "border-white/15 bg-black/30")
-      }
-      style={on ? { boxShadow: "0 0 22px rgba(255,77,79,0.55)" } : undefined}
-      aria-label={on ? "Pi Cycle TOP — сигнал активен" : "Pi Cycle — сигнала нет"}
-    >
-      <ArrowDownIcon className={"h-6 w-6 " + (on ? "text-[#ff8a8a]" : "text-white/35")} />
-    </div>
-  );
-}
-
-function TimeframeToggle({
-  value,
-  onChange,
-}: {
-  value: "daily" | "weekly";
-  onChange: (v: "daily" | "weekly") => void;
-}) {
-  const btn = (v: "daily" | "weekly", label: string) => (
-    <button
-      type="button"
-      onClick={() => onChange(v)}
-      className={
-        "px-3 py-1 text-xs rounded-md border transition " +
-        (value === v
-          ? "border-white/30 bg-white/10 text-white"
-          : "border-white/10 text-white/60 hover:text-white")
-      }
-    >
-      {label}
-    </button>
-  );
-  return (
-    <div className="inline-flex gap-1.5">
-      {btn("daily", "1D")}
-      {btn("weekly", "1W")}
-    </div>
   );
 }
 
@@ -919,14 +900,12 @@ export function BtcStructureSection() {
           TradingView · Pi Cycle + Hash Ribbons · BTC / USD
         </div>
         <div className="grid gap-3 md:grid-cols-2">
-          <TvChartShot
-            src="/dashboard/btc-pi-hash-1w.png"
-            timeframe="1W"
+          <TvAdvancedChart
+            interval="W"
             caption="Цена $75.1k пробила 50W MA ($71k) вверх · Hash Ribbons: Capriole Buy сработал в январе"
           />
-          <TvChartShot
-            src="/dashboard/btc-pi-hash-1d.png"
-            timeframe="1D"
+          <TvAdvancedChart
+            interval="D"
             caption="Дневка: 50D MA перекрестила 100D (бычий кросс) · Hash Ribbons Buy-сигнал 10 апреля"
           />
         </div>
