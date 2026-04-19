@@ -19,7 +19,7 @@ import {
 import { CryptoGateDialog } from "@/components/CryptoGateDialog";
 
 const COURSE_URL = "https://ciacademy.courstore.com/ru/courses/810850";
-const SELECTION_BOT_URL = "https://t.me/cicelectionbot";
+const SELECTION_BOT_URL = "https://t.me/CISelectionbot";
 const OLD_PRICE = "$1000";
 const NEW_PRICE = "$39";
 const NEXT_PRICE = "$99"; // цена после закрытия первого потока
