@@ -326,6 +326,70 @@ export const watchlist: WatchlistTicker[] = [
 // DCA-уровни: каждый бакет делится на 3 равные закупки по ценовым триггерам.
 // Монета недели = 1% от капитала, монета дня = 0.5%. Пересчёт под капитал
 // пользователя выполняется в DcaSection на основе totalPctOfCapital и priceMultiplier.
+
+
+// -------------- COIN OF THE WEEK (Airtable · «Crypto OS» → «Coin of the Week») --------------
+
+export const coinOfTheWeek: CoinOfTheWeek = {
+  week: "W15 · 7–13 апреля 2026",
+  ticker: "KMNO",
+  name: "Kamino Finance",
+  sector: "DeFi / RWA / Solana",
+  priceUsd: 0.085,
+  aiScore: 7,
+  socialScore: 84,
+  allocationBucket: "Микро (1–2%)",
+  reason:
+    "Лучший баланс «реальный продукт + низкий MCap + трендирующий нарратив» среди кандидатов недели. TVL >$1B в RWA-депозитах, xStocks-интеграция (токенизированные акции как залог) и рекордный sentiment 95 (52-недельный максимум). MCap всего $84M — редкий случай, когда серьёзный финансовый продукт с миллиардным TVL стоит дешевле своего реального веса.",
+  thesis:
+    "Kamino превращается в «RWA-хаб Solana». xStocks делает токенизированные акции продуктивным залогом — это начало нового цикла RWA-лендинга. При растущем TVL и сильном нарративе RWA, протокол с низким MCap и функциональным токеном имеет непропорциональный upside относительно обычных DeFi-форков.",
+  strengths: [
+    "Реальный TVL >$1B в RWA-депозитах — не обещания, а цифры",
+    "Лидерство в RWA-лендинге на Solana",
+    "xStocks — первый протокол с токенизированными акциями как залогом",
+    "Партнёры: Galaxy, USD1, Exponent Finance",
+    "Sentiment 84% (52w high), engagements 1.78M",
+    "Низкий MCap $84M при реальных протокольных fees",
+    "Нулевой impact от Drift-эксплоита: код под аудитом, multisig + timelock",
+  ],
+  risks: [
+    "Unlocks по вестинг-расписанию дают временное sell-pressure (последний раз $4M сорвал 52w low)",
+    "Зависимость от здоровья Solana — системный риск",
+    "Конкуренция: Jupiter Lend, Loopscale, Exponent Finance",
+    "Coinbase делистил KMNO-фьючерсы — удар по ликвидности",
+    "Стандартный смарт-контрактный риск любого DeFi",
+  ],
+  publishedAt: "2026-04-10",
+};
+
+
+
+// -------------- COIN OF THE DAY --------------
+
+export interface CoinOfTheDay {
+  date: string;
+  ticker: string;
+  name: string;
+  sector: string;
+  priceUsd: number;
+  aiScore: number;
+  reason: string;
+  publishedAt: string;
+}
+
+
+export const coinOfTheDay: CoinOfTheDay = {
+  date: "2026-04-19",
+  ticker: "JITO",
+  name: "Jito",
+  sector: "LST / Solana / MEV",
+  priceUsd: 2.47,
+  aiScore: 8,
+  reason:
+    "Рекордный MEV-доход за сутки + рост stSOL TVL на +4.2% за 24ч. Техническая картина — откат к поддержке $2.40 при sideways-рынке = хороший вход для позиционной покупки.",
+  publishedAt: "2026-04-19T12:00:00Z",
+};
+
 const dcaSplitsThreeLevels: DcaPlan["splits"] = [
   { level: "now", priceMultiplier: 1.0, shareOfBucket: 1 / 3 },
   { level: "-5%", priceMultiplier: 0.95, shareOfBucket: 1 / 3 },
@@ -470,67 +534,6 @@ export const executionModules: ExecutionModule[] = [
   { name: "Watchlist-алерт", trigger: "Срабатывает trigger тикера", action: "Пуш/письмо + ручное решение", cadence: "Событийная" },
   { name: "Ежемесячный ревью", trigger: "1-е число месяца", action: "Оценка режима, аллокации, эффективности ботов", cadence: "Месячная" },
 ];
-
-
-// -------------- COIN OF THE WEEK (Airtable · «Crypto OS» → «Coin of the Week») --------------
-
-export const coinOfTheWeek: CoinOfTheWeek = {
-  week: "W15 · 7–13 апреля 2026",
-  ticker: "KMNO",
-  name: "Kamino Finance",
-  sector: "DeFi / RWA / Solana",
-  priceUsd: 0.085,
-  aiScore: 7,
-  socialScore: 84,
-  allocationBucket: "Микро (1–2%)",
-  reason:
-    "Лучший баланс «реальный продукт + низкий MCap + трендирующий нарратив» среди кандидатов недели. TVL >$1B в RWA-депозитах, xStocks-интеграция (токенизированные акции как залог) и рекордный sentiment 95 (52-недельный максимум). MCap всего $84M — редкий случай, когда серьёзный финансовый продукт с миллиардным TVL стоит дешевле своего реального веса.",
-  thesis:
-    "Kamino превращается в «RWA-хаб Solana». xStocks делает токенизированные акции продуктивным залогом — это начало нового цикла RWA-лендинга. При растущем TVL и сильном нарративе RWA, протокол с низким MCap и функциональным токеном имеет непропорциональный upside относительно обычных DeFi-форков.",
-  strengths: [
-    "Реальный TVL >$1B в RWA-депозитах — не обещания, а цифры",
-    "Лидерство в RWA-лендинге на Solana",
-    "xStocks — первый протокол с токенизированными акциями как залогом",
-    "Партнёры: Galaxy, USD1, Exponent Finance",
-    "Sentiment 84% (52w high), engagements 1.78M",
-    "Низкий MCap $84M при реальных протокольных fees",
-    "Нулевой impact от Drift-эксплоита: код под аудитом, multisig + timelock",
-  ],
-  risks: [
-    "Unlocks по вестинг-расписанию дают временное sell-pressure (последний раз $4M сорвал 52w low)",
-    "Зависимость от здоровья Solana — системный риск",
-    "Конкуренция: Jupiter Lend, Loopscale, Exponent Finance",
-    "Coinbase делистил KMNO-фьючерсы — удар по ликвидности",
-    "Стандартный смарт-контрактный риск любого DeFi",
-  ],
-  publishedAt: "2026-04-10",
-};
-
-
-// -------------- COIN OF THE DAY --------------
-
-export interface CoinOfTheDay {
-  date: string;
-  ticker: string;
-  name: string;
-  sector: string;
-  priceUsd: number;
-  aiScore: number;
-  reason: string;
-  publishedAt: string;
-}
-
-export const coinOfTheDay: CoinOfTheDay = {
-  date: "2026-04-19",
-  ticker: "JITO",
-  name: "Jito",
-  sector: "LST / Solana / MEV",
-  priceUsd: 2.47,
-  aiScore: 8,
-  reason:
-    "Рекордный MEV-доход за сутки + рост stSOL TVL на +4.2% за 24ч. Техническая картина — откат к поддержке $2.40 при sideways-рынке = хороший вход для позиционной покупки.",
-  publishedAt: "2026-04-19T12:00:00Z",
-};
 
 export const weeksHistory: WeekHistoryEntry[] = [
   {
