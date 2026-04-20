@@ -775,3 +775,64 @@ export const marketWidgetLinks = {
   ethBtc:
     "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=ru#%7B%22symbol%22%3A%22BINANCE%3AETHBTC%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A200%2C%22dateRange%22%3A%223M%22%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%7D",
 };
+
+// ============================================================================
+// Live strategies (AI Grid и тд) — демонстрация работы в реальном времени.
+// Моковые метрики; при наличии leaderMark/UID будут обновляться через
+// Cloudflare Worker (env.VITE_STRATEGIES_URL). Слово "копи" не используется.
+// ============================================================================
+
+export type LiveStrategyPlatform = "bybit" | "bitget" | "binance" | "internal";
+
+export interface LiveStrategyMetrics {
+  roi30d: number;           // %
+  winrate: number;          // %
+  maxDrawdown: number;      // % (отрицательное, ограничивается по модулю)
+  activeTrades: number;
+  copiers?: number;         // опционально — показываем если >0
+  aum?: number;             // USD в работе, если знаем
+}
+
+export interface LiveStrategy {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  platform: LiveStrategyPlatform;
+  // leaderMark / UID — если задано, Worker тянет live метрики; пусто — mock
+  leaderMark?: string;
+  // публичная ссылка "Смотреть"
+  ctaUrl: string;
+  ctaLabel: string;          // напр. "Смотреть на Bybit"
+  status: "live" | "rebalance" | "paused";
+  statusLabel: string;
+  // моковые метрики; если придут живые — заменятся
+  metrics: LiveStrategyMetrics;
+  updatedAt: string;
+  note?: string;             // короткое пояснение как работает
+}
+
+export const liveStrategies: LiveStrategy[] = [
+  {
+    id: "bybit-ai-grid",
+    title: "AI Grid · BTC/USDT",
+    subtitle: "Bybit · работает в реальном времени",
+    description:
+      "Сеточная стратегия на споте и фьючерсе Bybit с адаптивным шагом сетки. ИИ раз в час пересчитывает диапазон под текущую волатильность — это не «копи», а демонстрация того, как система реально торгует.",
+    platform: "bybit",
+    leaderMark: "",
+    ctaUrl: "https://bybit.onelink.me/EhY6/7sk6b779",
+    ctaLabel: "Смотреть на Bybit",
+    status: "live",
+    statusLabel: "Стратегия активна",
+    metrics: {
+      roi30d: 12.4,
+      winrate: 71,
+      maxDrawdown: -6.8,
+      activeTrades: 14,
+      copiers: 0,
+    },
+    updatedAt: "2026-04-20T12:00:00Z",
+    note: "Данные обновляются раз в 10 минут. Прошлые результаты не гарантируют будущих.",
+  },
+];

@@ -47,13 +47,14 @@ import {
   YAxis,
 } from "recharts";
 import { useDashboardLiveData } from "@/hooks/useDashboardLiveData";
-import type { CryptoMapRow } from "./dashboardData";
+import type { CryptoMapRow, LiveStrategy } from "./dashboardData";
 import {
   altseasonIndexToday,
   btcS2fNowIndex,
   btcS2fSeries,
   fearGreedToday,
   hashRibbonsStatus,
+  liveStrategies,
   marketWidgetLinks,
   miningCostSeries,
   miningCostToday,
@@ -1605,6 +1606,121 @@ export function ExecutionModulesSection() {
           Crypto OS — обучающая система. Конкретные сделки, размеры позиций и точки
           входа каждый ученик принимает сам. Это не финсовет.
         </div>
+      </div>
+    </section>
+  );
+}
+
+// ============ LIVE STRATEGIES — демонстрация в реальном времени ============
+
+function StrategyStatusDot({ status }: { status: LiveStrategy["status"] }) {
+  const color =
+    status === "live"
+      ? "#00d4aa"
+      : status === "rebalance"
+      ? "#f4b000"
+      : "#8a8f9c";
+  const pulse = status === "live";
+  return (
+    <span
+      className={"inline-block w-2 h-2 rounded-full " + (pulse ? "animate-pulse" : "")}
+      style={{ background: color, boxShadow: pulse ? `0 0 10px ${color}` : undefined }}
+    />
+  );
+}
+
+function LiveStrategyCard({ s }: { s: LiveStrategy }) {
+  const m = s.metrics;
+  const pnlPositive = m.roi30d >= 0;
+  return (
+    <Card className="p-5 flex flex-col gap-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2">
+            <StrategyStatusDot status={s.status} />
+            <div className="text-[11px] uppercase tracking-[0.18em] text-white/50">
+              {s.statusLabel}
+            </div>
+          </div>
+          <div className="mt-2 text-lg font-semibold text-white">{s.title}</div>
+          <div className="text-[12px] text-white/55">{s.subtitle}</div>
+        </div>
+        <Badge tone={pnlPositive ? "up" : "warn"}>
+          {pnlPositive ? "+" : ""}
+          {m.roi30d.toFixed(1)}% · 30д
+        </Badge>
+      </div>
+
+      <div className="text-sm leading-relaxed text-white/75">{s.description}</div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+        <div className="rounded-md border border-white/10 bg-black/20 p-2">
+          <div className="text-white/45 text-[11px]">ROI 30д</div>
+          <div
+            className={
+              "tabular-nums font-semibold " +
+              (pnlPositive ? "text-[#00d4aa]" : "text-red-400")
+            }
+          >
+            {pnlPositive ? "+" : ""}
+            {m.roi30d.toFixed(1)}%
+          </div>
+        </div>
+        <div className="rounded-md border border-white/10 bg-black/20 p-2">
+          <div className="text-white/45 text-[11px]">Winrate</div>
+          <div className="tabular-nums text-white font-semibold">{m.winrate}%</div>
+        </div>
+        <div className="rounded-md border border-white/10 bg-black/20 p-2">
+          <div className="text-white/45 text-[11px]">Max DD</div>
+          <div className="tabular-nums text-white/85 font-semibold">
+            {m.maxDrawdown.toFixed(1)}%
+          </div>
+        </div>
+        <div className="rounded-md border border-white/10 bg-black/20 p-2">
+          <div className="text-white/45 text-[11px]">Активные сделки</div>
+          <div className="tabular-nums text-white font-semibold">{m.activeTrades}</div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between gap-3 pt-1">
+        <div className="text-[11px] text-white/40">
+          Обновлено {new Date(s.updatedAt).toLocaleString("ru-RU")}
+        </div>
+        <a
+          href={s.ctaUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#9945ff] to-[#00d4aa] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition"
+        >
+          <Eye className="w-4 h-4" />
+          {s.ctaLabel}
+        </a>
+      </div>
+
+      {s.note && (
+        <div className="text-[11px] text-white/35 leading-relaxed">{s.note}</div>
+      )}
+    </Card>
+  );
+}
+
+export function LiveStrategiesSection() {
+  if (\!liveStrategies.length) return null;
+  return (
+    <section>
+      <SectionHeader
+        icon={Activity}
+        title="Стратегии в реальном времени"
+        kicker="08 · Демонстрация"
+      />
+      <div className="grid md:grid-cols-2 gap-4">
+        {liveStrategies.map((s) => (
+          <LiveStrategyCard key={s.id} s={s} />
+        ))}
+      </div>
+      <div className="mt-3 text-[11px] text-white/40 leading-relaxed">
+        Это не инвестиционная рекомендация. Прошлые результаты не гарантируют будущих.
+        Цифры подтягиваются с публичных API площадок; задержка обновления — до 10 минут.
       </div>
     </section>
   );

@@ -11,6 +11,7 @@ import {
   ExecutionModulesSection,
   GridSection,
   HeroOverviewSection,
+  LiveStrategiesSection,
   MacroRegimeSection,
   SemiCoreSection,
   WatchlistSection,
@@ -26,6 +27,7 @@ export default function Dashboard() {
       <CryptoMapSection />
       <WatchlistSection />
       <CoinOfTheWeekSection />
+      <LiveStrategiesSection />
       <DcaSection />
       <GridSection />
       <AiGuideSection />
