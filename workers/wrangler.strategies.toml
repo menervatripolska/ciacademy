@@ -1,0 +1,12 @@
+name = "ciacademy-strategies-bybit"
+main = "strategies-bybit.ts"
+compatibility_date = "2025-01-01"
+
+[vars]
+ALLOWED_ORIGIN = "https://ciacademy.kz"
+
+# KV для кеша метрик. Создай: wrangler kv:namespace create BYBIT_CACHE
+# и вставь выданный id вместо "XXXX..." ниже.
+# [[kv_namespaces]]
+# binding = "BYBIT_CACHE"
+# id = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"

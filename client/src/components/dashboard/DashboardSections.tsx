@@ -47,6 +47,7 @@ import {
   YAxis,
 } from "recharts";
 import { useDashboardLiveData } from "@/hooks/useDashboardLiveData";
+import { useLiveStrategyMetrics } from "@/hooks/useLiveStrategyMetrics";
 import type { CryptoMapRow, LiveStrategy } from "./dashboardData";
 import {
   altseasonIndexToday,
@@ -1630,7 +1631,7 @@ function StrategyStatusDot({ status }: { status: LiveStrategy["status"] }) {
 }
 
 function LiveStrategyCard({ s }: { s: LiveStrategy }) {
-  const m = s.metrics;
+  const { metrics: m, live, updatedAt } = useLiveStrategyMetrics(s);
   const pnlPositive = m.roi30d >= 0;
   return (
     <Card className="p-5 flex flex-col gap-4">
@@ -1684,7 +1685,7 @@ function LiveStrategyCard({ s }: { s: LiveStrategy }) {
 
       <div className="flex items-center justify-between gap-3 pt-1">
         <div className="text-[11px] text-white/40">
-          Обновлено {new Date(s.updatedAt).toLocaleString("ru-RU")}
+          Обновлено {new Date(updatedAt).toLocaleString("ru-RU")}{live ? " · live" : ""}
         </div>
         <a
           href={s.ctaUrl}

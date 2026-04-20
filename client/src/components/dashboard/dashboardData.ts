@@ -820,7 +820,7 @@ export const liveStrategies: LiveStrategy[] = [
     description:
       "Сеточная стратегия на споте и фьючерсе Bybit с адаптивным шагом сетки. ИИ раз в час пересчитывает диапазон под текущую волатильность — это не «копи», а демонстрация того, как система реально торгует.",
     platform: "bybit",
-    leaderMark: "",
+    leaderMark: "GsD+Xwdd99cIKwlNYuZCMQ==",
     ctaUrl: "https://bybit.onelink.me/EhY6/7sk6b779",
     ctaLabel: "Смотреть на Bybit",
     status: "live",
