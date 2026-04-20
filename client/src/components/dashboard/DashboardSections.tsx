@@ -555,6 +555,35 @@ function TvPublishedEmbed({ url, label }: { url: string; label: string }) {
   );
 }
 
+function TimeframeToggle({
+  value,
+  onChange,
+}: {
+  value: "daily" | "weekly";
+  onChange: (v: "daily" | "weekly") => void;
+}) {
+  const btn = (v: "daily" | "weekly", label: string) => (
+    <button
+      type="button"
+      onClick={() => onChange(v)}
+      className={
+        "px-3 py-1 text-xs rounded-md border transition " +
+        (value === v
+          ? "border-white/30 bg-white/10 text-white"
+          : "border-white/10 text-white/60 hover:text-white")
+      }
+    >
+      {label}
+    </button>
+  );
+  return (
+    <div className="inline-flex gap-1.5">
+      {btn("daily", "1D")}
+      {btn("weekly", "1W")}
+    </div>
+  );
+}
+
 function HashRibbonsLamp({ on }: { on: boolean }) {
   return (
     <div
