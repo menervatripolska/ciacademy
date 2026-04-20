@@ -555,6 +555,36 @@ function TvPublishedEmbed({ url, label }: { url: string; label: string }) {
   );
 }
 
+function HashRibbonsLamp({ on }: { on: boolean }) {
+  return (
+    <div
+      className={
+        "relative inline-flex h-14 w-14 items-center justify-center rounded-full border " +
+        (on ? "border-[#3ba5ff]/70 bg-[#0a2540]" : "border-white/15 bg-black/30")
+      }
+      style={on ? { boxShadow: "0 0 22px rgba(59,165,255,0.55)" } : undefined}
+      aria-label={on ? "Hash Ribbons buy — сигнал активен" : "Hash Ribbons — сигнала нет"}
+    >
+      <BellRing className={"h-6 w-6 " + (on ? "text-[#7bc6ff]" : "text-white/35")} />
+    </div>
+  );
+}
+
+function PiCycleArrow({ on }: { on: boolean }) {
+  return (
+    <div
+      className={
+        "relative inline-flex h-14 w-14 items-center justify-center rounded-full border " +
+        (on ? "border-[#ff4d4f]/80 bg-[#2a0a0a]" : "border-white/15 bg-black/30")
+      }
+      style={on ? { boxShadow: "0 0 22px rgba(255,77,79,0.55)" } : undefined}
+      aria-label={on ? "Pi Cycle TOP — сигнал активен" : "Pi Cycle — сигнала нет"}
+    >
+      <ArrowDownIcon className={"h-6 w-6 " + (on ? "text-[#ff8a8a]" : "text-white/35")} />
+    </div>
+  );
+}
+
 function HashRibbonsWidget() {
   const [tf, setTf] = useState<"daily" | "weekly">("daily");
   const cur = hashRibbonsStatus.timeframes[tf];
