@@ -1706,7 +1706,7 @@ function LiveStrategyCard({ s }: { s: LiveStrategy }) {
 }
 
 export function LiveStrategiesSection() {
-  if (\!liveStrategies.length) return null;
+  if (!liveStrategies.length) return null;
   return (
     <section>
       <SectionHeader

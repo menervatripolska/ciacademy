@@ -61,10 +61,10 @@ function num(x: unknown, fallback = 0): number {
  * меняются имена полей — подстраховка через алиасы.
  */
 function normalize(raw: unknown): NormalizedMetrics | null {
-  if (\!raw || typeof raw \!== "object") return null;
+  if (!raw || typeof raw !== "object") return null;
   const anyr = raw as Record<string, unknown>;
   const r = (anyr.result as Record<string, unknown>) ?? (anyr.data as Record<string, unknown>) ?? anyr;
-  if (\!r || typeof r \!== "object") return null;
+  if (!r || typeof r !== "object") return null;
 
   const roi30d = num(r.roi30d ?? r.roi_30d ?? r.yieldRatio ?? r.roi);
   const winrate = num(r.winRate ?? r.win_rate ?? r.winrate);
@@ -77,7 +77,7 @@ function normalize(raw: unknown): NormalizedMetrics | null {
   );
   const aum = num(r.aum ?? r.totalAum ?? r.total_aum);
 
-  if (\!roi30d && \!winrate && \!maxDrawdown && \!activeTrades && \!copiers && \!aum) return null;
+  if (!roi30d && !winrate && !maxDrawdown && !activeTrades && !copiers && !aum) return null;
 
   return {
     roi30d,
@@ -101,7 +101,7 @@ async function fetchLiveMetrics(leaderMark: string): Promise<NormalizedMetrics |
           "user-agent": "ciacademy-strategies-worker/1.0",
         },
       });
-      if (\!r.ok) continue;
+      if (!r.ok) continue;
       const data = await r.json();
       const metrics = normalize(data);
       if (metrics) return metrics;
@@ -118,13 +118,13 @@ export default {
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: CORS(origin) });
     }
-    if (request.method \!== "GET") {
+    if (request.method !== "GET") {
       return new Response("Method not allowed", { status: 405, headers: CORS(origin) });
     }
 
     const u = new URL(request.url);
     const leaderMark = u.searchParams.get("leaderMark");
-    if (\!leaderMark) {
+    if (!leaderMark) {
       return new Response(JSON.stringify({ ok: false, error: "leaderMark is required" }), {
         status: 400,
         headers: { "content-type": "application/json", ...CORS(origin) },
@@ -143,7 +143,7 @@ export default {
     }
 
     const metrics = await fetchLiveMetrics(leaderMark);
-    if (\!metrics) {
+    if (!metrics) {
       return new Response(
         JSON.stringify({ ok: false, error: "upstream failed or no data" }),
         { status: 502, headers: { "content-type": "application/json", ...CORS(origin) } }

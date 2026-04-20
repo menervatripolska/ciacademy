@@ -57,7 +57,7 @@ async function callAnthropic(env: Env, body: ChatRequest) {
     }),
   });
   const data: any = await r.json();
-  if (\!r.ok) return { error: data?.error?.message ?? `anthropic ${r.status}` };
+  if (!r.ok) return { error: data?.error?.message ?? `anthropic ${r.status}` };
   const reply = data?.content?.[0]?.text ?? "";
   return { reply };
 }
@@ -81,7 +81,7 @@ async function callQwen(env: Env, body: ChatRequest) {
     }
   );
   const data: any = await r.json();
-  if (\!r.ok) return { error: data?.error?.message ?? `qwen ${r.status}` };
+  if (!r.ok) return { error: data?.error?.message ?? `qwen ${r.status}` };
   const reply = data?.choices?.[0]?.message?.content ?? "";
   return { reply };
 }
@@ -102,7 +102,7 @@ async function callGemini(env: Env, body: ChatRequest) {
     }),
   });
   const data: any = await r.json();
-  if (\!r.ok) return { error: data?.error?.message ?? `gemini ${r.status}` };
+  if (!r.ok) return { error: data?.error?.message ?? `gemini ${r.status}` };
   const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
   return { reply };
 }
@@ -113,7 +113,7 @@ export default {
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: CORS(origin) });
     }
-    if (request.method \!== "POST") {
+    if (request.method !== "POST") {
       return new Response("Method not allowed", { status: 405, headers: CORS(origin) });
     }
 
@@ -127,7 +127,7 @@ export default {
       });
     }
 
-    if (\!env.AI_API_KEY) {
+    if (!env.AI_API_KEY) {
       return new Response(JSON.stringify({ error: "AI_API_KEY not configured" }), {
         status: 500,
         headers: { "content-type": "application/json", ...CORS(origin) },

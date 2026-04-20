@@ -18,7 +18,7 @@ export function useLiveStrategyMetrics(s: LiveStrategy): {
 
   useEffect(() => {
     const base = (import.meta.env.VITE_STRATEGIES_URL ?? "").trim();
-    if (\!base || \!s.leaderMark || s.platform \!== "bybit") return;
+    if (!base || !s.leaderMark || s.platform !== "bybit") return;
 
     let canceled = false;
     const url =
@@ -29,12 +29,12 @@ export function useLiveStrategyMetrics(s: LiveStrategy): {
     (async () => {
       try {
         const r = await fetch(url, { method: "GET" });
-        if (\!r.ok) return;
+        if (!r.ok) return;
         const data = (await r.json()) as {
           ok?: boolean;
           metrics?: LiveStrategyMetrics & { updatedAt?: string };
         };
-        if (canceled || \!data?.ok || \!data.metrics) return;
+        if (canceled || !data?.ok || !data.metrics) return;
         setMetrics({
           roi30d: data.metrics.roi30d,
           winrate: data.metrics.winrate,
