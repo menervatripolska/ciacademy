@@ -796,6 +796,13 @@ export interface LiveStrategyMetrics {
   aum?: number;             // USD в работе, если знаем
 }
 
+export interface GridOrderLevel {
+  price: number;     // $
+  side: "buy" | "sell";
+  size: number;      // quote USD на ордер
+  filled: boolean;   // исполнен или ждёт
+}
+
 export interface LiveStrategy {
   id: string;
   title: string;
@@ -807,21 +814,50 @@ export interface LiveStrategy {
   // публичная ссылка "Смотреть"
   ctaUrl: string;
   ctaLabel: string;          // напр. "Смотреть на Bybit"
-  status: "live" | "rebalance" | "paused";
+  status: "live" | "rebalance" | "paused" | "coming";
   statusLabel: string;
   // моковые метрики; если придут живые — заменятся
   metrics: LiveStrategyMetrics;
   updatedAt: string;
   note?: string;             // короткое пояснение как работает
+  // Визуал: кривая PnL и сетка ордеров (мок — генерим, если есть live метрики заменим)
+  pnlSeries?: number[];      // нормированная PnL, 0 = старт
+  orderGrid?: GridOrderLevel[];
+  pulseCta?: boolean;        // мигающая CTA
+  comingSoon?: boolean;      // карточка-заглушка
+}
+
+// Моковая кривая PnL за 30 дней — нормированная в процентах от старта.
+// Заменяется живыми данными, когда Worker успеет вытащить Bybit Kline.
+const BYBIT_AI_GRID_PNL_SERIES: number[] = [
+  0, 0.4, 0.9, 1.6, 1.2, 2.1, 2.8, 3.3, 2.9, 3.8,
+  4.6, 5.2, 4.7, 5.9, 6.4, 7.1, 6.8, 7.7, 8.3, 9.0,
+  8.6, 9.8, 10.4, 10.1, 11.2, 11.8, 11.4, 12.0, 12.1, 12.4,
+];
+
+// Сетка ордеров — 10 уровней вокруг текущей цены. Генерится детерминированно,
+// чтобы визуал не прыгал на каждом рендере, но выглядел правдоподобно.
+function makeOrderGrid(centerPrice: number, spreadPct: number): GridOrderLevel[] {
+  const levels: GridOrderLevel[] = [];
+  const step = (centerPrice * spreadPct) / 10;
+  for (let i = -5; i <= 5; i++) {
+    if (i === 0) continue;
+    const price = +(centerPrice + i * step).toFixed(2);
+    const side: "buy" | "sell" = i < 0 ? "buy" : "sell";
+    // ближние к центру — чаще исполнены
+    const filled = Math.abs(i) <= 2;
+    levels.push({ price, side, size: 120, filled });
+  }
+  return levels;
 }
 
 export const liveStrategies: LiveStrategy[] = [
   {
     id: "bybit-ai-grid",
-    title: "AI Grid · BTC/USDT",
+    title: "AI Grid · авто-монета",
     subtitle: "Bybit · работает в реальном времени",
     description:
-      "Сеточная стратегия на споте и фьючерсе Bybit с адаптивным шагом сетки. ИИ раз в час пересчитывает диапазон под текущую волатильность — это не «копи», а демонстрация того, как система реально торгует.",
+      "Сеточная стратегия на Bybit. ИИ сам выбирает монету и пересчитывает диапазон под текущую волатильность — раз в час проверяет рынок и двигает сетку туда, где шире коридор и чище откаты. Пока без привязки к конкретной паре: сегодня это может быть BTC, завтра SOL или ETH — система решает сама.",
     platform: "bybit",
     leaderMark: "GsD+Xwdd99cIKwlNYuZCMQ==",
     ctaUrl: "https://bybit.onelink.me/EhY6/7sk6b779",
@@ -837,6 +873,31 @@ export const liveStrategies: LiveStrategy[] = [
     },
     updatedAt: "2026-04-20T12:00:00Z",
     note: "Данные обновляются раз в 10 минут. Прошлые результаты не гарантируют будущих.",
+    pnlSeries: BYBIT_AI_GRID_PNL_SERIES,
+    orderGrid: makeOrderGrid(68420, 0.03),
+    pulseCta: true,
+  },
+  {
+    id: "dca-ai-bot",
+    title: "AI DCA · авто-закупка",
+    subtitle: "В разработке · уведомим первых",
+    description:
+      "Автоматический DCA по плану Crypto OS: бот сам распределяет капитал по монетам недели и дня, ловит просадки −5% и −10%, усредняет цену и держит цикл без эмоций. Запускаем по приватному white-list'у — открывайте CTA, чтобы попасть в первые.",
+    platform: "internal",
+    ctaUrl: "https://t.me/CISelectionbot?start=dca_waitlist",
+    ctaLabel: "В лист ожидания",
+    status: "coming",
+    statusLabel: "Скоро · бета",
+    metrics: {
+      roi30d: 0,
+      winrate: 0,
+      maxDrawdown: 0,
+      activeTrades: 0,
+    },
+    updatedAt: "2026-04-20T12:00:00Z",
+    note: "Средний вход ниже рынка, ручного клика ноль. Подробности — по ссылке в ассистенте.",
+    pulseCta: true,
+    comingSoon: true,
   },
 ];
 

@@ -1,7 +1,6 @@
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import {
   AdvancedModulesSection,
-  AiGuideSection,
   ArchitectureLayersSection,
   BtcStructureSection,
   CryptoMapSection,
@@ -9,7 +8,6 @@ import {
   CryptoMultiplierSection,
   DcaSection,
   ExecutionModulesSection,
-  GridSection,
   HeroOverviewSection,
   LiveStrategiesSection,
   MacroRegimeSection,
@@ -27,10 +25,8 @@ export default function Dashboard() {
       <CryptoMapSection />
       <WatchlistSection />
       <CoinOfTheWeekSection />
-      <LiveStrategiesSection />
       <DcaSection />
-      <GridSection />
-      <AiGuideSection />
+      <LiveStrategiesSection />
       <SemiCoreSection />
       <AdvancedModulesSection />
       <ArchitectureLayersSection />

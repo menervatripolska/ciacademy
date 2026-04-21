@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { MessageSquare, Send, Sparkles, X } from "lucide-react";
+import { Send, Sparkles, X, Zap } from "lucide-react";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -29,7 +29,7 @@ export function DashboardAiChat() {
     {
       role: "assistant",
       content:
-        "Привет. Я ассистент Crypto OS. Помогу разобрать любую секцию дашборда: макрорежим, DCA, структуру BTC, монету недели. Спрашивай.",
+        "Привет, я Нова — гид по Crypto OS. Разложу любую секцию: макрорежим, DCA, BTC-структура, монета недели. Спрашивай коротко — отвечу по делу.",
       timestamp: Date.now(),
     },
   ]);
@@ -123,8 +123,8 @@ export function DashboardAiChat() {
             : { boxShadow: "0 8px 30px rgba(0,212,170,0.35), 0 0 0 1px rgba(255,255,255,0.05)" }
         }
       >
-        {open ? <X className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
-        {open ? "Закрыть" : "AI-ассистент"}
+        {open ? <X className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
+        {open ? "Закрыть" : "Нова · AI-гид"}
       </button>
 
       {open ? (
@@ -141,10 +141,10 @@ export function DashboardAiChat() {
           <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-white/[0.02]">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#9945ff]/60 to-[#00d4aa]/60">
-                <MessageSquare className="w-4 h-4" />
+                <Zap className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-sm font-semibold">AI-ассистент Crypto OS</div>
+                <div className="text-sm font-semibold">Нова · гид по Crypto OS</div>
                 <div className="text-[11px] text-white/45">методология курса, без финсоветов</div>
               </div>
             </div>

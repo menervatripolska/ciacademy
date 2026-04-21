@@ -1793,8 +1793,10 @@ function StrategyStatusDot({ status }: { status: LiveStrategy["status"] }) {
       ? "#00d4aa"
       : status === "rebalance"
       ? "#f4b000"
+      : status === "coming"
+      ? "#9945ff"
       : "#8a8f9c";
-  const pulse = status === "live";
+  const pulse = status === "live" || status === "coming";
   return (
     <span
       className={"inline-block w-2 h-2 rounded-full " + (pulse ? "animate-pulse" : "")}
@@ -1803,68 +1805,189 @@ function StrategyStatusDot({ status }: { status: LiveStrategy["status"] }) {
   );
 }
 
+// Мини-спарклайн PnL — без осей, мягкая заливка под цвет результата.
+function PnlSparkline({ series, positive }: { series: number[]; positive: boolean }) {
+  const data = series.map((v, i) => ({ i, v }));
+  const color = positive ? "#00d4aa" : "#ef4444";
+  const gradId = `spark-${positive ? "g" : "r"}`;
+  return (
+    <div className="h-20 -mx-1">
+      <ResponsiveContainer width="100%" height="100%">
+        <ComposedChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
+          <defs>
+            <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={color} stopOpacity={0.45} />
+              <stop offset="100%" stopColor={color} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <Area type="monotone" dataKey="v" stroke="none" fill={`url(#${gradId})`} />
+          <Line type="monotone" dataKey="v" stroke={color} strokeWidth={2} dot={false} />
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+// Визуализация сетки ордеров — горизонтальные бары вокруг центральной цены.
+function OrderGridViz({ grid }: { grid: import("./dashboardData").GridOrderLevel[] }) {
+  if (!grid || !grid.length) return null;
+  const sorted = [...grid].sort((a, b) => b.price - a.price); // сверху продажи, снизу покупки
+  const mid = (sorted[0].price + sorted[sorted.length - 1].price) / 2;
+  return (
+    <div className="rounded-md border border-white/10 bg-black/25 overflow-hidden">
+      <div className="flex items-center justify-between px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-white/45 border-b border-white/10">
+        <span>Сетка ордеров · 10 уровней</span>
+        <span className="text-white/55 tabular-nums">
+          середина ~${mid.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+        </span>
+      </div>
+      <div className="divide-y divide-white/5">
+        {sorted.map((lvl, i) => {
+          const isBuy = lvl.side === "buy";
+          const barColor = isBuy ? "#00d4aa" : "#ef4444";
+          const distance = Math.abs(lvl.price - mid) / mid; // 0..0.03
+          const widthPct = Math.min(95, 30 + (1 - distance / 0.03) * 60);
+          return (
+            <div key={i} className="relative h-6 px-3 flex items-center">
+              <div
+                className="absolute inset-y-0 left-0"
+                style={{
+                  width: `${widthPct}%`,
+                  background: `linear-gradient(90deg, ${barColor}22, ${barColor}05)`,
+                  opacity: lvl.filled ? 0.9 : 0.45,
+                }}
+              />
+              <div className="relative flex w-full items-center justify-between text-[11px]">
+                <span
+                  className="font-semibold uppercase tracking-wider"
+                  style={{ color: barColor }}
+                >
+                  {isBuy ? "buy" : "sell"}
+                </span>
+                <span className="tabular-nums text-white/85">
+                  ${lvl.price.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                </span>
+                <span className="tabular-nums text-white/45">
+                  {lvl.filled ? "исполнен" : "ждёт"}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function LiveStrategyCard({ s }: { s: LiveStrategy }) {
   const { metrics: m, live, updatedAt } = useLiveStrategyMetrics(s);
+  const coming = s.status === "coming" || s.comingSoon;
   const pnlPositive = m.roi30d >= 0;
+
+  const ctaClass =
+    "inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#9945ff] to-[#00d4aa] px-4 py-2 text-sm font-semibold text-white hover:opacity-95 transition " +
+    (s.pulseCta ? "animate-cta-glow" : "");
+
   return (
-    <Card className="p-5 flex flex-col gap-4">
-      <div className="flex items-start justify-between gap-3">
+    <Card className={"p-5 flex flex-col gap-4 relative " + (coming ? "overflow-hidden" : "")}>
+      {coming ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.08]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(135deg, rgba(153,69,255,0.8) 0 10px, transparent 10px 22px)",
+          }}
+        />
+      ) : null}
+      <div className="flex items-start justify-between gap-3 relative">
         <div>
           <div className="flex items-center gap-2">
             <StrategyStatusDot status={s.status} />
-            <div className="text-[11px] uppercase tracking-[0.18em] text-white/50">
+            <div className="text-[11px] uppercase tracking-[0.18em] text-white/55">
               {s.statusLabel}
             </div>
           </div>
           <div className="mt-2 text-lg font-semibold text-white">{s.title}</div>
           <div className="text-[12px] text-white/55">{s.subtitle}</div>
         </div>
-        <Badge tone={pnlPositive ? "up" : "warn"}>
-          {pnlPositive ? "+" : ""}
-          {m.roi30d.toFixed(1)}% · 30д
-        </Badge>
-      </div>
-
-      <div className="text-sm leading-relaxed text-white/75">{s.description}</div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-        <div className="rounded-md border border-white/10 bg-black/20 p-2">
-          <div className="text-white/45 text-[11px]">ROI 30д</div>
-          <div
-            className={
-              "tabular-nums font-semibold " +
-              (pnlPositive ? "text-[#00d4aa]" : "text-red-400")
-            }
-          >
+        {coming ? (
+          <Badge tone="neutral">В бете</Badge>
+        ) : (
+          <Badge tone={pnlPositive ? "up" : "warn"}>
             {pnlPositive ? "+" : ""}
-            {m.roi30d.toFixed(1)}%
-          </div>
-        </div>
-        <div className="rounded-md border border-white/10 bg-black/20 p-2">
-          <div className="text-white/45 text-[11px]">Winrate</div>
-          <div className="tabular-nums text-white font-semibold">{m.winrate}%</div>
-        </div>
-        <div className="rounded-md border border-white/10 bg-black/20 p-2">
-          <div className="text-white/45 text-[11px]">Max DD</div>
-          <div className="tabular-nums text-white/85 font-semibold">
-            {m.maxDrawdown.toFixed(1)}%
-          </div>
-        </div>
-        <div className="rounded-md border border-white/10 bg-black/20 p-2">
-          <div className="text-white/45 text-[11px]">Активные сделки</div>
-          <div className="tabular-nums text-white font-semibold">{m.activeTrades}</div>
-        </div>
+            {m.roi30d.toFixed(1)}% · 30д
+          </Badge>
+        )}
       </div>
 
-      <div className="flex items-center justify-between gap-3 pt-1">
+      <div className="text-sm leading-relaxed text-white/75 relative">{s.description}</div>
+
+      {!coming && s.pnlSeries && s.pnlSeries.length > 0 ? (
+        <div className="rounded-md border border-white/10 bg-black/20 p-3 relative">
+          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-white/45 mb-1">
+            <span>PnL · 30 дней</span>
+            <span className={pnlPositive ? "text-[#00d4aa]" : "text-red-400"}>
+              {pnlPositive ? "+" : ""}
+              {m.roi30d.toFixed(1)}%
+            </span>
+          </div>
+          <PnlSparkline series={s.pnlSeries} positive={pnlPositive} />
+        </div>
+      ) : null}
+
+      {!coming ? (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs relative">
+          <div className="rounded-md border border-white/10 bg-black/20 p-2">
+            <div className="text-white/45 text-[11px]">ROI 30д</div>
+            <div
+              className={
+                "tabular-nums font-semibold " +
+                (pnlPositive ? "text-[#00d4aa]" : "text-red-400")
+              }
+            >
+              {pnlPositive ? "+" : ""}
+              {m.roi30d.toFixed(1)}%
+            </div>
+          </div>
+          <div className="rounded-md border border-white/10 bg-black/20 p-2">
+            <div className="text-white/45 text-[11px]">Winrate</div>
+            <div className="tabular-nums text-white font-semibold">{m.winrate}%</div>
+          </div>
+          <div className="rounded-md border border-white/10 bg-black/20 p-2">
+            <div className="text-white/45 text-[11px]">Max DD</div>
+            <div className="tabular-nums text-white/85 font-semibold">
+              {m.maxDrawdown.toFixed(1)}%
+            </div>
+          </div>
+          <div className="rounded-md border border-white/10 bg-black/20 p-2">
+            <div className="text-white/45 text-[11px]">Активные сделки</div>
+            <div className="tabular-nums text-white font-semibold">{m.activeTrades}</div>
+          </div>
+        </div>
+      ) : (
+        <div className="rounded-md border border-[#9945ff]/30 bg-[#9945ff]/10 p-3 text-[13px] text-white/80 relative">
+          Открываем по приватному листу ожидания. Первые получатели — ученики Crypto OS и все, кто нажмёт CTA ниже.
+        </div>
+      )}
+
+      {!coming && s.orderGrid && s.orderGrid.length > 0 ? (
+        <div className="relative">
+          <OrderGridViz grid={s.orderGrid} />
+        </div>
+      ) : null}
+
+      <div className="flex items-center justify-between gap-3 pt-1 relative">
         <div className="text-[11px] text-white/40">
-          Обновлено {new Date(updatedAt).toLocaleString("ru-RU")}{live ? " · live" : ""}
+          {coming
+            ? "Запуск — по мере готовности. Уведомим в Telegram."
+            : `Обновлено ${new Date(updatedAt).toLocaleString("ru-RU")}${live ? " · live" : ""}`}
         </div>
         <a
           href={s.ctaUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#9945ff] to-[#00d4aa] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition"
+          className={ctaClass}
         >
           <Eye className="w-4 h-4" />
           {s.ctaLabel}
@@ -1872,7 +1995,7 @@ function LiveStrategyCard({ s }: { s: LiveStrategy }) {
       </div>
 
       {s.note && (
-        <div className="text-[11px] text-white/35 leading-relaxed">{s.note}</div>
+        <div className="text-[11px] text-white/35 leading-relaxed relative">{s.note}</div>
       )}
     </Card>
   );
@@ -1884,8 +2007,8 @@ export function LiveStrategiesSection() {
     <section>
       <SectionHeader
         icon={Activity}
-        title="Стратегии в реальном времени"
-        kicker="08 · Демонстрация"
+        title="Живые боты · Grid + DCA"
+        kicker="08 · Работают прямо сейчас"
       />
       <div className="grid md:grid-cols-2 gap-4">
         {liveStrategies.map((s) => (
@@ -1893,7 +2016,7 @@ export function LiveStrategiesSection() {
         ))}
       </div>
       <div className="mt-3 text-[11px] text-white/40 leading-relaxed">
-        Это не инвестиционная рекомендация. Прошлые результаты не гарантируют будущих.
+        Прошлые результаты не гарантируют будущих.
         Цифры подтягиваются с публичных API площадок; задержка обновления — до 10 минут.
       </div>
     </section>
