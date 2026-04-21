@@ -48,19 +48,24 @@ import {
 } from "recharts";
 import { useDashboardLiveData } from "@/hooks/useDashboardLiveData";
 import { useLiveStrategyMetrics } from "@/hooks/useLiveStrategyMetrics";
-import type { CryptoMapRow, LiveStrategy } from "./dashboardData";
+import type { CryptoMapRow, LiveStrategy, MacroSignalKey, MultiplierKey } from "./dashboardData";
 import {
   altseasonIndexToday,
+  btcDominanceZones,
   btcS2fNowIndex,
   btcS2fSeries,
   fearGreedToday,
   hashRibbonsStatus,
   liveStrategies,
+  macroSignalModes,
   marketWidgetLinks,
+  miningCostExplain,
   miningCostSeries,
   miningCostToday,
+  multiplierModes,
   piCycleStatus,
   publishedCharts,
+  s2fExplain,
 } from "./dashboardData";
 
 
@@ -301,25 +306,55 @@ export function MacroRegimeSection() {
           <div className="text-xs uppercase tracking-wider text-white/45 mb-1">
             Текущий сигнал
           </div>
-          <div className="text-3xl font-bold text-[#f59e0b]">{macro.signal}</div>
+          <div className="flex items-center gap-2">
+            <div className="text-3xl font-bold text-[#f59e0b]">
+              {macroSignalModes[macro.signal as MacroSignalKey]?.label ?? macro.signal}
+            </div>
+            <HelpHint title="Как читать макро-сигнал">
+              <div>
+                <span className="text-white">BUY / Покупать</span> — сильный вход, DCA по полному плану.
+              </div>
+              <div>
+                <span className="text-white">ACCUMULATE / Накапливать</span> — плавный DCA, не всей суммой.
+              </div>
+              <div>
+                <span className="text-white">HOLD / Держать</span> — сидим в позициях, ничего не делаем.
+              </div>
+              <div>
+                <span className="text-white">REDUCE / Снижать</span> — фиксируем часть прибыли, уходим в BTC/стейблы.
+              </div>
+              <div>
+                <span className="text-white">WAIT / Ждать</span> — DCA на паузе, ждём сигнал разворота.
+              </div>
+            </HelpHint>
+          </div>
           <div className="text-sm text-white/60 mt-1">{macro.cyclePhase}</div>
+          <div className="mt-3 rounded-md border border-[#f59e0b]/30 bg-[#f59e0b]/10 p-3 text-[12px] text-white/80 leading-relaxed">
+            {macroSignalModes[macro.signal as MacroSignalKey]?.action ?? "Следуем плану DCA."}
+          </div>
 
           <div className="mt-5 space-y-2">
-            {(["BUY", "ACCUMULATE", "HOLD", "REDUCE", "WAIT"] as const).map((s) => (
-              <div
-                key={s}
-                className={`flex items-center justify-between rounded-lg px-3 py-2 border ${
-                  s === macro.signal
-                    ? "bg-[#f59e0b]/15 border-[#f59e0b]/30"
-                    : "border-white/5"
-                }`}
-              >
-                <span className="text-sm">{s}</span>
-                {s === macro.signal && (
-                  <span className="text-xs text-[#f59e0b]">← сейчас</span>
-                )}
-              </div>
-            ))}
+            {(["BUY", "ACCUMULATE", "HOLD", "REDUCE", "WAIT"] as const).map((s) => {
+              const m = macroSignalModes[s];
+              return (
+                <div
+                  key={s}
+                  className={`flex items-center justify-between rounded-lg px-3 py-2 border ${
+                    s === macro.signal
+                      ? "bg-[#f59e0b]/15 border-[#f59e0b]/30"
+                      : "border-white/5"
+                  }`}
+                >
+                  <span className="text-sm">
+                    <span className="text-white/90">{m.label}</span>
+                    <span className="text-white/40 text-xs ml-2">{s}</span>
+                  </span>
+                  {s === macro.signal && (
+                    <span className="text-xs text-[#f59e0b]">← сейчас</span>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </Card>
       </div>
@@ -382,6 +417,7 @@ export function CryptoMultiplierSection() {
               className="bg-[#9945ff]"
             />
           </div>
+          <DominanceInterpret dominance={crypto.btcDominance} />
         </Card>
 
         <Card className="p-5" accent>
@@ -401,6 +437,8 @@ export function CryptoMultiplierSection() {
         <Stat label="SOL" value={`$${crypto.solPrice.toFixed(2)}`} hint={`24h ${crypto.sol24h.toFixed(1)}%`} tone={crypto.sol24h >= 0 ? "up" : "down"} />
         <Stat label="Total MC" value={`$${crypto.totalMarketCapT.toFixed(2)}T`} hint="весь крипто-рынок" />
       </div>
+
+      <MultiplierLegend />
     </section>
   );
 }
@@ -543,6 +581,24 @@ function TvPublishedEmbed({ url, label }: { url: string; label: string }) {
       <div className="mt-3 rounded-md border border-dashed border-white/15 p-3 text-[11px] text-white/45">
         {label}: публикация TradingView будет вставлена сюда (URL пустой — обнови publishedCharts).
       </div>
+    );
+  }
+  const snapshotMatch = url.match(/^https?:\/\/www\.tradingview\.com\/x\/([A-Za-z0-9]+)\/?$/);
+  if (snapshotMatch) {
+    const hash = snapshotMatch[1];
+    const imgUrl = `https://s3.tradingview.com/snapshots/${hash[0].toLowerCase()}/${hash}.png`;
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-3 block overflow-hidden rounded-md border border-white/10 bg-black/30 hover:border-white/25 transition"
+      >
+        <img src={imgUrl} alt={label} loading="lazy" style={{ width: "100%", display: "block" }} />
+        <div className="px-3 py-1.5 text-[11px] text-white/55 bg-black/40 border-t border-white/10">
+          {label} · открыть в TradingView ↗
+        </div>
+      </a>
     );
   }
   return (
@@ -703,6 +759,117 @@ function PiCycleWidget() {
       <div className="mt-3 text-sm leading-relaxed text-white/75">{cur.interpretation}</div>
       <TvPublishedEmbed url={snapshotUrl} label={`Pi Cycle · ${tf === "daily" ? "дневной ТФ" : "недельный ТФ"}`} />
     </Card>
+  );
+}
+
+
+
+function S2FExplainBox() {
+  return (
+    <Card className="p-5 mt-6">
+      <div className="flex items-center gap-2 mb-3">
+        <Compass className="w-4 h-4 text-[#f59e0b]" />
+        <div className="text-sm font-semibold text-white">{s2fExplain.title}</div>
+      </div>
+      <div className="text-[13px] text-white/80 leading-relaxed mb-4">{s2fExplain.lead}</div>
+      <div className="grid gap-3 md:grid-cols-3">
+        {s2fExplain.waypoints.map((w, i) => (
+          <div key={i} className="rounded-lg border border-white/10 bg-black/20 p-3">
+            <div className="text-[11px] uppercase tracking-[0.18em] text-[#f59e0b] mb-1">{w.phase}</div>
+            <div className="text-[12px] text-white/75 leading-relaxed">{w.hint}</div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 rounded-md border border-[#f59e0b]/25 bg-[#f59e0b]/5 p-3 text-[12px] text-white/80 leading-relaxed italic">
+        {s2fExplain.closing}
+      </div>
+    </Card>
+  );
+}
+
+// ---------- интерпретации (мультипликаторы / доминация / тултипы) ----------
+
+function HelpHint({ title, children }: { title: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span className="relative inline-block align-middle">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-label={`Как читать: ${title}`}
+        className={
+          "inline-flex items-center justify-center w-4 h-4 text-[10px] font-semibold rounded-full border border-white/30 text-white/70 hover:text-white hover:border-white/60 transition " +
+          (open ? "bg-white/10 text-white border-white/60" : "bg-transparent")
+        }
+      >
+        ?
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
+          <div className="absolute z-40 top-5 right-0 w-72 rounded-lg border border-white/15 bg-[#0b0b10]/95 p-3 text-left shadow-xl backdrop-blur">
+            <div className="text-[11px] uppercase tracking-[0.18em] text-white/45 mb-1.5">{title}</div>
+            <div className="text-[12px] text-white/80 leading-relaxed space-y-2">{children}</div>
+          </div>
+        </>
+      )}
+    </span>
+  );
+}
+
+function MultiplierLegend() {
+  return (
+    <Card className="p-5 mt-4">
+      <div className="flex items-center gap-2 mb-3">
+        <Gauge className="w-4 h-4 text-[#00d4aa]" />
+        <div className="text-sm font-semibold text-white">Режимы мультипликатора — что делать</div>
+      </div>
+      <div className="grid gap-2 md:grid-cols-5 sm:grid-cols-2 grid-cols-1">
+        {(Object.entries(multiplierModes) as [MultiplierKey, (typeof multiplierModes)[MultiplierKey]][]).map(
+          ([key, m]) => (
+            <div key={key} className="rounded-lg border border-white/10 bg-black/20 p-3">
+              <div className="flex items-center justify-between">
+                <div className="text-sm font-semibold text-white">{key}</div>
+                <div className="text-[10px] uppercase tracking-[0.18em] text-white/45">{m.label}</div>
+              </div>
+              <div className="mt-1 text-[11px] text-white/60 leading-relaxed">{m.short}</div>
+              <div className="mt-2 text-[11px] text-white/75 leading-relaxed">{m.action}</div>
+              <div className="mt-2 text-[10px] text-white/45 leading-relaxed">Когда: {m.useWhen}</div>
+            </div>
+          ),
+        )}
+      </div>
+    </Card>
+  );
+}
+
+function pickDominanceZone(value: number) {
+  return (
+    btcDominanceZones.find((z) => value >= z.min && value < z.max) ??
+    btcDominanceZones[btcDominanceZones.length - 1]
+  );
+}
+
+function DominanceInterpret({ dominance }: { dominance: number }) {
+  const zone = pickDominanceZone(dominance);
+  const toneCls =
+    zone.tone === "up"
+      ? "text-[#00d4aa]"
+      : zone.tone === "hot"
+      ? "text-[#9945ff]"
+      : zone.tone === "warn"
+      ? "text-[#f59e0b]"
+      : zone.tone === "down"
+      ? "text-red-400"
+      : "text-white/80";
+  return (
+    <div className="mt-3 rounded-md border border-white/10 bg-black/20 p-3">
+      <div className="flex items-center gap-2 mb-1">
+        <span className={"text-[11px] uppercase tracking-[0.18em] " + toneCls}>{zone.label}</span>
+        <span className="text-[11px] text-white/40">· BTC.D {dominance.toFixed(1)}%</span>
+      </div>
+      <div className="text-[12px] text-white/75 leading-relaxed">{zone.action}</div>
+    </div>
   );
 }
 
@@ -897,11 +1064,31 @@ export function BtcStructureSection() {
               </ComposedChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-3 text-xs text-white/70">
-            Цена <span className="text-white">${miningCostToday.price.toLocaleString("en-US")}</span> выше средней
-            себестоимости <span className="text-white">${miningCostToday.avgCostUsd.toLocaleString("en-US")}</span> —
-            майнеры в зелёной зоне, маржа <span className="text-[#00d4aa]">+{miningCostToday.marginPct.toFixed(1)}%</span>,
-            капитуляции нет.
+          <div className="mt-3 rounded-md border border-[#00d4aa]/30 bg-[#00d4aa]/5 p-3">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[11px] uppercase tracking-[0.18em] text-[#00d4aa]">Как читать</span>
+              <HelpHint title="Где закупать BTC">
+                <div>{miningCostExplain.summary}</div>
+                <div className="text-white/75">{miningCostExplain.greenZoneRule}</div>
+              </HelpHint>
+            </div>
+            <div className="text-[12px] text-white/80 leading-relaxed">
+              <span className="text-white font-semibold">Зелёная зона</span> — между коммерческой и промышленной себестоимостью. Это диапазон закупа BTC.{" "}
+              <span className="text-[#00d4aa]">Нижняя зелёная граница (~${miningCostToday.efficientCostUsd.toLocaleString("en-US")})</span> —
+              исторически дно рынка: ниже этой линии BTC почти не бывал.
+            </div>
+            <ul className="mt-2 space-y-1 text-[12px] text-white/75 list-none">
+              {miningCostExplain.howToAct.map((line, i) => (
+                <li key={i} className="flex gap-2">
+                  <span className="text-[#00d4aa] mt-0.5">›</span>
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-2 text-[11px] text-white/55">
+              Сейчас: цена ${miningCostToday.price.toLocaleString("en-US")}, средняя себес ${miningCostToday.avgCostUsd.toLocaleString("en-US")},
+              маржа <span className="text-[#00d4aa]">+{miningCostToday.marginPct.toFixed(1)}%</span>.
+            </div>
           </div>
         </Card>
 
@@ -956,21 +1143,7 @@ export function BtcStructureSection() {
         <PiCycleWidget />
       </div>
 
-      <div className="mt-6">
-        <div className="text-[11px] uppercase tracking-wider text-white/45 mb-2">
-          TradingView · Pi Cycle + Hash Ribbons · BTC / USD
-        </div>
-        <div className="grid gap-3 md:grid-cols-2">
-          <TvAdvancedChart
-            interval="W"
-            caption="Цена $75.1k пробила 50W MA ($71k) вверх · Hash Ribbons: Capriole Buy сработал в январе"
-          />
-          <TvAdvancedChart
-            interval="D"
-            caption="Дневка: 50D MA перекрестила 100D (бычий кросс) · Hash Ribbons Buy-сигнал 10 апреля"
-          />
-        </div>
-      </div>
+      <S2FExplainBox />
     </section>
   );
 }
