@@ -16,6 +16,7 @@ import {
   executionModules,
   coinOfTheWeek,
   weeksHistory,
+  portfolioComposition,
 } from "@/components/dashboard/dashboardData";
 
 // Единая точка доступа к данным дашборда.
@@ -47,6 +48,7 @@ export interface DashboardLiveData {
   executionModules: typeof executionModules;
   coinOfTheWeek: typeof coinOfTheWeek;
   weeksHistory: typeof weeksHistory;
+  portfolioComposition: typeof portfolioComposition;
   refresh: () => void;
 }
 
@@ -78,6 +80,7 @@ export function useDashboardLiveData(): DashboardLiveData {
     executionModules,
     coinOfTheWeek,
     weeksHistory,
+    portfolioComposition,
     refresh: () => setTick((n) => n + 1),
   };
 }

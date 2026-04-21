@@ -1222,6 +1222,222 @@ export function CryptoMapSection() {
   );
 }
 
+
+// ============ 5b. PORTFOLIO COMPOSITION — содержание портфеля ============
+// Заменяет карту рынка: показываем, ЧТО мы держим и ПОЧЕМУ.
+// Каждая строка кликабельна → раскрывается подробное объяснение.
+// Монета недели — последняя строка, её раскрытие повторяет секцию CoinOfTheWeek.
+
+function PortfolioActionBadge({ action }: { action: string }) {
+  const upper = action.toUpperCase();
+  const tone: "up" | "hot" | "warn" | "neutral" =
+    upper.startsWith("BUY") || upper.startsWith("ACCUMULATE")
+      ? "up"
+      : upper.startsWith("HOLD")
+      ? "neutral"
+      : upper.startsWith("REDUCE")
+      ? "warn"
+      : "hot";
+  const short = upper.split(" ")[0];
+  return <Badge tone={tone}>{short}</Badge>;
+}
+
+function KindIcon({ kind }: { kind: "crypto" | "metal" | "commodity" | "index" | "coin-of-week" }) {
+  const cls = "w-4 h-4 text-white/70";
+  if (kind === "metal") return <Coins className={cls} />;
+  if (kind === "commodity") return <Flame className={cls} />;
+  if (kind === "index") return <BarChart3 className={cls} />;
+  if (kind === "coin-of-week") return <Trophy className={cls} />;
+  return <Bot className={cls} />;
+}
+
+export function PortfolioCompositionSection() {
+  const { portfolioComposition, coinOfTheWeek } = useDashboardLiveData();
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  // Последняя строка — монета недели из Airtable
+  const coinRow = {
+    id: "coin-of-week",
+    kind: "coin-of-week" as const,
+    symbol: coinOfTheWeek.ticker,
+    name: coinOfTheWeek.name,
+    sector: coinOfTheWeek.sector,
+    priceUsd: coinOfTheWeek.priceUsd,
+    change24h: 0,
+    change7d: 0,
+    allocationPct: 2,
+    thesis: coinOfTheWeek.reason,
+    howToRead:
+      "Монета недели — это тактическая позиция поверх ядра. Бакет до 2% капитала, делится на 3 закупки DCA. Риск выше, горизонт 2-8 недель. Подробнее — секция ниже, раскрытие здесь даёт короткое резюме.",
+    action: "ACCUMULATE · микро-бакет 1-2%",
+  };
+
+  const rows = [...portfolioComposition, coinRow];
+  const totalAlloc = rows.reduce((s, r) => s + r.allocationPct, 0);
+
+  return (
+    <section>
+      <SectionHeader
+        icon={Wallet}
+        title="Содержание портфеля"
+        kicker="05 · Что держим и почему"
+        right={
+          <Badge tone="neutral">
+            Аллокация: {totalAlloc}%{totalAlloc < 100 ? ` · остаток ${100 - totalAlloc}% в кэш/стейблы` : ""}
+          </Badge>
+        }
+      />
+
+      <Card className="overflow-hidden">
+        <div className="divide-y divide-white/5">
+          {rows.map((r) => {
+            const isOpen = openId === r.id;
+            const changeTone = r.change24h >= 0 ? "text-[#00d4aa]" : "text-red-400";
+            return (
+              <div key={r.id} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setOpenId(isOpen ? null : r.id)}
+                  className={
+                    "w-full text-left px-4 sm:px-5 py-3 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 transition " +
+                    (isOpen ? "bg-white/[0.04]" : "hover:bg-white/[0.02]")
+                  }
+                  aria-expanded={isOpen}
+                >
+                  <div className="flex items-center gap-3 sm:w-[260px]">
+                    <div className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/5 flex items-center justify-center flex-shrink-0">
+                      <KindIcon kind={r.kind} />
+                    </div>
+                    <div>
+                      <div className="text-base font-bold text-white">{r.symbol}</div>
+                      <div className="text-[11px] text-white/55">{r.name}</div>
+                      <div className="text-[10px] uppercase tracking-wider text-white/40 mt-0.5">
+                        {r.sector}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 sm:flex sm:flex-1 sm:items-center sm:gap-6 gap-2 text-xs">
+                    <div>
+                      <div className="text-white/40 text-[10px] uppercase tracking-wider">Цена</div>
+                      <div className="tabular-nums text-white font-semibold">
+                        $
+                        {r.priceUsd >= 100
+                          ? r.priceUsd.toLocaleString("en-US", { maximumFractionDigits: 0 })
+                          : r.priceUsd.toLocaleString("en-US", { maximumFractionDigits: 4 })}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-white/40 text-[10px] uppercase tracking-wider">24ч</div>
+                      {r.kind === "coin-of-week" ? (
+                        <div className="tabular-nums text-white/50">—</div>
+                      ) : (
+                        <div className={"tabular-nums font-semibold " + changeTone}>
+                          {r.change24h >= 0 ? "+" : ""}
+                          {r.change24h.toFixed(1)}%
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-white/40 text-[10px] uppercase tracking-wider">Доля</div>
+                      <div className="tabular-nums text-white font-semibold">{r.allocationPct}%</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 sm:ml-auto">
+                    <PortfolioActionBadge action={r.action} />
+                    <div
+                      className="w-7 h-7 rounded-full border border-white/10 bg-white/[0.03] flex items-center justify-center text-white/65 text-sm font-bold"
+                      title="Как читать эту строку"
+                      aria-label="Как читать"
+                    >
+                      ?
+                    </div>
+                    <div
+                      className={
+                        "w-6 h-6 rounded-md flex items-center justify-center text-white/60 transition " +
+                        (isOpen ? "rotate-180 bg-white/[0.06]" : "")
+                      }
+                      aria-hidden
+                    >
+                      <ArrowDownIcon className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                </button>
+
+                {isOpen ? (
+                  <div className="px-4 sm:px-5 pb-4 pt-1 bg-black/20">
+                    <div className="grid md:grid-cols-2 gap-3 mt-2">
+                      <div className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
+                        <div className="text-[11px] uppercase tracking-wider text-white/45 mb-1">
+                          Зачем в портфеле
+                        </div>
+                        <div className="text-[13px] text-white/85 leading-relaxed">{r.thesis}</div>
+                      </div>
+                      <div className="rounded-lg border border-[#3ba5ff]/25 bg-[#3ba5ff]/[0.06] p-3">
+                        <div className="text-[11px] uppercase tracking-wider text-[#3ba5ff] mb-1">
+                          Как читать строку
+                        </div>
+                        <div className="text-[13px] text-white/85 leading-relaxed">{r.howToRead}</div>
+                      </div>
+                    </div>
+                    <div className="mt-3 rounded-lg border border-white/10 bg-black/25 p-3 text-[13px] text-white/80 leading-relaxed">
+                      <span className="text-[11px] uppercase tracking-wider text-white/45 mr-2">Действие:</span>
+                      {r.action}
+                    </div>
+
+                    {r.kind === "coin-of-week" ? (
+                      <div className="mt-3 rounded-lg border border-[#9945ff]/30 bg-[#9945ff]/[0.08] p-3">
+                        <div className="text-[11px] uppercase tracking-wider text-[#9945ff] mb-1">
+                          Ключевой тезис монеты недели
+                        </div>
+                        <div className="text-[13px] text-white/85 leading-relaxed">
+                          {coinOfTheWeek.thesis}
+                        </div>
+                        <div className="mt-2 grid sm:grid-cols-2 gap-2">
+                          <div>
+                            <div className="text-[11px] font-semibold text-[#00d4aa] mb-1">
+                              Сильные стороны
+                            </div>
+                            <ul className="space-y-1">
+                              {coinOfTheWeek.strengths.map((x, i) => (
+                                <li key={i} className="text-[12px] text-white/75 leading-relaxed flex gap-2">
+                                  <span className="text-[#00d4aa] mt-0.5">+</span>
+                                  <span>{x}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div>
+                            <div className="text-[11px] font-semibold text-red-400 mb-1">Риски</div>
+                            <ul className="space-y-1">
+                              {coinOfTheWeek.risks.map((x, i) => (
+                                <li key={i} className="text-[12px] text-white/75 leading-relaxed flex gap-2">
+                                  <span className="text-red-400 mt-0.5">−</span>
+                                  <span>{x}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      <div className="mt-3 text-[11px] text-white/45 leading-relaxed">
+        Источник данных: Airtable «Crypto OS» → таблицы «Portfolio», «Coin of the Week».
+        Цены — снимок на 19.04.2026, в будущей итерации подтягиваются живыми через Worker.
+      </div>
+    </section>
+  );
+}
+
 // ============ 6. WATCHLIST ============
 
 export function WatchlistSection() {

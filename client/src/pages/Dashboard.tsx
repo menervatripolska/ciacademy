@@ -3,7 +3,7 @@ import {
   AdvancedModulesSection,
   ArchitectureLayersSection,
   BtcStructureSection,
-  CryptoMapSection,
+  PortfolioCompositionSection,
   CoinOfTheWeekSection,
   CryptoMultiplierSection,
   DcaSection,
@@ -22,7 +22,7 @@ export default function Dashboard() {
       <MacroRegimeSection />
       <CryptoMultiplierSection />
       <BtcStructureSection />
-      <CryptoMapSection />
+      <PortfolioCompositionSection />
       <WatchlistSection />
       <CoinOfTheWeekSection />
       <DcaSection />
