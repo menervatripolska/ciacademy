@@ -26,14 +26,14 @@
     RewriteBase /
 
     # http → https
-    RewriteCond %{HTTPS} \!=on
-    RewriteCond %{HTTP:X-Forwarded-Proto} \!=https
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !=https
     RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
     # SPA fallback: любой путь, который не файл/каталог — отдаём index.html
     RewriteRule ^index\.html$ - [L]
-    RewriteCond %{REQUEST_FILENAME} \!-f
-    RewriteCond %{REQUEST_FILENAME} \!-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule . /index.html [L]
 </IfModule>
 
