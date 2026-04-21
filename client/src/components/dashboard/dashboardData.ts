@@ -160,9 +160,14 @@ export interface SemiCoreAsset {
 
 export interface AdvancedModule {
   name: string;
-  status: "Активен" | "В разработке" | "Тестируется";
+  // "locked" — всегда заблокирован, раскрывается в следующем курсе
+  status: "Активен" | "В разработке" | "Тестируется" | "locked";
   description: string;
   metric?: string;
+  // номер курса, в котором модуль раскроется (например "Курс 2")
+  courseTag?: string;
+  // на чём строится — 3-4 пункта
+  topics?: string[];
 }
 
 export interface ArchitectureLayer {
@@ -494,14 +499,46 @@ export const semiCore: SemiCoreAsset[] = [
 ];
 
 export const advancedModules: AdvancedModule[] = [
-  { name: "Макро-мультипликатор", status: "Активен", description: "Автоматический режим рынка от CPI, DXY, ставки, M2.", metric: "Режим: transition" },
-  { name: "Крипто-мультипликатор", status: "Активен", description: "Скор BTC + доминация + F&G → сигнал цикла.", metric: "Сигнал: ACCUMULATE" },
-  { name: "BTC on-chain модель", status: "Активен", description: "Киты, ETF-потоки, MVRV, supply in profit.", metric: "MVRV 2.14" },
-  { name: "Watchlist-сканер", status: "Активен", description: "Galaxy Score + AltRank + on-chain триггеры.", metric: "5 тикеров в списке" },
-  { name: "DCA-движок", status: "Активен", description: "Динамический шаг от страха/жадности и режима.", metric: "1.5x на BTC" },
-  { name: "Grid-симулятор", status: "Активен", description: "Ожидаемая доходность и нижний порог диапазона.", metric: "3 пары запущено" },
-  { name: "AI-гид (Gemini)", status: "Тестируется", description: "Контекстные ответы по текущему срезу данных.", metric: "Beta" },
-  { name: "Риск-модель портфеля", status: "В разработке", description: "VAR + корреляция актива с BTC.", metric: "Q3 2026" },
+  {
+    name: "Web3-модуль",
+    status: "locked",
+    description:
+      "Кошельки, подписи, sybil, airdrop-охота, взаимодействие с протоколами без доверия к централизованным биржам. Всё, что за пределами CEX.",
+    courseTag: "Следующий курс академии",
+    topics: ["EVM + Solana кошельки", "Подписи и approve-аудит", "Airdrop-стратегии", "Безопасность seed-фразы"],
+  },
+  {
+    name: "Prediction Markets",
+    status: "locked",
+    description:
+      "Polymarket, Kalshi, Augur. Как читать рынки предсказаний, ставить на макро-события и использовать их как опережающий сигнал для крипты.",
+    courseTag: "Следующий курс академии",
+    topics: ["Polymarket ликвидность", "Макро-события и ставки", "Арбитраж реальность vs рынок"],
+  },
+  {
+    name: "AI-агенты",
+    status: "locked",
+    description:
+      "Автономные ИИ-агенты, которые торгуют, исследуют, управляют DeFi-позициями. Фреймворки, безопасность, экономика MCP и on-chain execution.",
+    courseTag: "Следующий курс академии",
+    topics: ["Фреймворки агентов (ElizaOS, Virtuals)", "Агенты + DeFi", "Безопасность и лимиты", "Токены AI-агентных проектов"],
+  },
+  {
+    name: "Акции",
+    status: "locked",
+    description:
+      "Фондовый рынок как вторая опора капитала. Индексы, секторы, DCF, дивиденды, налоги, связь S&P/ставок с циклом крипты.",
+    courseTag: "Следующий курс академии",
+    topics: ["S&P 500, Nasdaq, секторы", "DCF и мультипликаторы", "Дивидендный портфель", "Налоги и брокеры"],
+  },
+  {
+    name: "Стейкинг · майнинг · фарминг",
+    status: "locked",
+    description:
+      "Заработок на активах, которые уже есть: liquid staking, restaking, майнинг (home/industrial), yield farming, LP-позиции и оценка рисков.",
+    courseTag: "Следующий курс академии",
+    topics: ["Liquid staking (ETH, SOL, TIA)", "Restaking — EigenLayer и наследники", "Майнинг: домашний vs промышленный", "Yield farming и impermanent loss"],
+  },
 ];
 
 export const architectureLayers: ArchitectureLayer[] = [

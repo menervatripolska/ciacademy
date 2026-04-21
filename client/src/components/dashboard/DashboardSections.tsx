@@ -1882,34 +1882,96 @@ export function AdvancedModulesSection() {
     <section>
       <SectionHeader
         icon={Layers}
-        title="Продвинутые модули"
-        kicker="11 · Под капотом Crypto OS"
+        title="Следующие курсы академии"
+        kicker="11 · Что откроется дальше"
+        right={<Badge tone="hot">{advancedModules.length} модулей</Badge>}
       />
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
-        {advancedModules.map((m) => (
-          <Card key={m.name} className="p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-sm font-semibold">{m.name}</div>
-              <Badge
-                tone={
-                  m.status === "Активен"
-                    ? "up"
-                    : m.status === "Тестируется"
-                    ? "hot"
-                    : "warn"
-                }
-              >
-                {m.status}
-              </Badge>
-            </div>
-            <div className="text-xs text-white/60 leading-relaxed">{m.description}</div>
-            {m.metric && (
-              <div className="text-[11px] text-[#00d4aa] mt-2 font-semibold">
-                {m.metric}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {advancedModules.map((m) => {
+          const locked = m.status === "locked";
+          return (
+            <Card
+              key={m.name}
+              className={
+                "p-4 relative overflow-hidden " +
+                (locked ? "border-white/5" : "")
+              }
+            >
+              {locked ? (
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 opacity-[0.07]"
+                  style={{
+                    backgroundImage:
+                      "repeating-linear-gradient(135deg, rgba(153,69,255,0.8) 0 10px, transparent 10px 22px)",
+                  }}
+                />
+              ) : null}
+              <div className="flex items-start justify-between mb-2 relative gap-2">
+                <div className="flex items-center gap-2">
+                  {locked ? (
+                    <div className="w-7 h-7 rounded-md border border-white/10 bg-white/[0.04] flex items-center justify-center">
+                      <Lock className="w-3.5 h-3.5 text-white/55" />
+                    </div>
+                  ) : null}
+                  <div className="text-sm font-semibold text-white">{m.name}</div>
+                </div>
+                {locked ? (
+                  <Badge tone="neutral">Скоро</Badge>
+                ) : (
+                  <Badge
+                    tone={
+                      m.status === "Активен"
+                        ? "up"
+                        : m.status === "Тестируется"
+                        ? "hot"
+                        : "warn"
+                    }
+                  >
+                    {m.status}
+                  </Badge>
+                )}
               </div>
-            )}
-          </Card>
-        ))}
+              <div className="text-[13px] text-white/70 leading-relaxed relative">
+                {m.description}
+              </div>
+              {m.topics && m.topics.length > 0 ? (
+                <ul className="mt-3 space-y-1 relative">
+                  {m.topics.map((t) => (
+                    <li
+                      key={t}
+                      className="text-[12px] text-white/60 leading-relaxed flex gap-2"
+                    >
+                      <span className="text-[#9945ff] mt-0.5">◆</span>
+                      <span>{t}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              <div className="mt-3 flex items-center justify-between relative">
+                {m.courseTag ? (
+                  <div className="text-[10px] uppercase tracking-[0.18em] text-[#9945ff]/80 font-semibold">
+                    {m.courseTag}
+                  </div>
+                ) : m.metric ? (
+                  <div className="text-[11px] text-[#00d4aa] font-semibold">
+                    {m.metric}
+                  </div>
+                ) : <span />}
+                {locked ? (
+                  <span className="text-[10px] uppercase tracking-[0.18em] text-white/35">
+                    Уведомим
+                  </span>
+                ) : null}
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+      <div className="mt-3 text-[11px] text-white/45 leading-relaxed">
+        Эти модули — следующие курсы Crypto Intelligence Academy. Текущий курс Crypto OS
+        даёт ядро: рынок, анализ, DCA, боты. Дальше — Web3, рынки предсказаний,
+        ИИ-агенты, акции и пассивный доход (стейкинг/майнинг/фарминг).
       </div>
     </section>
   );
