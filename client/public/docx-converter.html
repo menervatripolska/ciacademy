@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>DOCX converter (temp)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+body{font:14px/1.4 system-ui;padding:20px;max-width:900px;margin:0 auto;color:#eee;background:#111}
+input{padding:10px;color:#eee;background:#222;border:1px solid #444;border-radius:6px}
+pre{white-space:pre-wrap;font-size:11px;background:#222;padding:10px;border-radius:6px}
+</style>
+</head>
+<body>
+<h1>DOCX converter</h1>
+<p>Загрузи .docx файлы — распарсит в window.fileResults.</p>
+<input type="file" id="f" multiple accept=".docx">
+<pre id="out">waiting for files...</pre>
+<script>
+window.fileResults={};
+window.parseDocx=async function(file){
+  const buf=await file.arrayBuffer();
+  const zip=await JSZip.loadAsync(buf);
+  const xml=await zip.file('word/document.xml').async('string');
+  const doc=new DOMParser().parseFromString(xml,'application/xml');
+  const paragraphs=doc.getElementsByTagName('w:p');
+  const out=[];
+  for(let i=0;i<paragraphs.length;i++){
+    const p=paragraphs[i];
+    const runs=p.getElementsByTagName('w:t');
+    let text='';
+    for(let j=0;j<runs.length;j++)text+=runs[j].textContent||'';
+    const pStyle=p.getElementsByTagName('w:pStyle')[0];
+    const styleVal=pStyle&&pStyle.getAttribute('w:val')||'';
+    if(/Heading1|Title/i.test(styleVal))out.push('# '+text);
+    else if(/Heading2/i.test(styleVal))out.push('## '+text);
+    else if(/Heading3/i.test(styleVal))out.push('### '+text);
+    else if(text.trim())out.push(text);
+  }
+  return out.join('\n\n');
+};
+document.getElementById('f').addEventListener('change',async function(e){
+  const out=document.getElementById('out');
+  out.textContent='Parsing '+e.target.files.length+' files...\n';
+  for(let i=0;i<e.target.files.length;i++){
+    const file=e.target.files[i];
+    try{
+      const text=await window.parseDocx(file);
+      window.fileResults[file.name]=text;
+      out.textContent+=file.name+': '+text.length+' chars\n';
+    }catch(err){out.textContent+=file.name+': ERR '+err.message+'\n';}
+  }
+  out.textContent+='DONE';
+});
+</script>
+</body>
+</html>
