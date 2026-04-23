@@ -1,25 +1,25 @@
 /**
- * Cloudflare Worker — прокси для AI-чата дашборда Crypto OS.
+ * Cloudflare Worker â Ð¿ÑÐ¾ÐºÑÐ¸ Ð´Ð»Ñ AI-ÑÐ°ÑÐ° Ð´Ð°ÑÐ±Ð¾ÑÐ´Ð° Crypto OS.
  *
- * Зачем: фронтенд не может держать API-ключ модели у себя. Этот воркер
- * принимает { system, messages } от фронта, подкладывает секретный ключ
- * из env и отправляет запрос в выбранный провайдер (Anthropic / Qwen /
- * Gemini). Отдаёт фронту { reply } или { error }.
+ * ÐÐ°ÑÐµÐ¼: ÑÑÐ¾Ð½ÑÐµÐ½Ð´ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ Ð´ÐµÑÐ¶Ð°ÑÑ API-ÐºÐ»ÑÑ Ð¼Ð¾Ð´ÐµÐ»Ð¸ Ñ ÑÐµÐ±Ñ. Ð­ÑÐ¾Ñ Ð²Ð¾ÑÐºÐµÑ
+ * Ð¿ÑÐ¸Ð½Ð¸Ð¼Ð°ÐµÑ { system, messages } Ð¾Ñ ÑÑÐ¾Ð½ÑÐ°, Ð¿Ð¾Ð´ÐºÐ»Ð°Ð´ÑÐ²Ð°ÐµÑ ÑÐµÐºÑÐµÑÐ½ÑÐ¹ ÐºÐ»ÑÑ
+ * Ð¸Ð· env Ð¸ Ð¾ÑÐ¿ÑÐ°Ð²Ð»ÑÐµÑ Ð·Ð°Ð¿ÑÐ¾Ñ Ð² Ð²ÑÐ±ÑÐ°Ð½Ð½ÑÐ¹ Ð¿ÑÐ¾Ð²Ð°Ð¹Ð´ÐµÑ (Anthropic / Qwen /
+ * Gemini). ÐÑÐ´Ð°ÑÑ ÑÑÐ¾Ð½ÑÑ { reply } Ð¸Ð»Ð¸ { error }.
  *
- * Деплой (после того как Di положит ключ):
+ * ÐÐµÐ¿Ð»Ð¾Ð¹ (Ð¿Ð¾ÑÐ»Ðµ ÑÐ¾Ð³Ð¾ ÐºÐ°Ðº Di Ð¿Ð¾Ð»Ð¾Ð¶Ð¸Ñ ÐºÐ»ÑÑ):
  *   1) cd workers && npm i -g wrangler
- *   2) wrangler secret put AI_API_KEY    (выбрать провайдера в PROVIDER)
+ *   2) wrangler secret put AI_API_KEY    (Ð²ÑÐ±ÑÐ°ÑÑ Ð¿ÑÐ¾Ð²Ð°Ð¹Ð´ÐµÑÐ° Ð² PROVIDER)
  *   3) wrangler deploy
- *   4) В репе установить VITE_AI_CHAT_URL на URL воркера
- *      (GitHub → Settings → Secrets and variables → Actions → repo secrets).
+ *   4) Ð ÑÐµÐ¿Ðµ ÑÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÑ VITE_AI_CHAT_URL Ð½Ð° URL Ð²Ð¾ÑÐºÐµÑÐ°
+ *      (GitHub â Settings â Secrets and variables â Actions â repo secrets).
  *
- * Переключение провайдера — env.PROVIDER = "anthropic" | "qwen" | "gemini".
+ * ÐÐµÑÐµÐºÐ»ÑÑÐµÐ½Ð¸Ðµ Ð¿ÑÐ¾Ð²Ð°Ð¹Ð´ÐµÑÐ° â env.PROVIDER = "anthropic" | "qwen" | "gemini".
  */
 
 export interface Env {
   AI_API_KEY: string;
   PROVIDER?: string; // anthropic | qwen | gemini
-  MODEL?: string;    // напр. claude-haiku-4-5-20251001 или qwen-plus
+  MODEL?: string;    // Ð½Ð°Ð¿Ñ. claude-haiku-4-5-20251001 Ð¸Ð»Ð¸ qwen-plus
   ALLOWED_ORIGIN?: string; // https://ciacademy.kz
 }
 
@@ -63,7 +63,7 @@ async function callAnthropic(env: Env, body: ChatRequest) {
 }
 
 async function callQwen(env: Env, body: ChatRequest) {
-  // Dashscope OpenAI-совместимый эндпоинт
+  // Dashscope OpenAI-ÑÐ¾Ð²Ð¼ÐµÑÑÐ¸Ð¼ÑÐ¹ ÑÐ½Ð´Ð¿Ð¾Ð¸Ð½Ñ
   const model = env.MODEL ?? "qwen-plus";
   const messages = [
     ...(body.system ? [{ role: "system", content: body.system }] : []),
@@ -87,7 +87,7 @@ async function callQwen(env: Env, body: ChatRequest) {
 }
 
 async function callGemini(env: Env, body: ChatRequest) {
-  const model = env.MODEL ?? "gemini-2.0-flash";
+  const model = env.MODEL ?? "gemini-2.5-flash";
   const contents = (body.messages ?? []).map((m) => ({
     role: m.role === "assistant" ? "model" : "user",
     parts: [{ text: m.content }],
@@ -99,6 +99,13 @@ async function callGemini(env: Env, body: ChatRequest) {
     body: JSON.stringify({
       systemInstruction: body.system ? { parts: [{ text: body.system }] } : undefined,
       contents,
+      generationConfig: { temperature: 0.6, maxOutputTokens: 800, topP: 0.9 },
+      safetySettings: [
+        { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_ONLY_HIGH" },
+        { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_ONLY_HIGH" },
+        { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_ONLY_HIGH" },
+        { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_ONLY_HIGH" },
+      ],
     }),
   });
   const data: any = await r.json();
