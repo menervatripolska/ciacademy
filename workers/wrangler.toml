@@ -2,10 +2,10 @@ name = "ciacademy-ai-chat"
 main = "ai-chat.ts"
 compatibility_date = "2026-04-01"
 
-# Выставить нужного провайдера перед деплоем:
+# ÐÑÑÑÐ°Ð²Ð¸ÑÑ Ð½ÑÐ¶Ð½Ð¾Ð³Ð¾ Ð¿ÑÐ¾Ð²Ð°Ð¹Ð´ÐµÑÐ° Ð¿ÐµÑÐµÐ´ Ð´ÐµÐ¿Ð»Ð¾ÐµÐ¼:
 [vars]
-PROVIDER = "qwen"           # anthropic | qwen | gemini
-MODEL = "qwen-plus"         # для qwen; для anthropic — "claude-haiku-4-5-20251001"
+PROVIDER = "gemini"           # anthropic | qwen | gemini
+MODEL = "gemini-2.5-flash" # ключ: https://aistudio.google.com/app/apikey
 ALLOWED_ORIGIN = "https://ciacademy.kz"
 
-# AI_API_KEY кладётся как секрет:  wrangler secret put AI_API_KEY
+# AI_API_KEY ÐºÐ»Ð°Ð´ÑÑÑÑ ÐºÐ°Ðº ÑÐµÐºÑÐµÑ:  wrangler secret put AI_API_KEY
