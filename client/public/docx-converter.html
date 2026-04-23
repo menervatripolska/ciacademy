@@ -1,56 +1,65 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="utf-8">
-<title>DOCX converter (temp)</title>
+<html lang="ru"><head>
+<meta charset="utf-8"><title>Загрузка уроков Новы</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
-body{font:14px/1.4 system-ui;padding:20px;max-width:900px;margin:0 auto;color:#eee;background:#111}
-input{padding:10px;color:#eee;background:#222;border:1px solid #444;border-radius:6px}
-pre{white-space:pre-wrap;font-size:11px;background:#222;padding:10px;border-radius:6px}
-</style>
-</head>
-<body>
-<h1>DOCX converter</h1>
-<p>Загрузи .docx файлы — распарсит в window.fileResults.</p>
+body{font:15px/1.5 system-ui;padding:24px;max-width:900px;margin:0 auto;color:#eee;background:#0c0c12}
+h1{color:#9945ff}
+input[type=file]{padding:16px;color:#eee;background:#1a1a24;border:2px dashed #9945ff;border-radius:10px;width:100%;cursor:pointer}
+button{padding:12px 24px;background:#9945ff;color:#fff;border:0;border-radius:8px;font-size:15px;cursor:pointer;margin-top:12px}
+button:disabled{opacity:.4;cursor:not-allowed}
+pre{white-space:pre-wrap;font-size:11px;background:#1a1a24;padding:14px;border-radius:8px;max-height:400px;overflow:auto;color:#aaa}
+textarea{width:100%;height:200px;background:#1a1a24;color:#eee;border:1px solid #444;border-radius:8px;padding:10px;font:11px monospace}
+.ok{color:#0f0}.err{color:#f55}
+</style></head><body>
+<h1>Загрузка уроков Новы</h1>
+<p>1) Перетащи или выбери 8 файлов .docx (все уроки разом).<br>2) Дождись «ГОТОВО».<br>3) Нажми «Скопировать всё» и вставь результат сообщением в чат.</p>
 <input type="file" id="f" multiple accept=".docx">
-<pre id="out">waiting for files...</pre>
+<pre id="out">Жду файлы...</pre>
+<button id="copyBtn" disabled>Скопировать всё</button>
+<textarea id="json" placeholder="Сюда попадёт результат"></textarea>
 <script>
 window.fileResults={};
-window.parseDocx=async function(file){
+async function parseDocx(file){
   const buf=await file.arrayBuffer();
   const zip=await JSZip.loadAsync(buf);
   const xml=await zip.file('word/document.xml').async('string');
   const doc=new DOMParser().parseFromString(xml,'application/xml');
-  const paragraphs=doc.getElementsByTagName('w:p');
+  const ps=doc.getElementsByTagName('w:p');
   const out=[];
-  for(let i=0;i<paragraphs.length;i++){
-    const p=paragraphs[i];
-    const runs=p.getElementsByTagName('w:t');
-    let text='';
-    for(let j=0;j<runs.length;j++)text+=runs[j].textContent||'';
-    const pStyle=p.getElementsByTagName('w:pStyle')[0];
-    const styleVal=pStyle&&pStyle.getAttribute('w:val')||'';
-    if(/Heading1|Title/i.test(styleVal))out.push('# '+text);
-    else if(/Heading2/i.test(styleVal))out.push('## '+text);
-    else if(/Heading3/i.test(styleVal))out.push('### '+text);
-    else if(text.trim())out.push(text);
+  for(let i=0;i<ps.length;i++){
+    const p=ps[i];const rs=p.getElementsByTagName('w:t');let t='';
+    for(let j=0;j<rs.length;j++)t+=rs[j].textContent||'';
+    const ps0=p.getElementsByTagName('w:pStyle')[0];
+    const sv=ps0&&ps0.getAttribute('w:val')||'';
+    if(/Heading1|Title/i.test(sv))out.push('# '+t);
+    else if(/Heading2/i.test(sv))out.push('## '+t);
+    else if(/Heading3/i.test(sv))out.push('### '+t);
+    else if(t.trim())out.push(t);
   }
   return out.join('\n\n');
-};
+}
 document.getElementById('f').addEventListener('change',async function(e){
   const out=document.getElementById('out');
-  out.textContent='Parsing '+e.target.files.length+' files...\n';
+  out.textContent='Парсинг '+e.target.files.length+' файлов...\n';
+  const results={};
   for(let i=0;i<e.target.files.length;i++){
     const file=e.target.files[i];
     try{
-      const text=await window.parseDocx(file);
-      window.fileResults[file.name]=text;
-      out.textContent+=file.name+': '+text.length+' chars\n';
-    }catch(err){out.textContent+=file.name+': ERR '+err.message+'\n';}
+      const text=await parseDocx(file);
+      results[file.name]=text;
+      out.innerHTML+='<span class=ok>✓ '+file.name+': '+text.length+' знаков</span>\n';
+    }catch(err){out.innerHTML+='<span class=err>✗ '+file.name+': '+err.message+'</span>\n';}
   }
-  out.textContent+='DONE';
+  out.innerHTML+='<b>ГОТОВО. Жми «Скопировать всё».</b>';
+  window.fileResults=results;
+  document.getElementById('json').value=JSON.stringify(results);
+  document.getElementById('copyBtn').disabled=false;
 });
-</script>
-</body>
-</html>
+document.getElementById('copyBtn').addEventListener('click',async function(){
+  const t=document.getElementById('json');
+  t.select();
+  try{await navigator.clipboard.writeText(t.value);this.textContent='Скопировано ✓';}
+  catch(e){document.execCommand('copy');this.textContent='Скопировано ✓';}
+});
+</script></body></html>
