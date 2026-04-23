@@ -22,6 +22,11 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
+        env:
+          VITE_AI_CHAT_URL: ${{ vars.VITE_AI_CHAT_URL }}
+          VITE_STRATEGIES_URL: ${{ vars.VITE_STRATEGIES_URL }}
+          VITE_ANALYTICS_ENDPOINT: ${{ vars.VITE_ANALYTICS_ENDPOINT }}
+          VITE_ANALYTICS_WEBSITE_ID: ${{ vars.VITE_ANALYTICS_WEBSITE_ID }}
         run: pnpm build
 
       - name: Copy .htaccess into build output
