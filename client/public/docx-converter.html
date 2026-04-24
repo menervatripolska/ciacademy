@@ -1,65 +1,80 @@
 <!DOCTYPE html>
-<html lang="ru"><head>
-<meta charset="utf-8"><title>ÐÐ°Ð³ÑÑÐ·ÐºÐ° ÑÑÐ¾ÐºÐ¾Ð² ÐÐ¾Ð²Ñ</title>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Converter</title>
 <script src="/jszip.min.js"></script>
 <style>
-body{font:15px/1.5 system-ui;padding:24px;max-width:900px;margin:0 auto;color:#eee;background:#0c0c12}
-h1{color:#9945ff}
-input[type=file]{padding:16px;color:#eee;background:#1a1a24;border:2px dashed #9945ff;border-radius:10px;width:100%;cursor:pointer}
-button{padding:12px 24px;background:#9945ff;color:#fff;border:0;border-radius:8px;font-size:15px;cursor:pointer;margin-top:12px}
-button:disabled{opacity:.4;cursor:not-allowed}
-pre{white-space:pre-wrap;font-size:11px;background:#1a1a24;padding:14px;border-radius:8px;max-height:400px;overflow:auto;color:#aaa}
-textarea{width:100%;height:200px;background:#1a1a24;color:#eee;border:1px solid #444;border-radius:8px;padding:10px;font:11px monospace}
-.ok{color:#0f0}.err{color:#f55}
-</style></head><body>
-<h1>ÐÐ°Ð³ÑÑÐ·ÐºÐ° ÑÑÐ¾ÐºÐ¾Ð² ÐÐ¾Ð²Ñ</h1>
-<p>1) ÐÐµÑÐµÑÐ°ÑÐ¸ Ð¸Ð»Ð¸ Ð²ÑÐ±ÐµÑÐ¸ 8 ÑÐ°Ð¹Ð»Ð¾Ð² .docx (Ð²ÑÐµ ÑÑÐ¾ÐºÐ¸ ÑÐ°Ð·Ð¾Ð¼).<br>2) ÐÐ¾Ð¶Ð´Ð¸ÑÑ Â«ÐÐÐ¢ÐÐÐÂ».<br>3) ÐÐ°Ð¶Ð¼Ð¸ Â«Ð¡ÐºÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°ÑÑ Ð²ÑÑÂ» Ð¸ Ð²ÑÑÐ°Ð²Ñ ÑÐµÐ·ÑÐ»ÑÑÐ°Ñ ÑÐ¾Ð¾Ð±ÑÐµÐ½Ð¸ÐµÐ¼ Ð² ÑÐ°Ñ.</p>
+body{font-family:system-ui,sans-serif;padding:20px;max-width:900px;margin:0 auto;background:#0b0f1a;color:#e6edf3}
+h1{font-size:18px;margin:0 0 8px}
+p{margin:0 0 12px;font-size:14px;color:#9fb2c8}
+button{background:#7c5cff;color:#fff;border:0;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:14px;margin:8px 0}
+button:hover{background:#8d72ff}
+#f{margin:8px 0}
+#status{white-space:pre-wrap;font-size:12px;padding:10px;background:#111826;border-radius:6px;max-height:200px;overflow:auto;margin:10px 0}
+textarea{width:100%;min-height:300px;background:#0a0e17;color:#e6edf3;border:1px solid #253048;border-radius:6px;padding:10px;font-family:monospace;font-size:11px;box-sizing:border-box}
+</style>
+</head>
+<body>
+<h1>Lesson uploader for Nova</h1>
+<p>1) Select all 8 .docx files at once. 2) Wait for DONE. 3) Click COPY ALL and paste the result into chat.</p>
 <input type="file" id="f" multiple accept=".docx">
-<pre id="out">ÐÐ´Ñ ÑÐ°Ð¹Ð»Ñ...</pre>
-<button id="copyBtn" disabled>Ð¡ÐºÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°ÑÑ Ð²ÑÑ</button>
-<textarea id="json" placeholder="Ð¡ÑÐ´Ð° Ð¿Ð¾Ð¿Ð°Ð´ÑÑ ÑÐµÐ·ÑÐ»ÑÑÐ°Ñ"></textarea>
+<div id="status">Waiting for files...</div>
+<button id="copyBtn" style="display:none">COPY ALL</button>
+<textarea id="json" style="display:none" readonly></textarea>
 <script>
-window.fileResults={};
+window.results = {};
 async function parseDocx(file){
-  const buf=await file.arrayBuffer();
-  const zip=await JSZip.loadAsync(buf);
-  const xml=await zip.file('word/document.xml').async('string');
-  const doc=new DOMParser().parseFromString(xml,'application/xml');
-  const ps=doc.getElementsByTagName('w:p');
-  const out=[];
-  for(let i=0;i<ps.length;i++){
-    const p=ps[i];const rs=p.getElementsByTagName('w:t');let t='';
-    for(let j=0;j<rs.length;j++)t+=rs[j].textContent||'';
-    const ps0=p.getElementsByTagName('w:pStyle')[0];
-    const sv=ps0&&ps0.getAttribute('w:val')||'';
-    if(/Heading1|Title/i.test(sv))out.push('# '+t);
-    else if(/Heading2/i.test(sv))out.push('## '+t);
-    else if(/Heading3/i.test(sv))out.push('### '+t);
-    else if(t.trim())out.push(t);
+  const buf = await file.arrayBuffer();
+  const zip = await JSZip.loadAsync(buf);
+  const xml = await zip.file("word/document.xml").async("string");
+  const doc = new DOMParser().parseFromString(xml, "application/xml");
+  const ps = doc.getElementsByTagName("w:p");
+  const out = [];
+  for (const p of ps) {
+    const runs = p.getElementsByTagName("w:t");
+    let t = "";
+    for (const r of runs) t += r.textContent || "";
+    const ps1 = p.getElementsByTagName("w:pStyle")[0];
+    const sv = ps1 && ps1.getAttribute("w:val");
+    if (sv && /Heading1/i.test(sv)) out.push("# " + t);
+    else if (sv && /Heading2/i.test(sv)) out.push("## " + t);
+    else if (sv && /Heading3/i.test(sv)) out.push("### " + t);
+    else if (t.trim()) out.push(t);
   }
-  return out.join('\n\n');
+  return out.join("\n\n");
 }
-document.getElementById('f').addEventListener('change',async function(e){
-  const out=document.getElementById('out');
-  out.textContent='ÐÐ°ÑÑÐ¸Ð½Ð³ '+e.target.files.length+' ÑÐ°Ð¹Ð»Ð¾Ð²...\n';
-  const results={};
-  for(let i=0;i<e.target.files.length;i++){
-    const file=e.target.files[i];
-    try{
-      const text=await parseDocx(file);
-      results[file.name]=text;
-      out.innerHTML+='<span class=ok>â '+file.name+': '+text.length+' Ð·Ð½Ð°ÐºÐ¾Ð²</span>\n';
-    }catch(err){out.innerHTML+='<span class=err>â '+file.name+': '+err.message+'</span>\n';}
+document.getElementById("f").addEventListener("change", async (e) => {
+  const st = document.getElementById("status");
+  st.textContent = "Parsing " + e.target.files.length + " files...\n";
+  window.results = {};
+  for (const file of e.target.files) {
+    try {
+      const text = await parseDocx(file);
+      window.results[file.name] = text;
+      st.textContent += "[OK] " + file.name + " -> " + text.length + " chars\n";
+    } catch (err) {
+      st.textContent += "[ERR] " + file.name + ": " + err.message + "\n";
+    }
   }
-  out.innerHTML+='<b>ÐÐÐ¢ÐÐÐ. ÐÐ¼Ð¸ Â«Ð¡ÐºÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°ÑÑ Ð²ÑÑÂ».</b>';
-  window.fileResults=results;
-  document.getElementById('json').value=JSON.stringify(results);
-  document.getElementById('copyBtn').disabled=false;
+  st.textContent += "DONE";
+  const ta = document.getElementById("json");
+  ta.value = JSON.stringify(window.results);
+  ta.style.display = "block";
+  const btn = document.getElementById("copyBtn");
+  btn.style.display = "inline-block";
 });
-document.getElementById('copyBtn').addEventListener('click',async function(){
-  const t=document.getElementById('json');
-  t.select();
-  try{await navigator.clipboard.writeText(t.value);this.textContent='Ð¡ÐºÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°Ð½Ð¾ â';}
-  catch(e){document.execCommand('copy');this.textContent='Ð¡ÐºÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°Ð½Ð¾ â';}
+document.getElementById("copyBtn").addEventListener("click", async () => {
+  const ta = document.getElementById("json");
+  try {
+    await navigator.clipboard.writeText(ta.value);
+    document.getElementById("copyBtn").textContent = "COPIED!";
+  } catch(e) {
+    ta.select(); document.execCommand("copy");
+    document.getElementById("copyBtn").textContent = "COPIED!";
+  }
 });
-</script></body></html>
+</script>
+</body>
+</html>
