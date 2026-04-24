@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru"><head>
-<meta charset="utf-8"><title>Загрузка уроков Новы</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<meta charset="utf-8"><title>ÐÐ°Ð³ÑÑÐ·ÐºÐ° ÑÑÐ¾ÐºÐ¾Ð² ÐÐ¾Ð²Ñ</title>
+<script src="/jszip.min.js"></script>
 <style>
 body{font:15px/1.5 system-ui;padding:24px;max-width:900px;margin:0 auto;color:#eee;background:#0c0c12}
 h1{color:#9945ff}
@@ -12,12 +12,12 @@ pre{white-space:pre-wrap;font-size:11px;background:#1a1a24;padding:14px;border-r
 textarea{width:100%;height:200px;background:#1a1a24;color:#eee;border:1px solid #444;border-radius:8px;padding:10px;font:11px monospace}
 .ok{color:#0f0}.err{color:#f55}
 </style></head><body>
-<h1>Загрузка уроков Новы</h1>
-<p>1) Перетащи или выбери 8 файлов .docx (все уроки разом).<br>2) Дождись «ГОТОВО».<br>3) Нажми «Скопировать всё» и вставь результат сообщением в чат.</p>
+<h1>ÐÐ°Ð³ÑÑÐ·ÐºÐ° ÑÑÐ¾ÐºÐ¾Ð² ÐÐ¾Ð²Ñ</h1>
+<p>1) ÐÐµÑÐµÑÐ°ÑÐ¸ Ð¸Ð»Ð¸ Ð²ÑÐ±ÐµÑÐ¸ 8 ÑÐ°Ð¹Ð»Ð¾Ð² .docx (Ð²ÑÐµ ÑÑÐ¾ÐºÐ¸ ÑÐ°Ð·Ð¾Ð¼).<br>2) ÐÐ¾Ð¶Ð´Ð¸ÑÑ Â«ÐÐÐ¢ÐÐÐÂ».<br>3) ÐÐ°Ð¶Ð¼Ð¸ Â«Ð¡ÐºÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°ÑÑ Ð²ÑÑÂ» Ð¸ Ð²ÑÑÐ°Ð²Ñ ÑÐµÐ·ÑÐ»ÑÑÐ°Ñ ÑÐ¾Ð¾Ð±ÑÐµÐ½Ð¸ÐµÐ¼ Ð² ÑÐ°Ñ.</p>
 <input type="file" id="f" multiple accept=".docx">
-<pre id="out">Жду файлы...</pre>
-<button id="copyBtn" disabled>Скопировать всё</button>
-<textarea id="json" placeholder="Сюда попадёт результат"></textarea>
+<pre id="out">ÐÐ´Ñ ÑÐ°Ð¹Ð»Ñ...</pre>
+<button id="copyBtn" disabled>Ð¡ÐºÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°ÑÑ Ð²ÑÑ</button>
+<textarea id="json" placeholder="Ð¡ÑÐ´Ð° Ð¿Ð¾Ð¿Ð°Ð´ÑÑ ÑÐµÐ·ÑÐ»ÑÑÐ°Ñ"></textarea>
 <script>
 window.fileResults={};
 async function parseDocx(file){
@@ -41,17 +41,17 @@ async function parseDocx(file){
 }
 document.getElementById('f').addEventListener('change',async function(e){
   const out=document.getElementById('out');
-  out.textContent='Парсинг '+e.target.files.length+' файлов...\n';
+  out.textContent='ÐÐ°ÑÑÐ¸Ð½Ð³ '+e.target.files.length+' ÑÐ°Ð¹Ð»Ð¾Ð²...\n';
   const results={};
   for(let i=0;i<e.target.files.length;i++){
     const file=e.target.files[i];
     try{
       const text=await parseDocx(file);
       results[file.name]=text;
-      out.innerHTML+='<span class=ok>✓ '+file.name+': '+text.length+' знаков</span>\n';
-    }catch(err){out.innerHTML+='<span class=err>✗ '+file.name+': '+err.message+'</span>\n';}
+      out.innerHTML+='<span class=ok>â '+file.name+': '+text.length+' Ð·Ð½Ð°ÐºÐ¾Ð²</span>\n';
+    }catch(err){out.innerHTML+='<span class=err>â '+file.name+': '+err.message+'</span>\n';}
   }
-  out.innerHTML+='<b>ГОТОВО. Жми «Скопировать всё».</b>';
+  out.innerHTML+='<b>ÐÐÐ¢ÐÐÐ. ÐÐ¼Ð¸ Â«Ð¡ÐºÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°ÑÑ Ð²ÑÑÂ».</b>';
   window.fileResults=results;
   document.getElementById('json').value=JSON.stringify(results);
   document.getElementById('copyBtn').disabled=false;
@@ -59,7 +59,7 @@ document.getElementById('f').addEventListener('change',async function(e){
 document.getElementById('copyBtn').addEventListener('click',async function(){
   const t=document.getElementById('json');
   t.select();
-  try{await navigator.clipboard.writeText(t.value);this.textContent='Скопировано ✓';}
-  catch(e){document.execCommand('copy');this.textContent='Скопировано ✓';}
+  try{await navigator.clipboard.writeText(t.value);this.textContent='Ð¡ÐºÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°Ð½Ð¾ â';}
+  catch(e){document.execCommand('copy');this.textContent='Ð¡ÐºÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°Ð½Ð¾ â';}
 });
 </script></body></html>
